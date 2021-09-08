@@ -74,18 +74,47 @@ export class MutationService extends GenericService {
 
   // for bulk loading, when we create a mutant we can look to ZFIN for help in filling in
   // some of the fields and we may be getting some "owned" mutations with serial numbers
+  // There are two flavours here create and update.
   async import(dto: any): Promise<Mutation> {
     convertEmptyStringToNull(dto);
     this.ignoreAttribute(dto, 'id');
 
-    // create a mutation from the dto we received
-    let candidate: Mutation = new Mutation();
-    candidate = plainToClassFromExist(candidate, dto);
+    if (!dto.name) {
+      this.logAndThrowException('1979574: cannot import a Mutation without a name.')
+    }
+
+
+    let candidate: Mutation;
+    candidate = await this.repo.findOne({where: {name: dto.name}});
+    if (!candidate) {
+      candidate = new Mutation();
+      candidate.name = dto.name;
+    }
+
+    if (dto.gene) candidate.gene = dto.gene;
+    if (dto.alternateGeneName) candidate.alternateGeneName = dto.alternateGeneName;
+    if (dto.nickname) candidate.nickname = dto.nickname;
+    if (dto.gene) candidate.gene = dto.gene;
+    if (dto.mutationType) candidate.mutationType = dto.mutationType;
+    if (dto.screenType) candidate.screenType = dto.screenType;
+    if (dto.comment) candidate.comment = dto.comment;
+    if (dto.phenotype) candidate.phenotype = dto.phenotype;
+    if (dto.source) candidate.researcher = dto.source;
+    if (dto.actgChange) candidate.actgChange = dto.actgChange;
+
 
     // if possible, fill in some data using ZFIN
     candidate = await this.zfinService.updateMutationUsingZfin(candidate);
 
-    await this.validateForImport(candidate);
+    // extract the serial number if this is an owned transgene
+    if (dto.name.startsWith(this.configService.facilityInfo.prefix)) {
+      const putativeSerialNumber = Number(dto.name.replace(/\D/g, ''));
+      console.log(`putative serial number ${putativeSerialNumber}`);
+      if (putativeSerialNumber > 0) {
+        candidate.serialNumber = putativeSerialNumber;
+      }
+    }
+
     return this.repo.save(candidate);
   }
 

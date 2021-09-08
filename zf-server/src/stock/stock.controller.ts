@@ -23,6 +23,8 @@ import {ADMIN_ROLE, USER_ROLE} from '../common/auth/zf-roles';
 import {RoleGuard} from '../guards/role-guard.service';
 import {Role} from '../guards/role.decorator';
 import {StockImportDto} from './stock-import-dto';
+import {LineageImportDto} from './lineage-import-dto';
+import {MarkerImportDto} from './marker-import-dto';
 
 // ToDo several of these go straight to the repo bypassing the service. Should fix - low priority.
 // The following interceptor converts classes to plain objects for all responses.
@@ -60,12 +62,25 @@ export class StockController {
     return await this.service.validateAndRemove(id);
   }
 
-
   @Role(USER_ROLE)
   @UseGuards(RoleGuard)
   @Post('import')
   async import(@Body() dto: StockImportDto): Promise<Stock> {
     return await this.service.import(dto);
+  }
+
+  @Role(USER_ROLE)
+  @UseGuards(RoleGuard)
+  @Post('lineage/import')
+  async importLineage(@Body() dto: LineageImportDto): Promise<boolean> {
+    return await this.service.lineageImport(dto);
+  }
+
+  @Role(USER_ROLE)
+  @UseGuards(RoleGuard)
+  @Post('markers/import')
+  async importMarkers(@Body() dto: MarkerImportDto): Promise<Stock> {
+    return await this.service.markerImport(dto);
   }
 
   @Role(USER_ROLE)
@@ -106,8 +121,7 @@ export class StockController {
 
   @Get('name/:name')
   async getByName(@Param() params): Promise<Stock> {
-    const stock = await this.service.findByName(params.name);
-    return stock;
+    return await this.service.findByName(params.name);
   }
 
   @Role(USER_ROLE)

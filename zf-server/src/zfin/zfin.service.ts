@@ -78,8 +78,8 @@ export class ZfinService {
     }
 
     // In ZFIN land, transgene construct names change.  Fact of life. This is how we deal with it.
-    if (t.descriptor !== zt.zfinConstructName) {
-      // The transgene has a construct AND the one in ZFIN is different!
+    if (t.descriptor && t.descriptor !== zt.zfinConstructName) {
+      // The transgene has a descriptor AND the one in ZFIN is different!
       // If there is not already a nickname, use the current construct name
       // as the nickname
       if (!t.nickname) t.nickname = `${t.descriptor}^${t.allele}`;

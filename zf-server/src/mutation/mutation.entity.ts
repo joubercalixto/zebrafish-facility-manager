@@ -123,7 +123,7 @@ export class Mutation {
   })
   phenotype: string;
 
-  // Storing the URL was a bad idea and is superceded by storing the ZFIN Id
+  // Storing the URL was a bad idea and is superseded by storing the ZFIN Id
   // which can easily be converted to a URL.
   @Exclude()
   @Column({

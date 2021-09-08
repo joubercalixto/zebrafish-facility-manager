@@ -1,8 +1,5 @@
 # Zebrafish Facility Manager Development
 
-This document is imprecise. 
-It needs work to become both simple and workable for a brand new user.
-
 It's a prerequisite of this document that you read the production deployment documentation.
 Pretty much everything goes as per the normal deployment environment.  
 However, there are a few things to be aware of.

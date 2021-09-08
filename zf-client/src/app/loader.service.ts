@@ -14,6 +14,7 @@ import {ZfinMutationDto} from './common/zfin/zfin-mutation.dto';
 import {ZfinTransgeneDto} from './common/zfin/zfin-transgene.dto';
 import {TankDto} from './common/tank.dto';
 import {SwimmerDto} from './common/swimmer.dto';
+import {ZFImportType} from './importer/importer/zf-import-type';
 
 @Injectable({
   providedIn: 'root'
@@ -97,10 +98,24 @@ export class LoaderService {
       );
   }
 
-  import(type: ZFTypes, thing: any): Observable<Object> {
+  import(importType: ZFImportType, thing: any): Observable<Object> {
+    // Most "importTypes" we import have API endpoints on the server side.
+    // However, when importing a stock's mutations and transgenes (markers) and lineage
+    // we have to go to the stock endpoint.
+    let endpoint: string;
+    switch (importType) {
+      case ZFImportType.ZF_IMPORT_STOCK_MARKERS:
+        endpoint = 'stock/markers'
+        break;
+      case ZFImportType.ZF_IMPORT_LINEAGE:
+        endpoint = 'stock/lineage'
+        break;
+      default:
+        endpoint = importType;
+    }
     // Note - we do not do the normal error handling here but let the importer
     // do that as it needs to accumulate  error messages.
-    return this.http.post(this.serverURL + '/' + type + '/import/', thing);
+    return this.http.post(this.serverURL + '/' + endpoint + '/import/', thing);
   }
 
   // just like create but ask to auto-create the name using the next sequential name.

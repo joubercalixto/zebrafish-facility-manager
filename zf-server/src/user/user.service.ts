@@ -64,13 +64,21 @@ export class UserService extends GenericService {
 
   async validateUserByPassword(username: string, pass: string): Promise<User> {
     const user = await this.findByUserName(username);
-    if (user && user.validatePassword(pass)) {
-      // Note we return the user with encrypted password and salt. We could remove those here.
-      // However, the user is ultimately returned with ClassSerializerInterceptor which applies
-      // the @Exclude annotation on these fields.  So bottom line, they do not get exported.
-      return user;
+    if (user) {
+      if (user.validatePassword(pass)) {
+        this.logger.info(`${username} logged in.`)
+        // Note we return the user with encrypted password and salt. We could remove those here.
+        // However, the user is ultimately returned with ClassSerializerInterceptor which applies
+        // the @Exclude annotation on these fields.  So bottom line, they do not get exported.
+        return user;
+      } else {
+        this.logger.warn(`Attempt to log in as user ${username} with wrong password`);
+        return null;
+      }
+    } else {
+      this.logger.warn(`Attempt to log in as unknown user ${username}`);
+      return null;
     }
-    return null;
   }
 
   async findByUserName(username: string): Promise<User | undefined> {

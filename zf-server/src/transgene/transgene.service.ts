@@ -74,50 +74,40 @@ export class TransgeneService extends GenericService {
 
   // for bulk loading, when we create a mutant we can look to ZFIN for help in filling in
   // some of the fields and we may be getting some "owned" mutations with serial numbers
+  // There are two flavours here create and update.
   async import(dto: any): Promise<Transgene> {
     convertEmptyStringToNull(dto);
     this.ignoreAttribute(dto, 'id');
 
-    // create a transgne from the dto we received
-    let candidate: Transgene = new Transgene();
-    candidate = plainToClassFromExist(candidate, dto);
+    if (!dto.allele) {
+      this.logAndThrowException('7748900: cannot import a transgene without an allele.')
+    }
+
+    let candidate: Transgene;
+    candidate = await this.repo.findOne({where: {allele: dto.allele}});
+    if (!candidate) {
+      candidate = new Transgene();
+      candidate.allele = dto.allele;
+    }
+
+    if (dto.descriptor) candidate.descriptor = dto.descriptor;
+    if (dto.source) candidate.source = dto.source;
+    if (dto.nickname) candidate.nickname = dto.nickname;
+    if (dto.comment) candidate.comment = dto.comment;
 
     // if possible, fill in some data using ZFIN
     candidate = await this.zfinService.updateTransgeneUsingZfin(candidate);
-    await this.validateForImport(candidate);
+
+    // extract the serial number if this is an owned transgene
+    if (dto.allele.startsWith(this.configService.facilityInfo.prefix)) {
+      const putativeSerialNumber = Number(dto.allele.replace(/\D/g, ''));
+      console.log(`putative serial number ${putativeSerialNumber}`);
+      if (putativeSerialNumber > 0) {
+        candidate.serialNumber = putativeSerialNumber;
+      }
+    }
+
     return this.repo.save(candidate);
-  }
-
-  async validateForImport(t: Transgene): Promise<boolean> {
-    if (!t.allele) {
-      this.logAndThrowException('Cannot create transgene without an allele name.');
-    }
-
-    if (!t.descriptor) {
-      this.logAndThrowException('Cannot create transgene without a descriptor.');
-    }
-
-    const errors: string[] = [];
-    const nameInUse = await this.nameInUse(t.allele);
-    if (nameInUse) errors.push(nameInUse);
-
-    // For imports we allow serial numbers
-    if (t.serialNumber) {
-      let snInUse = await this.repo.serialNumberInUse(t.serialNumber);
-      if (snInUse) errors.push(snInUse);
-      snInUse = await this.mutationRepo.serialNumberInUse(t.serialNumber);
-      if (snInUse) errors.push(snInUse);
-    }
-
-    if (t.nickname) {
-      const nickNameInUse = await this.nickNameInUse(t.nickname);
-      if (nickNameInUse) errors.push(nickNameInUse);
-    }
-
-    if (errors.length > 0) {
-      this.logAndThrowException(errors.join("; "));
-    }
-    return true;
   }
 
   // for updating, make sure the tg is there

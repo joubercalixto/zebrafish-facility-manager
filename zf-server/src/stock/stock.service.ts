@@ -13,11 +13,9 @@ import {TransgeneService} from '../transgene/transgene.service';
 import {Transgene} from '../transgene/transgene.entity';
 import {User} from '../user/user.entity';
 import {Mutation} from '../mutation/mutation.entity';
-import {StockImportDto, SwimmerImportDto} from './stock-import-dto';
-import {Stock2tankService} from '../stock2tank/stock2tank.service';
-import {TankService} from '../tank/tank.service';
-import {Tank} from '../tank/tank.entity';
-import {Stock2tank} from '../stock2tank/stock-to-tank.entity';
+import {StockImportDto} from './stock-import-dto';
+import {LineageImportDto} from './lineage-import-dto';
+import {MarkerImportDto} from './marker-import-dto';
 
 @Injectable()
 export class StockService extends GenericService {
@@ -29,16 +27,24 @@ export class StockService extends GenericService {
     private readonly userService: UserService,
     private readonly mutationService: MutationService,
     private readonly transgeneService: TransgeneService,
-    private readonly tankService: TankService,
-    private readonly swimmerService: Stock2tankService,
   ) {
     super(logger);
   }
 
   //========================= Searches =======================
   async findByName(name: string): Promise<Stock> {
-    return await this.repo.findOne({where: {name: name}, relations: [
-        'transgenes', 'mutations']});
+    return await this.repo.findOne({
+      where: {name: name}, relations: [
+        'transgenes', 'mutations']
+    });
+  }
+
+  async findByNumber(number: number): Promise<Stock[]> {
+    return await this.repo.find({where: {number: number}});
+  }
+
+  async getById(id: number): Promise<Stock> {
+    return this.mustExist(id);
   }
 
 
@@ -70,17 +76,7 @@ export class StockService extends GenericService {
     }
   }
 
-  async getById(id: number): Promise<Stock> {
-    return this.mustExist(id);
-  }
-
-  // Importing a stock can become quite complicated because we import all the
-  // relationships between that stock and other objects (parents, researcher,
-  // transgenes and mutations). Further, we get the related objects
-  // by their unique name and not by their Id, so we have to lookup
-  // the related objects before associating them with the stock.
-  // So, most of this code is finding the related objects thus ensuring that
-  // they exist.
+  // Importing a stock - we only do a few fields plus relationships to pi and researcher
   async import(dto: StockImportDto): Promise<Stock> {
     const problems: string[] = [];
     const candidate = new Stock();
@@ -89,8 +85,10 @@ export class StockService extends GenericService {
     candidate.countEnteringNursery = dto.countEnteringNursery;
     candidate.countLeavingNursery = dto.countLeavingNursery
 
-    // The stock we are importing must have a name, the name must be valid,
-    // and the name can not already exist.
+    // The stock we are importing
+    // - must have a name,
+    // - the name must be valid,
+    // - the stock can not already exist.
     if (!dto.name) {
       this.logAndThrowException(`Cannot import a stock without a name.`);
     } else {
@@ -111,45 +109,18 @@ export class StockService extends GenericService {
       problems.push(`Cannot import a stock without a fertilization date.`);
     }
 
-    // Parents and Fertilization Date
-    candidate.externalMatDescription = dto.externalMomDescription;
-    candidate.externalMatId = dto.externalMomName;
-    candidate.externalPatDescription = dto.externalDadDescription;
-    candidate.externalPatId = dto.externalDadName;
+    // Fertilization Date
     candidate.fertilizationDate = dto.fertilizationDate;
 
-    // For substocks, parental information and fertilization date must be the same as the base stock
+    // For substocks, fertilization date must be the same as the base stock.
+    // Note: this logic allows a substock to be imported even if there is no base stock.
+    // So, it also allows multiple substocks of a non-existent base stock to have different parentage.
+    // Sorry but I'm not going to deal with this - it is bad data.
     if (candidate.subNumber > 0) {
       const baseStock = await this.doesStockNameExist(String(candidate.number));
       if (baseStock) {
-        const problem = this.importSubstock(baseStock, candidate);
-        if (problem) problems.push(problem);
-      }
-    }
-
-    // For regular (base) stocks, we need to validate that internal parents exist
-    if (!candidate.subNumber) {
-      // If there is an internal
-      if (dto.internalDad) {
-        const dad = await this.doesStockNameExist(String(dto.internalDad));
-        if (dad) {
-          candidate.patIdInternal = dad.id;
-        } else {
-          problems.push(`Cannot import stock ${dto.name}, internal dad ${dto.internalDad} does not exist.`);
-        }
-        if (candidate.externalPatDescription || candidate.externalPatId) {
-          problems.push(`Cannot import stock ${dto.name}, it has internal AND external dad information`);
-        }
-      }
-      if (dto.internalMom) {
-        const mom = await this.doesStockNameExist(String(dto.internalMom));
-        if (mom) {
-          candidate.matIdInternal = mom.id;
-        } else {
-          problems.push(`Cannot import stock ${dto.name}, internal mom ${dto.internalMom} does not exist.`);
-        }
-        if (candidate.externalMatDescription || candidate.externalMatId) {
-          problems.push(`Cannot import stock ${dto.name}, it has internal AND external mom information`);
+        if (candidate.fertilizationDate !== baseStock.fertilizationDate) {
+          problems.push(`Substock ${candidate.name} has different fertilization date than its base stock.`);
         }
       }
     }
@@ -171,19 +142,124 @@ export class StockService extends GenericService {
       }
     }
 
+    // if we have encountered problems, time to give up;
+    if (problems.length > 0) {
+      this.logAndThrowException(problems.join('; '));
+    }
+
+    return this.repo.save(candidate);
+  }
+
+  // Import the relationship between a stock number and it's parents.
+  // All substocks for the stock number are automatically updated too.
+  async lineageImport(dto: LineageImportDto): Promise<boolean> {
+    const problems: string[] = [];
+
+    if (!dto.stockNumber) {
+      problems.push(`Cannot import lineage for a stock without a stock number.`);
+    }
+
+    if ((Number(dto.stockNumber) % 1) > 0) {
+      problems.push(`Lineage import for substock ${dto.stockNumber} failed. ` +
+        `Only import lineage for base stock numbers, substocks will be handled automatically.`);
+    }
+
+    let dad: Stock = null;
+    let mom: Stock = null;
+
+    // We need to validate that internal parents exist
+    if (dto.internalDad) {
+      dad = await this.doesStockNameExist(String(dto.internalDad));
+      if (!dad) {
+        problems.push(`Internal dad ${dto.internalDad} does not exist.`);
+      }
+    }
+    if (dto.internalMom) {
+      mom = await this.doesStockNameExist(String(dto.internalMom));
+      if (!mom) {
+        problems.push(`Internal mom ${dto.internalMom} does not exist.`);
+      }
+    }
+
+    // if we have encountered problems, time to give up;
+    if (problems.length > 0) {
+      this.logAndThrowException(problems.join('; '));
+    }
+
+    // Now go get all the stocks that have the given stock number
+    // (Thus, one base stock and however many substocks).
+    const stocks: Stock[] = await this.findByNumber(Number(dto.stockNumber));
+
+    if (stocks.length === 0) {
+      this.logAndThrowException(`No base stock or sub-stocks with number ${dto.stockNumber}`)
+    }
+
+    // Data for internal mom or dad takes precedence of data for external mom or dad.
+    stocks.map((stock: Stock) => {
+      if (mom) {
+        if (stock.fertilizationDate <= mom.fertilizationDate) {
+          problems.push(`Stock  ${stock.name} (${stock.fertilizationDate}), is older than its mom: ${mom.name} (${mom.fertilizationDate})`);
+        } else {
+          stock.matIdInternal = mom.id;
+          stock.externalMatDescription = null;
+          stock.externalMatId = null;
+        }
+      } else {
+        stock.matIdInternal = null;
+        if (dto.externalMomDescription) stock.externalMatDescription = dto.externalMomDescription;
+        if (dto.externalMomName) stock.externalMatId = dto.externalMomName;
+      }
+      if (dad) {
+        if (stock.fertilizationDate <= dad.fertilizationDate) {
+          problems.push(`Stock  ${stock.name} (${stock.fertilizationDate}), is older than its dad: ${dad.name} (${dad.fertilizationDate})`);
+        } else {
+          stock.patIdInternal = dad.id
+          stock.externalPatDescription = null;
+          stock.externalPatId = null;
+        }
+      } else {
+        stock.patIdInternal = null;
+        if (dto.externalDadDescription) stock.externalPatDescription = dto.externalDadDescription;
+        if (dto.externalDadName) stock.externalPatId = dto.externalDadName;
+      }
+      // if we have encountered problems, time to give up;
+      if (problems.length > 0) {
+        this.logAndThrowException(problems.join('; '));
+      }
+      this.repo.save(stock);
+    })
+
+    return true;
+  }
+
+  // Import the relationship between a stock and its markers.
+  async markerImport(dto: MarkerImportDto): Promise<Stock> {
+    const problems: string[] = [];
+
+    // The stock we are importing must have a name
+    if (!dto.stockName) {
+      this.logAndThrowException(`Cannot import markers for a stock without a name.`);
+    }
+
+    // The stock has to exist
+    const stock: Stock = await this.doesStockNameExist(dto.stockName);
+    if (!stock) {
+      this.logAndThrowException(`Cannot import markers for stock ${dto.stockName}, it isn't known in the system.`);
+    }
+
     if (dto.alleles) {
       for (const allele of dto.alleles.split(';')) {
         const mutation = await this.doesMutationExist(allele);
         if (mutation) {
-          if (!candidate.mutations) candidate.mutations = [];
-          candidate.mutations.push(mutation);
+          if (!stock.mutations) stock.mutations = [];
+          stock.mutations.push(mutation);
         } else {
           const tg = await this.doesTransgeneExist(allele);
           if (tg) {
-            if (!candidate.transgenes) candidate.transgenes = [];
-            candidate.transgenes.push(tg);
+            if (!stock.transgenes) stock.transgenes = [];
+            stock.transgenes.push(tg);
           } else {
-            problems.push(`Cannot import stock ${dto.name}, allele ${allele} does not exists.`);
+            problems.push(`Cannot import stock ${dto.stockName}, allele ${allele} does not exists.`);
           }
         }
       }
@@ -194,60 +270,8 @@ export class StockService extends GenericService {
       this.logAndThrowException(problems.join('; '));
     }
 
-
-    // await this.validateAges(candidate);
-    const newStock =  await this.repo.save(candidate);
-
-    // now if there are swimmers...
-    await this.createSwimmer(newStock, dto.tank1Name, dto.tank1Count);
-    await this.createSwimmer(newStock, dto.tank2Name, dto.tank2Count);
-    await this.createSwimmer(newStock, dto.tank3Name, dto.tank3Count);
-    await this.createSwimmer(newStock, dto.tank4Name, dto.tank4Count);
-    await this.createSwimmer(newStock, dto.tank5Name, dto.tank5Count);
-    await this.createSwimmer(newStock, dto.tank6Name, dto.tank6Count);
-
-    return newStock;
+    return this.repo.save(stock);
   }
-
-  async createSwimmer(stock: Stock, tankName: string, howMany: number): Promise<Stock2tank> {
-    if (tankName && howMany) {
-      const tank: Tank = await this.tankService.findTankByName(tankName);
-      if (tank) {
-        const swimmerDto = new SwimmerImportDto();
-        swimmerDto.number = howMany;
-        swimmerDto.stockId = stock.id;
-        swimmerDto.tankId = tank.id;
-        return this.swimmerService.createSwimmer(swimmerDto);
-      }
-    }
-    return null;
-  }
-
-
-  // When importing a substock, if you are given data about the substock,
-  // it must match the data about the base stock.  More concretely a substock must
-  // have the same parental info and the same birthdate as the base stock.
-  // This is because the base stock ad all its substocks are necessarily siblings.
-  // On the other hand, if you are not given data about the substock, copy it from
-  // the base stock.
-  importSubstock(base: Stock, sub: Stock): string {
-    const problems: string[] = [];
-    const atts = ['matIdInternal', 'patIdInternal', 'externalMatId', 'externalPatId',
-      'externalMatDescription', 'externalPatDescription', 'fertilizationDate'];
-    atts.map((attribute: string) => {
-      if (sub[attribute]) {
-        if (String(sub[attribute]) !== base[attribute]) {
-          problems.push(`Substock ${sub.name} has different ${attribute} than its base stock.`);
-        }
-      } else {
-        sub[attribute] = base[attribute];
-      }
-    });
-
-    if (problems.length > 0) return problems.join('; ');
-    else return null;
-  }
-
 
   // For creation, create a fresh stock, merge in the DTO and save.
   async validateAndCreate(dto: any, isSubStock: boolean = false): Promise<Stock> {
@@ -261,7 +285,7 @@ export class StockService extends GenericService {
 
     // Parents are identified via patIdInternal and matIdInternal id references
     // and NOT through full fledged parental stocks.  So get rid of matStock
-    // and patStock objects.
+    // and patStock objects if they arrived in the dto.
     this.ignoreAttribute(dto, 'patStock');
     this.ignoreAttribute(dto, 'matStock');
 
@@ -274,12 +298,7 @@ export class StockService extends GenericService {
       const baseStock: Stock = await this.repo.findOne({ number: candidate.number, subNumber: 0 },
         {relations: ['mutations', 'transgenes']});
       if (!baseStock) {
-        const msg =
-          'Trying to create subStock, but stock ' +
-          candidate.number +
-          ' does not exist.';
-        this.logger.error(msg);
-        this.logAndThrowException(msg);
+        this.logAndThrowException(`Trying to create subStock, but stock ${candidate.number} does not exist.`);
       }
       candidate.subNumber = await this.repo.getNextSubStockNumber(candidate.number);
       // For sub-stock creation, take all the transgenes and mutations from the original stock
@@ -319,7 +338,6 @@ export class StockService extends GenericService {
     }
 
     await this.validateAges(candidate);
-
     // If creating a stock, the stock number is sequential and the sub-stock is 0.
     return await this.repo.save(candidate);
   }

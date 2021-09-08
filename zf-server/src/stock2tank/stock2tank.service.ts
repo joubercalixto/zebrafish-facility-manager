@@ -1,12 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import { ConfigService } from '../config/config.service';
-import { Stock2tankRepository } from './stock2tank.repository';
-import { TankLabelConfig } from '../tank/tank-label';
-import { Stock2tank } from './stock-to-tank.entity';
+import {ConfigService} from '../config/config.service';
+import {Stock2tankRepository} from './stock2tank.repository';
+import {Stock2tank} from './stock-to-tank.entity';
 import {plainToClassFromExist} from 'class-transformer';
-import {TankService} from '../tank/tank.service';
-import {SwimmerImportDto} from '../stock/stock-import-dto';
+import {SwimmerImportDto} from '../stock/swimmer-import-dto';
+
 
 @Injectable()
 export class Stock2tankService {
@@ -15,7 +14,8 @@ export class Stock2tankService {
     private readonly configService: ConfigService,
     @InjectRepository(Stock2tankRepository)
     private readonly repo: Stock2tankRepository,
-  ) {}
+  ) {
+  }
 
   async findSwimmersInTank(tankId): Promise<Stock2tank[]> {
     return this.repo.createQueryBuilder('i')
