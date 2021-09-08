@@ -1,9 +1,6 @@
 import {Injectable} from '@angular/core';
 import {ClientConfig} from '../common/config/client-config';
-import {HttpBackend, HttpClient} from '@angular/common/http';
-import {environment} from '../../environments/environment';
 import {AppStateService} from '../app-state.service';
-import {plainToClassFromExist} from 'class-transformer';
 import {LoaderService} from '../loader.service';
 
 /*

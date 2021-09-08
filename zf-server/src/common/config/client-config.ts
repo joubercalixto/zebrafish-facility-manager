@@ -1,5 +1,6 @@
 import {LabelPrintingConfig} from './label-printing-config';
 import {TankLabelConfig} from './tank-label-config';
+
 // This is a model for the configuration information used by the zf-client
 
 export class ClientConfig {
@@ -17,4 +18,11 @@ export class ClientConfig {
   backgroundColor: string = null;
 
   zfinAlleleLookupUrl: string;
+
+  passwordLength: number;
+  passwordRequiresUppercase: boolean;
+  passwordRequiresLowercase: boolean;
+  passwordRequiresNumbers: boolean;
+  passwordRequiresSpecialCharacters: boolean;
+  passwordMinimumStrength: number;
 }
