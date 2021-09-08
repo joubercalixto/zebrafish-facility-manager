@@ -95,6 +95,9 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
     return this.envConfig.ZFIN_ALLELE_LOOKUP_URL;
   }
 
+  get allowStockNumberOverride(): boolean {
+    return Boolean(this.envConfig.ALLOW_STOCK_NUMBER_OVERRIDE);
+  }
 
   // This is used to build a ClientConfig object to send to the client
   get clientConfig(): ClientConfig {
@@ -121,6 +124,7 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
     c.tankLabel.showAdditionalNote = Boolean(this.envConfig.LABEL_SHOW_ADDITIONAL_NOTES);
     c.backgroundColor = this.envConfig.GUI_BACKGROUND;
     c.zfinAlleleLookupUrl = this.envConfig.ZFIN_ALLELE_LOOKUP_URL;
+    c.allowStockNumberOverride = Boolean(this.envConfig.ALLOW_STOCK_NUMBER_OVERRIDE);
     c.passwordLength = Number(this.envConfig.PASSWORD_LENGTH);
     c.passwordMinimumStrength = Number(this.envConfig.PASSWORD_MINIMUM_STRENGTH);
     c.passwordRequiresUppercase = Boolean(this.envConfig.PASSWORD_REQUIRES_UPPERCASE);
@@ -227,13 +231,13 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
       LABEL_SHOW_TRANSGENES: Joi.boolean().default(true),
       LABEL_SHOW_ADDITIONAL_NOTES: Joi.boolean().default(true),
       GUI_BACKGROUND: Joi.string().default(null),
-
       PASSWORD_LENGTH: Joi.number().default(0),
       PASSWORD_MINIMUM_STRENGTH: Joi.number().default(0),
       PASSWORD_REQUIRES_UPPERCASE: Joi.boolean().default(false),
       PASSWORD_REQUIRES_LOWERCASE: Joi.boolean().default(false),
       PASSWORD_REQUIRES_NUMBERS: Joi.boolean().default(false),
       PASSWORD_REQUIRES_SPECIAL_CHARACTERS: Joi.boolean().default(false),
+      ALLOW_STOCK_NUMBER_OVERRIDE: Joi.boolean().default(false),
     });
 
     const {error, value: validatedEnvConfig} = envVarsSchema.validate(
@@ -244,5 +248,4 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
     }
     return validatedEnvConfig;
   }
-
 }

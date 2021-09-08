@@ -306,8 +306,22 @@ export class StockService extends GenericService {
       candidate.transgenes = baseStock.transgenes;
     } else {
       // Creating a new stock
-      candidate.number = await this.repo.getNextStockNumber();
-      candidate.subNumber = 0;
+      // When a new system is allowing users to edit the stock name - stocks only, not substocks
+      console.log("allow: " + this.configService.allowStockNumberOverride);
+      if (this.configService.allowStockNumberOverride) {
+        // accept digits only
+        if (candidate.name !== candidate.name.replace(/\D/, '')) {
+          const msg = 'Stock name must contain only digits and cannot be a substock';
+          this.logAndThrowException(msg);
+        } else {
+          candidate.number = Number(candidate.name);
+          candidate.subNumber = 0;
+        }
+      } else {
+        console.log ('wtf?')
+        candidate.number = await this.repo.getNextStockNumber();
+        candidate.subNumber = 0;
+      }
     }
     candidate.setName();
 

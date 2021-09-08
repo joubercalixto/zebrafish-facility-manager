@@ -19,6 +19,8 @@ export class ClientConfig {
 
   zfinAlleleLookupUrl: string;
 
+  allowStockNumberOverride: boolean;
+
   passwordLength: number;
   passwordRequiresUppercase: boolean;
   passwordRequiresLowercase: boolean;
