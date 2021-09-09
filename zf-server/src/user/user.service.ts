@@ -273,7 +273,9 @@ export class UserService extends GenericService {
     if (!u) {
       throw new UnauthorizedException('No such user.');
     }
-    this.mailerService.passwordReset(u, u.setRandomPassword());
+    const rawPwd = u.setRandomPassword();
+    this.logger.info(`Pasword for ${u.username} set to ${rawPwd}.`);
+    this.mailerService.passwordReset(u, rawPwd);
     return this.repo.save(u);
   }
 
