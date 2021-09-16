@@ -96,7 +96,6 @@ export class UserController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post('import')
   async import(@Body() dto: UserDTO): Promise<User> {
-    console.log(JSON.stringify(dto));
     return this.service.import(dto);
   }
 
@@ -104,7 +103,6 @@ export class UserController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
   async create(@Body() dto: UserDTO): Promise<User> {
-    console.log(JSON.stringify(dto));
     return this.service.create(dto);
   }
 

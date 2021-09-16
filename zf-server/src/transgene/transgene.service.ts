@@ -101,7 +101,6 @@ export class TransgeneService extends GenericService {
     // extract the serial number if this is an owned transgene
     if (dto.allele.startsWith(this.configService.facilityInfo.prefix)) {
       const putativeSerialNumber = Number(dto.allele.replace(/\D/g, ''));
-      console.log(`putative serial number ${putativeSerialNumber}`);
       if (putativeSerialNumber > 0) {
         candidate.serialNumber = putativeSerialNumber;
       }

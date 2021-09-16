@@ -143,10 +143,25 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
       loggingOption.push('query');
     }
 
-    // TODO specify entities based on production (js) or development (ts)
-    return {
+    if (this.envConfig.DB_SSL_PROFILE) {
+      return {
+        type: 'mariadb',
+        host: this.envConfig.DB_HOST,
+        port: 3306,
+        username: this.envConfig.DB_USER,
+        password: this.envConfig.DB_PASSWORD,
+        database: this.envConfig.DB_NAME,
+        entities: [
+          `${SOURCE_PATH}/**/*.entity{.ts,.js}`,
+        ],
+        synchronize: this.typeORMSync,
+        logging: loggingOption,
+        ssl: 'Amazon RDS',
+      };
+    } else
+      return {
       type: 'mariadb',
-      host: 'localhost',
+      host: this.envConfig.DB_HOST,
       port: 3306,
       username: this.envConfig.DB_USER,
       password: this.envConfig.DB_PASSWORD,
@@ -157,9 +172,10 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
       synchronize: this.typeORMSync,
       logging: loggingOption,
     };
+
   }
 
-  // This is used to build ORM configuration options
+  // This is used to build Mailer configuration options
   createMailerOptions(): Promise<MailerOptions> | MailerOptions {
     return {
       defaults: {
@@ -194,6 +210,8 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
       DB_NAME: Joi.string().required(),
       DB_USER: Joi.string().required(),
       DB_PASSWORD: Joi.string().required(),
+      DB_HOST: Joi.string().optional().default('localhost'),
+      DB_SSL_PROFILE: Joi.string().optional().default(null),
 
       TYPEORM_SYNC_DATABASE: Joi.boolean().default(true),
       TYPEORM_LOG_QUERIES: Joi.boolean().default(false),

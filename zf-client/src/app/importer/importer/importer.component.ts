@@ -140,7 +140,6 @@ export class ImporterComponent implements OnInit {
   }
 
   async fileSelected(event) {
-    console.log(event);
     this.selectedFile = event.target.files[0];
     this.problems = [];
     this.notes = [];
@@ -202,7 +201,6 @@ export class ImporterComponent implements OnInit {
         dto.id = response.id;
         dto.importResult = 'Success';
       }
-      console.log('===> ' + response);
       this.done = this.done + 1;
       this.progress = this.done / this.total * 100;
     }

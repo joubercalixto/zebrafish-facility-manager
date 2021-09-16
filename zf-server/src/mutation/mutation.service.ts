@@ -109,7 +109,6 @@ export class MutationService extends GenericService {
     // extract the serial number if this is an owned transgene
     if (dto.name.startsWith(this.configService.facilityInfo.prefix)) {
       const putativeSerialNumber = Number(dto.name.replace(/\D/g, ''));
-      console.log(`putative serial number ${putativeSerialNumber}`);
       if (putativeSerialNumber > 0) {
         candidate.serialNumber = putativeSerialNumber;
       }

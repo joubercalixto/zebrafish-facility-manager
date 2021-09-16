@@ -209,7 +209,6 @@ export class StockService extends ZFGenericService<
     swimmerWS['!cols'] = [ {wch: 12}, {wch: 8}, {wch: 8}, {wch: 40}];
     XLSX.utils.book_append_sheet(wb,stockWS, 'Stocks');
     XLSX.utils.book_append_sheet(wb,swimmerWS, 'Swimmers');
-    console.log(JSON.stringify(stockExportData));
     return wb;
   }
 
