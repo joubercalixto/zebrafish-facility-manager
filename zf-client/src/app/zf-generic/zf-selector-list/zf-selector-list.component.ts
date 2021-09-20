@@ -26,9 +26,9 @@ import {ZfGenericDto} from "../zfgeneric-dto";
                          class="zf-selection-item"
                          [class.selected]="service.selected && service.selected.id === item.id">
           <div mat-line>
-            <div class="zf-mini-title" *ngIf="item.title">
+            <div class="zf-mini-title">
               <span *ngIf="item.internalLinkLabel" class="zf-clickable">{{item.internalLinkLabel}}</span>
-              {{item.title}}
+              <span *ngIf="item.title">{{item.title}}</span>
               <span *ngIf="item.externalLinkURL">
                 <a href="{{item.externalLinkURL}}" target="_blank">{{item.externalLinkLabel}}</a>
               </span>
