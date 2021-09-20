@@ -13,17 +13,19 @@ import {AuthService} from '../../auth.service';
     <section class="mat-typography">
       <div mat-dialog-title>Password Change</div>
       <form [formGroup]="mfForm" (ngSubmit)="onSubmit()">
-        <div fxLayout="column" fxLayoutGap="30px" mat-dialog-content>
+        <div fxLayout="column" mat-dialog-content>
           <mat-form-field>
             <input type="password" matInput placeholder="Current Password" formControlName="currentPassword">
           </mat-form-field>
           <mat-form-field>
             <input type="password" matInput placeholder="New Password" formControlName="newPassword">
-            <mat-error *ngIf="mfForm.get('newPassword').errors?.minlength">Password must be at
+            <mat-error *ngIf="mfForm.get('newPassword').errors?.minLength">Password must be at
               least {{appState.facilityConfig.passwordLength}} characters long
             </mat-error>
-            <mat-error *ngIf="mfForm.get('newPassword').errors?.strength">Password strength is poor. Add length and/or
-              variation to improve it.
+            <mat-error *ngIf="mfForm.get('newPassword').errors?.strength">Your password strength is poor
+              (score: {{mfForm.get('newPassword').errors.strength}}).
+              <br>It needs to be at least {{appState.facilityConfig.passwordMinimumStrength}}.
+              <br>Add length and/or variation (uppercase/lowercase/digits/special characters) to improve it.
             </mat-error>
           </mat-form-field>
           <mat-form-field>
@@ -47,7 +49,16 @@ export class PasswordChangeComponent implements OnInit {
 
   mfForm = this.fb.group({
     currentPassword: ['', [Validators.required]],
-    newPassword: ['', [Validators.required, Validators.minLength(this.appState.facilityConfig.passwordLength), passwordStrengthValidator]],
+    newPassword: ['', [Validators.required,
+      passwordValidator(
+        this.appState.facilityConfig.passwordLength,
+        this.appState.facilityConfig.passwordMinimumStrength,
+        this.appState.facilityConfig.passwordRequiresLowercase,
+        this.appState.facilityConfig.passwordRequiresUppercase,
+        this.appState.facilityConfig.passwordRequiresNumbers,
+        this.appState.facilityConfig.passwordRequiresSpecialCharacters,
+      )
+    ]],
     repeatNewPassword: ['', [Validators.required]],
   }, {validators: repeatPasswordValidator});
 
@@ -89,34 +100,49 @@ const repeatPasswordValidator: ValidatorFn = (control: FormGroup): ValidationErr
   }
 }
 
-const passwordStrengthValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-  const pass: string = control.value;
-  let score = 0;
+function passwordValidator(
+  minLength:number,
+  minStrength: number,
+  requiresUC: boolean = false,
+  requiresLC: boolean = false,
+  requiresNumbers: boolean = false,
+  requiresSpecialCharacters: boolean = false): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const pass: string = String(control.value);
+    let errors: ValidationErrors = null;
 
-  // award every unique letter until 5 repetitions
-  const letters = {};
-  for (let i = 0; i < pass.length; i++) {
-    letters[pass[i]] = (letters[pass[i]] || 0) + 1;
-    score += 5.0 / letters[pass[i]];
+    if (pass.length < minLength) {
+      errors = {'minLength': minLength };
+    }
+
+    let score = 0;
+
+    // award every unique letter until 5 repetitions
+    const letters = {};
+    for (let i = 0; i < pass.length; i++) {
+      letters[pass[i]] = (letters[pass[i]] || 0) + 1;
+      score += 5.0 / letters[pass[i]];
+    }
+
+    // bonus points for mixing it up
+    const variations = {
+      digits: /\d/.test(pass),
+      lower: /[a-z]/.test(pass),
+      upper: /[A-Z]/.test(pass),
+      nonWords: /\W/.test(pass),
+    }
+
+    let variationCount = 0;
+    for (let check in variations) {
+      variationCount += (variations[check] == true) ? 1 : 0;
+    }
+    score += (variationCount - 1) * 10;
+
+    if (score < minStrength) {
+      if (!errors) errors = {};
+      errors.strength = score;
+    }
+
+    return errors;
   }
-
-  // bonus points for mixing it up
-  const variations = {
-    digits: /\d/.test(pass),
-    lower: /[a-z]/.test(pass),
-    upper: /[A-Z]/.test(pass),
-    nonWords: /\W/.test(pass),
-  }
-
-  let variationCount = 0;
-  for (let check in variations) {
-    variationCount += (variations[check] == true) ? 1 : 0;
-  }
-  score += (variationCount - 1) * 10;
-
-  if (score < 80) {
-    return {'strength': score}
-  }
-
-  return null;
 }
