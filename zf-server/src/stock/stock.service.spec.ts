@@ -37,7 +37,7 @@ describe('Stock Service testing', () => {
   let transgeneRepo: TransgeneRepository;
   let transgeneService: TransgeneService;
   let tankRepo: TankRepository;
-  let tankSerice: TankService;
+  let tankService: TankService;
   let swimmerRepo: Stock2tankRepository;
   let swimmerService: Stock2tankService;
   let zfinService: ZfinService;
@@ -86,8 +86,8 @@ describe('Stock Service testing', () => {
     mutationService = new MutationService(logger, configService, mutationRepo, transgeneRepo, zfinService);
     transgeneService = new TransgeneService(logger, configService, transgeneRepo, mutationRepo, zfinService);
     swimmerService = new Stock2tankService(configService, swimmerRepo);
-    tankSerice = new TankService(logger, tankRepo);
-    stockService = new StockService(logger, configService, stockRepo, userService, mutationService, transgeneService, tankSerice, swimmerService);
+    tankService = new TankService(logger, tankRepo);
+    stockService = new StockService(logger, configService, stockRepo, userService, mutationService, transgeneService);
   });
 
   describe('3019202 CRUD Stock', () => {
@@ -287,7 +287,7 @@ describe('Stock Service testing', () => {
       });
     });
 
-    describe('5465529 Update for stocks',  () => {
+    describe('5465529 Update for stocks', () => {
 
       it('5730633 update all atomic fields', async () => {
         const i = {
@@ -504,7 +504,9 @@ describe('Stock Service testing', () => {
 
     // put some stocks in the database
     beforeAll(async () => {
-      for (const s of stocksForFilterTests) { stocks.push(await stockService.validateAndCreate(s)); }
+      for (const s of stocksForFilterTests) {
+        stocks.push(await stockService.validateAndCreate(s));
+      }
     });
 
     it('5684573 open filter. Will fail if db not empty before test.', async () => {
@@ -589,7 +591,9 @@ describe('Stock Service testing', () => {
     });
 
     afterAll(async () => {
-      for (const s of stocks) { await stockService.validateAndRemove(s.id); }
+      for (const s of stocks) {
+        await stockService.validateAndRemove(s.id);
+      }
     });
   });
 

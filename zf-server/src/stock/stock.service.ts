@@ -195,7 +195,7 @@ export class StockService extends GenericService {
     }
 
     // Data for internal mom or dad takes precedence of data for external mom or dad.
-    stocks.map((stock: Stock) => {
+    for (const stock of stocks) {
       if (mom) {
         if (stock.fertilizationDate <= mom.fertilizationDate) {
           problems.push(`Stock  ${stock.name} (${stock.fertilizationDate}), is older than its mom: ${mom.name} (${mom.fertilizationDate})`);
@@ -226,8 +226,8 @@ export class StockService extends GenericService {
       if (problems.length > 0) {
         this.logAndThrowException(problems.join('; '));
       }
-      this.repo.save(stock);
-    })
+      await this.repo.save(stock);
+    }
 
     return true;
   }
@@ -295,7 +295,7 @@ export class StockService extends GenericService {
     // If creating a sub-stock, the subStock number is the next available
     // subStock for the given stock number.
     if (isSubStock) {
-      const baseStock: Stock = await this.repo.findOne({ number: candidate.number, subNumber: 0 },
+      const baseStock: Stock = await this.repo.findOne({number: candidate.number, subNumber: 0},
         {relations: ['mutations', 'transgenes']});
       if (!baseStock) {
         this.logAndThrowException(`Trying to create subStock, but stock ${candidate.number} does not exist.`);

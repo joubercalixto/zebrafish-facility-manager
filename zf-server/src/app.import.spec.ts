@@ -32,8 +32,9 @@ import {Stock2tankRepository} from './stock2tank/stock2tank.repository';
 import {Stock2tankService} from './stock2tank/stock2tank.service';
 import {Tank} from './tank/tank.entity';
 import {Stock2tank} from './stock2tank/stock-to-tank.entity';
-import {TankDto} from './common/tank.dto';
 import {HttpModule, HttpService} from '@nestjs/common';
+import {LineageImportDto} from './stock/lineage-import-dto';
+import {MarkerImportDto} from './stock/marker-import-dto';
 
 describe('Import testing', () => {
   let testName: string;
@@ -141,7 +142,7 @@ describe('Import testing', () => {
 
     tankService = new TankService(logger, tankRepo);
 
-    stockService = new StockService(logger, configService, stockRepo, userService, mutationService, transgeneService, tankService, swimmerService);
+    stockService = new StockService(logger, configService, stockRepo, userService, mutationService, transgeneService);
 
     connection = module.get(Connection);
 
@@ -229,38 +230,6 @@ describe('Import testing', () => {
         await expect(stockService.import(s)).rejects.toThrow();
         await stockService.validateAndRemove(retrievedStock.id);
       });
-
-      testName = '8551463 import stock with conflicting parental information ';
-      it(testName, async () => {
-        const momDto: StockImportDto = {
-          name: String(4400),
-          description: String(Math.random()),
-          comment: 'mom ' + testName,
-          fertilizationDate: '2019-01-01',
-        };
-        const mom: Stock = await stockService.import(momDto);
-        const dadDto: StockImportDto = {
-          name: String(4401),
-          description: String(Math.random()),
-          comment: 'dad ' + testName,
-          fertilizationDate: '2019-01-01',
-        };
-        const dad: Stock = await stockService.import(dadDto);
-        const kidDto: StockImportDto = {
-          name: String(4702),
-          internalDad: String(4401),
-          internalMom: String(4400),
-          externalMomName: 'conflicts with internal Mom',
-          externalMomDescription: 'conflicts with internal Mom',
-          externalDadName: 'conflicts with internal Dad',
-          externalDadDescription: 'conflicts with internal Dad',
-          description: String(Math.random()),
-          comment: 'conflicted kid',
-        };
-        await expect(stockService.import(kidDto)).rejects.toThrow();
-        await stockService.validateAndRemove(mom.id);
-        await stockService.validateAndRemove(dad.id);
-      });
     });
 
     //====================== Import Sub-Stocks ===============================
@@ -278,7 +247,7 @@ describe('Import testing', () => {
         baseStock = await stockService.import(baseStockDto);
       });
 
-      testName = '2204333 import and delete minimal sub-stock';
+      testName = '2204219 import and delete minimal sub-stock';
       it(testName, async () => {
         const ssDto: StockImportDto = {
           name: String(3000.01),
@@ -293,7 +262,7 @@ describe('Import testing', () => {
         await stockService.validateAndRemove(retrievedStock.id);
       });
 
-      testName = '2204333 import and delete minimal sub-stock with no base stock';
+      testName = '2767333 import and delete minimal sub-stock with no base stock';
       it(testName, async () => {
         const s: StockImportDto = {
           name: String(3321.02),
@@ -315,14 +284,30 @@ describe('Import testing', () => {
           description: String(Math.random()),
           fertilizationDate: '2019-01-02',
           comment: testName,
-          externalMomName: 'wilma',
-          externalMomDescription: 'tall thin redhead',
-          externalDadName: 'fred',
-          externalDadDescription: 'lovable dummy',
         };
         await expect(stockService.import(ssDto)).rejects.toThrow();
       });
 
+      testName = '9520414 sub-stock, then try to change its lineage';
+      it(testName, async () => {
+        const ssDto: StockImportDto = {
+          name: String(3000.03),
+          description: String(Math.random()),
+          fertilizationDate: '2019-01-01',
+          comment: testName,
+        };
+        const ss: Stock = await stockService.import(ssDto);
+        // retrieve it again
+        const retrievedStock: Stock = await stockService.mustExist(ss.id);
+        expect(retrievedStock.description).toBe(ssDto.description);
+        const lineage: LineageImportDto = {
+          stockNumber: String(3000.03),
+          externalDadName: 'Fred',
+          externalDadDescription: 'Loveable fat guy',
+        }
+        await expect(stockService.lineageImport(lineage)).rejects.toThrow();
+        await stockService.validateAndRemove(retrievedStock.id);
+      });
 
       afterAll(async () => {
         await stockService.validateAndRemove(baseStock.id);
@@ -428,7 +413,11 @@ describe('Import testing', () => {
         await mutationService.validateAndRemove(mut.id);
       });
 
-      testName = '1162941 import with duplicate name';
+      // This is sticky.  We actually allow updates through the import interface
+      // for mutations.  The idea was so that we would not have to wipe all the
+      // imports from the db and re-do every time we make a change to an import
+      // workbook.  Probably a bad idea in the long run.
+      testName = '1162941 change a mutation name using import. Ugh.';
       it(testName, async () => {
         const dto1 = {
           name: 'test1',
@@ -442,33 +431,11 @@ describe('Import testing', () => {
           phenotype: String(Math.random()),
           comment: testName,
         };
-        let mut: Mutation = await mutationService.import(dto1);
-        await expect(mutationService.import(dto2)).rejects.toThrow();
-        await mutationService.validateAndRemove(mut.id);
-      });
-
-      testName = '1660116 import with serial number & duplicate';
-      it(testName, async () => {
-        const dto1 = {
-          name: 'test1',
-          gene: 'test1',
-          serialNumber: 14,
-          phenotype: String(Math.random()),
-          comment: testName,
-        };
-        const dto2 = {
-          name: 'test2',
-          gene: 'test2',
-          serialNumber: 14,
-          phenotype: String(Math.random()),
-          comment: testName,
-        };
-        let mut: Mutation = await mutationService.import(dto1);
-        // retrieve it again
-        mut = await mutationService.mustExist(mut.id);
-        expect(mut.phenotype).toBe(dto1.phenotype);
-        expect(mut.serialNumber).toBe(dto1.serialNumber);
-        await expect(mutationService.import(dto2)).rejects.toThrow();
+        const mut: Mutation = await mutationService.import(dto1);
+        expect(mut.gene).toBe(dto1.gene)
+        const updatedMut: Mutation = await mutationService.import(dto2);
+        expect(mut.id).toBe(updatedMut.id);
+        expect(updatedMut.gene).toBe(dto2.gene)
         await mutationService.validateAndRemove(mut.id);
       });
 
@@ -500,16 +467,6 @@ describe('Import testing', () => {
       it(testName, async () => {
         const dto = {
           descriptor: 'barney',
-          source: String(Math.random()),
-          comment: testName,
-        };
-        await expect(transgeneService.import(dto)).rejects.toThrow();
-      });
-
-      testName = '3026204 no descriptor name, unknown to ZFIN';
-      it(testName, async () => {
-        const dto = {
-          allele: 'imaginary',
           source: String(Math.random()),
           comment: testName,
         };
@@ -596,50 +553,6 @@ describe('Import testing', () => {
           comment: testName,
         };
         let tg: Transgene = await transgeneService.import(dto1);
-        await expect(transgeneService.import(dto2)).rejects.toThrow();
-        await transgeneService.validateAndRemove(tg.id);
-      });
-
-      testName = '2362941 import with duplicate name';
-      it(testName, async () => {
-        const dto1 = {
-          allele: 'test1',
-          descriptor: 'test1',
-          source: String(Math.random()),
-          comment: testName,
-        };
-        const dto2 = {
-          allele: 'test1',
-          descriptor: 'test2',
-          source: String(Math.random()),
-          comment: testName,
-        };
-        let tg: Transgene = await transgeneService.import(dto1);
-        await expect(transgeneService.import(dto2)).rejects.toThrow();
-        await transgeneService.validateAndRemove(tg.id);
-      });
-
-      testName = '2760116 import with serial number & duplicate';
-      it(testName, async () => {
-        const dto1 = {
-          allele: 'test1',
-          descriptor: 'test1',
-          serialNumber: 14,
-          source: String(Math.random()),
-          comment: testName,
-        };
-        const dto2 = {
-          allele: 'test2',
-          descriptor: 'test2',
-          serialNumber: 14,
-          source: String(Math.random()),
-          comment: testName,
-        };
-        let tg: Transgene = await transgeneService.import(dto1);
-        // retrieve it again
-        tg = await transgeneService.mustExist(tg.id);
-        expect(tg.descriptor).toBe(dto1.descriptor);
-        expect(tg.serialNumber).toBe(dto1.serialNumber);
         await expect(transgeneService.import(dto2)).rejects.toThrow();
         await transgeneService.validateAndRemove(tg.id);
       });
@@ -846,42 +759,42 @@ describe('Import testing', () => {
       comment: 'importing relationships'
     };
 
-    const tank1Dto: TankDto = {
-      id: 1,
-      name: `Tank1`,
-      sortOrder: '1',
-      isMultiTank: true,
-    };
-    const tank2Dto: TankDto = {
-      id: 2,
-      name: `Tank2`,
-      sortOrder: '2',
-      isMultiTank: false,
-    };
-    const tank3Dto: TankDto = {
-      id: 3,
-      name: `Tank3`,
-      sortOrder: '3',
-      isMultiTank: false,
-    };
-    const tank4Dto: TankDto = {
-      id: 4,
-      name: `Tank4`,
-      sortOrder: '4',
-      isMultiTank: true,
-    };
-    const tank5Dto: TankDto = {
-      id: 5,
-      name: `Tank5`,
-      sortOrder: '5',
-      isMultiTank: false,
-    };
-    const tank6Dto: TankDto = {
-      id: 6,
-      name: `Tank6`,
-      isMultiTank: false,
-      sortOrder: '6',
-    };
+    // const tank1Dto: TankDto = {
+    //   id: 1,
+    //   name: `Tank1`,
+    //   sortOrder: '1',
+    //   isMultiTank: true,
+    // };
+    // const tank2Dto: TankDto = {
+    //   id: 2,
+    //   name: `Tank2`,
+    //   sortOrder: '2',
+    //   isMultiTank: false,
+    // };
+    // const tank3Dto: TankDto = {
+    //   id: 3,
+    //   name: `Tank3`,
+    //   sortOrder: '3',
+    //   isMultiTank: false,
+    // };
+    // const tank4Dto: TankDto = {
+    //   id: 4,
+    //   name: `Tank4`,
+    //   sortOrder: '4',
+    //   isMultiTank: true,
+    // };
+    // const tank5Dto: TankDto = {
+    //   id: 5,
+    //   name: `Tank5`,
+    //   sortOrder: '5',
+    //   isMultiTank: false,
+    // };
+    // const tank6Dto: TankDto = {
+    //   id: 6,
+    //   name: `Tank6`,
+    //   isMultiTank: false,
+    //   sortOrder: '6',
+    // };
 
 
     let m1: Mutation;
@@ -893,12 +806,12 @@ describe('Import testing', () => {
     let researcher2: User;
     let guest1: User;
     let baseStock: Stock;
-    let tank1: Tank;
-    let tank2: Tank;
-    let tank3: Tank;
-    let tank4: Tank;
-    let tank5: Tank;
-    let tank6: Tank;
+    // let tank1: Tank;
+    // let tank2: Tank;
+    // let tank3: Tank;
+    // let tank4: Tank;
+    // let tank5: Tank;
+    // let tank6: Tank;
 
 
     beforeAll(async () => {
@@ -911,29 +824,33 @@ describe('Import testing', () => {
       researcher2 = await userService.import(researcher2Dto);
       guest1 = await userService.import(guestDto);
       baseStock = await stockService.import(baseStockDto);
-      tank1 = await tankService.import(tank1Dto);
-      tank2 = await tankService.import(tank2Dto);
-      tank3 = await tankService.import(tank3Dto);
-      tank4 = await tankService.import(tank4Dto);
-      tank5 = await tankService.import(tank5Dto);
-      tank6 = await tankService.import(tank6Dto);
+      // tank1 = await tankService.import(tank1Dto);
+      // tank2 = await tankService.import(tank2Dto);
+      // tank3 = await tankService.import(tank3Dto);
+      // tank4 = await tankService.import(tank4Dto);
+      // tank5 = await tankService.import(tank5Dto);
+      // tank6 = await tankService.import(tank6Dto);
     });
 
     testName = '2488606 import stock with parents';
     it(testName, async () => {
       const kidDto: StockImportDto = {
         name: String(4401),
-        internalDad: String(baseStock.name),
-        internalMom: String(baseStock.name),
-        description: String(Math.random()),
         comment: testName,
         fertilizationDate: '2019-03-01',
       };
       let kid: Stock = await stockService.import(kidDto);
       // re-fetch the kid
       kid = await stockService.mustExist(kid.id);
-      expect(kid.matIdInternal).toBe(baseStock.id);
-      expect(kid.patIdInternal).toBe(baseStock.id);
+      const lineageDto: LineageImportDto = {
+        stockNumber: String(kid.name),
+        internalDad: String(baseStock.name),
+        internalMom: String(baseStock.name),
+      }
+      await stockService.lineageImport(lineageDto);
+      const updatedKid: Stock = await stockService.mustExist(kid.id);
+      expect(updatedKid.matIdInternal).toBe(baseStock.id);
+      expect(updatedKid.patIdInternal).toBe(baseStock.id);
       await stockService.validateAndRemove(kid.id);
     });
 
@@ -941,13 +858,59 @@ describe('Import testing', () => {
     it(testName, async () => {
       const kidDto: StockImportDto = {
         name: String(4402),
-        internalDad: 'badName',
-        internalMom: String(31415.09),
         description: String(Math.random()),
         comment: testName,
         fertilizationDate: '2019-03-01',
       };
-      await expect(stockService.import(kidDto)).rejects.toThrow();
+      let kid: Stock = await stockService.import(kidDto);
+      const lineageDto: LineageImportDto = {
+        stockNumber: String(4401),
+        internalDad: String(baseStock.name),
+        internalMom: String(baseStock.name),
+      }
+      await expect(stockService.lineageImport(lineageDto)).rejects.toThrow();
+      await stockService.validateAndRemove(kid.id);
+    });
+
+    testName = '8551463 import stock with conflicting parental information ';
+    it(testName, async () => {
+      const momDto: StockImportDto = {
+        name: String(4400),
+        description: String(Math.random()),
+        comment: 'mom ' + testName,
+        fertilizationDate: '2019-01-01',
+      };
+      const mom: Stock = await stockService.import(momDto);
+      const dadDto: StockImportDto = {
+        name: String(4401),
+        description: String(Math.random()),
+        comment: 'dad ' + testName,
+        fertilizationDate: '2019-01-02',
+      };
+      const dad: Stock = await stockService.import(dadDto);
+      const kidDto: StockImportDto = {
+        name: String(4702),
+        description: String(Math.random()),
+        comment: 'conflicted kid',
+        fertilizationDate: '2020-01-02',
+      };
+      const kid: Stock = await stockService.import(kidDto);
+      const lineage: LineageImportDto = {
+        stockNumber: String(kid.name),
+        internalDad: String(dad.name),
+        internalMom: String(mom.name),
+        externalMomName: 'conflicts with internal Mom',
+        externalMomDescription: 'conflicts with internal Mom',
+        externalDadName: 'conflicts with internal Dad',
+        externalDadDescription: 'conflicts with internal Dad',
+      };
+      await stockService.lineageImport(lineage);
+      const updatedStock: Stock = await stockService.mustExist(kid.id);
+      expect(updatedStock.externalMatId).toBe(null);
+      expect(updatedStock.externalMatDescription).toBe(null);
+      await stockService.validateAndRemove(kid.id);
+      await stockService.validateAndRemove(mom.id);
+      await stockService.validateAndRemove(dad.id);
     });
 
     testName = '3310190 import stock with researcher';
@@ -1026,11 +989,15 @@ describe('Import testing', () => {
       const stock1Dto: StockImportDto = {
         name: String(4408),
         description: testName,
-        alleles: [m1.name].join(';'),
         comment: testName,
         fertilizationDate: '2019-03-01',
       };
       let stock1: Stock = await stockService.import(stock1Dto);
+      const alleleDto: MarkerImportDto = {
+        stockName: stock1.name,
+        alleles: [m1.name].join(';'),
+      }
+      await stockService.markerImport(alleleDto);
       stock1 = await stockRepo.getStockWithRelations(stock1.id);
       expect(stock1.mutations.length).toBe(1);
       expect(stock1.mutations[0].name).toBe(mut1Dto.name);
@@ -1043,11 +1010,15 @@ describe('Import testing', () => {
       const stock1Dto: StockImportDto = {
         name: String(4409),
         description: String(Math.random()),
-        alleles: [tg1.allele].join(';'),
         comment: testName,
         fertilizationDate: '2019-03-01',
       };
       let stock1: Stock = await stockService.import(stock1Dto);
+      const alleleDto: MarkerImportDto = {
+        stockName: stock1.name,
+        alleles: [tg1.allele].join(';'),
+      }
+      await stockService.markerImport(alleleDto);
       stock1 = await stockRepo.getStockWithRelations(stock1.id);
       expect(stock1.transgenes.length).toBe(1);
       expect(stock1.transgenes[0].allele).toBe(tg1Dto.allele);
@@ -1060,11 +1031,15 @@ describe('Import testing', () => {
       const stock1Dto: StockImportDto = {
         name: String(4410),
         description: String(Math.random()),
-        alleles: [tg1.allele, m2.name, m1.name, tg2.allele].join(';'),
         comment: testName,
         fertilizationDate: '2019-03-01',
       };
       let stock1: Stock = await stockService.import(stock1Dto);
+      const alleleDto: MarkerImportDto = {
+        stockName: stock1.name,
+        alleles: [tg1.allele, m2.name, m1.name, tg2.allele].join(';'),
+      }
+      await stockService.markerImport(alleleDto);
       stock1 = await stockRepo.getStockWithRelations(stock1.id);
       expect(stock1.transgenes.length).toBe(2);
       expect(stock1.mutations.length).toBe(2);
@@ -1076,61 +1051,66 @@ describe('Import testing', () => {
       const stock1Dto: StockImportDto = {
         name: String(4411),
         description: String(Math.random()),
+        comment: testName,
+        fertilizationDate: '2019-03-01',
+      };
+      let stock1: Stock = await stockService.import(stock1Dto);
+      const alleleDto: MarkerImportDto = {
+        stockName: stock1.name,
         alleles: 'dummy;wrong;alias;tarts',
-        comment: testName,
-        fertilizationDate: '2019-03-01',
-      };
-      await expect(stockService.import(stock1Dto)).rejects.toThrow();
-    });
-
-    testName = '82239016 import stock in 1 tank';
-    it(testName, async () => {
-      const stock1Dto: StockImportDto = {
-        name: String(4412),
-        description: String(Math.random()),
-        comment: testName,
-        fertilizationDate: '2019-03-01',
-        tank4Name: 'Tank6',
-        tank4Count: 324,
-      };
-      let stock1 = await stockService.import(stock1Dto);
-      stock1 = await stockRepo.getStockWithRelations(stock1.id);
-      expect(stock1.swimmers.length).toBe(1);
-      await swimmerService.removeSwimmer(stock1.swimmers[0]);
+      }
+      await expect(stockService.markerImport(alleleDto)).rejects.toThrow();
       await stockService.validateAndRemove(stock1.id);
     });
 
-    testName = '82239016 import stock in 6 tanks';
-    it(testName, async () => {
-      const stock1Dto: StockImportDto = {
-        name: String(4413),
-        description: String(Math.random()),
-        comment: testName,
-        fertilizationDate: '2019-03-01',
-        tank1Name: 'Tank1',
-        tank1Count: 1,
-        tank2Name: 'Tank2',
-        tank2Count: 2,
-        tank3Name: 'Tank3',
-        tank3Count: 3,
-        tank4Name: 'Tank4',
-        tank4Count: 4,
-        tank5Name: 'Tank5',
-        tank5Count: 5,
-        tank6Name: 'Tank6',
-        tank6Count: 6,
-      };
-      let stock1 = await stockService.import(stock1Dto);
-      stock1 = await stockRepo.getStockWithRelations(stock1.id);
-      console.log(JSON.stringify(stock1, null, 2));
-      await swimmerService.removeSwimmer(stock1.swimmers[0]);
-      await swimmerService.removeSwimmer(stock1.swimmers[1]);
-      await swimmerService.removeSwimmer(stock1.swimmers[2]);
-      await swimmerService.removeSwimmer(stock1.swimmers[3]);
-      await swimmerService.removeSwimmer(stock1.swimmers[4]);
-      await swimmerService.removeSwimmer(stock1.swimmers[5]);
-      await stockService.validateAndRemove(stock1.id);
-    });
+    // testName = '82239016 import stock in 1 tank';
+    // it(testName, async () => {
+    //   const stock1Dto: StockImportDto = {
+    //     name: String(4412),
+    //     description: String(Math.random()),
+    //     comment: testName,
+    //     fertilizationDate: '2019-03-01',
+    //     tank4Name: 'Tank6',
+    //     tank4Count: 324,
+    //   };
+    //   let stock1 = await stockService.import(stock1Dto);
+    //   stock1 = await stockRepo.getStockWithRelations(stock1.id);
+    //   expect(stock1.swimmers.length).toBe(1);
+    //   await swimmerService.removeSwimmer(stock1.swimmers[0]);
+    //   await stockService.validateAndRemove(stock1.id);
+    // });
+    //
+    // testName = '82239016 import stock in 6 tanks';
+    // it(testName, async () => {
+    //   const stock1Dto: StockImportDto = {
+    //     name: String(4413),
+    //     description: String(Math.random()),
+    //     comment: testName,
+    //     fertilizationDate: '2019-03-01',
+    //     tank1Name: 'Tank1',
+    //     tank1Count: 1,
+    //     tank2Name: 'Tank2',
+    //     tank2Count: 2,
+    //     tank3Name: 'Tank3',
+    //     tank3Count: 3,
+    //     tank4Name: 'Tank4',
+    //     tank4Count: 4,
+    //     tank5Name: 'Tank5',
+    //     tank5Count: 5,
+    //     tank6Name: 'Tank6',
+    //     tank6Count: 6,
+    //   };
+    //   let stock1 = await stockService.import(stock1Dto);
+    //   stock1 = await stockRepo.getStockWithRelations(stock1.id);
+    //   console.log(JSON.stringify(stock1, null, 2));
+    //   await swimmerService.removeSwimmer(stock1.swimmers[0]);
+    //   await swimmerService.removeSwimmer(stock1.swimmers[1]);
+    //   await swimmerService.removeSwimmer(stock1.swimmers[2]);
+    //   await swimmerService.removeSwimmer(stock1.swimmers[3]);
+    //   await swimmerService.removeSwimmer(stock1.swimmers[4]);
+    //   await swimmerService.removeSwimmer(stock1.swimmers[5]);
+    //   await stockService.validateAndRemove(stock1.id);
+    // });
 
     afterAll(async () => {
       await mutationService.validateAndRemove(m1.id);
@@ -1146,12 +1126,12 @@ describe('Import testing', () => {
       await userService.deactivate(guest1);
       await userService.delete(guest1.id);
       await stockService.validateAndRemove(baseStock.id);
-      await tankService.validateAndRemove(tank1.id);
-      await tankService.validateAndRemove(tank2.id);
-      await tankService.validateAndRemove(tank3.id);
-      await tankService.validateAndRemove(tank4.id);
-      await tankService.validateAndRemove(tank5.id);
-      await tankService.validateAndRemove(tank6.id);
+      // await tankService.validateAndRemove(tank1.id);
+      // await tankService.validateAndRemove(tank2.id);
+      // await tankService.validateAndRemove(tank3.id);
+      // await tankService.validateAndRemove(tank4.id);
+      // await tankService.validateAndRemove(tank5.id);
+      // await tankService.validateAndRemove(tank6.id);
 
     });
 

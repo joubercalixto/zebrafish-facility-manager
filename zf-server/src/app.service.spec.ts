@@ -145,7 +145,7 @@ describe('App Level testing', () => {
 
     tankService = new TankService(logger, tankRepo);
 
-    stockService = new StockService(logger, configService, stockRepo, userService, mutationService, transgeneService, tankService, swimmerService);
+    stockService = new StockService(logger, configService, stockRepo, userService, mutationService, transgeneService);
 
     connection = module.get(Connection);
   });
@@ -202,7 +202,7 @@ describe('App Level testing', () => {
     const transgenes: Transgene[] = [];
     const mutations: Mutation[] = [];
 
-    beforeAll( async () => {
+    beforeAll(async () => {
       for (const d of mutationData) {
         mutations.push(await mutationService.validateAndCreate(d));
       }
@@ -231,7 +231,7 @@ describe('App Level testing', () => {
     });
 
     it('6371094 add mutations to stocks', async () => {
-      const stockIndex = 0 ;
+      const stockIndex = 0;
       stocks[stockIndex].mutations = [mutations[0], mutations[1]];
       await stockService.validateAndUpdate(stocks[stockIndex]);
       const retrievedStock: Stock = await stockRepo.getStockWithRelations(stocks[stockIndex].id);
@@ -242,7 +242,7 @@ describe('App Level testing', () => {
     });
 
     it('6371094 add transgenes to stocks', async () => {
-      const stockIndex = 1 ;
+      const stockIndex = 1;
       stocks[stockIndex].transgenes = [transgenes[0], transgenes[1]];
       await stockService.validateAndUpdate(stocks[stockIndex]);
       const retrievedStock: Stock = await stockRepo.getStockWithRelations(stocks[stockIndex].id);
@@ -253,7 +253,7 @@ describe('App Level testing', () => {
     });
 
     it('6371094 add single mutation & transgene to stocks', async () => {
-      const stockIndex = 2 ;
+      const stockIndex = 2;
       stocks[stockIndex].transgenes = [transgenes[2]];
       stocks[stockIndex].mutations = [mutations[2]];
       await stockService.validateAndUpdate(stocks[stockIndex]);
@@ -265,7 +265,7 @@ describe('App Level testing', () => {
     });
 
     it('6371094 add multiple mutations & transgenes to stocks', async () => {
-      const stockIndex = 3 ;
+      const stockIndex = 3;
       stocks[stockIndex].transgenes = [transgenes[2], transgenes[0]];
       stocks[stockIndex].mutations = [mutations[2], mutations[0]];
       await stockService.validateAndUpdate(stocks[stockIndex]);
@@ -276,7 +276,7 @@ describe('App Level testing', () => {
       stocks[stockIndex] = retrievedStock;
     });
 
-    // Note, do not run this one on it's own, because it relies on the previos tests to have been run.
+    // Note, do not run this one on it's own, because it relies on the previous tests to have been run.
     it('9252433 you cannot delete a mutation or transgene if it is assigned to a stock', async () => {
       await expect(mutationService.validateAndRemove(mutations[0].id)).rejects.toThrow();
       await expect(transgeneService.validateAndRemove(transgenes[0].id)).rejects.toThrow();
@@ -385,7 +385,7 @@ describe('App Level testing', () => {
       await stockService.validateAndRemove(s.id);
     });
 
-    afterAll( async () => {
+    afterAll(async () => {
       for (const d of stocks) {
         await stockService.validateAndRemove(d.id);
       }

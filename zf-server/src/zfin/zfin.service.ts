@@ -15,7 +15,6 @@ export class ZfinService {
   }
 
 
-
   /**
    * Go ask if an allele is known by ZFIN if it knows a mutation, searching by allele name
    * @param alleleName
@@ -56,13 +55,13 @@ export class ZfinService {
       }
       // If there is not already a nickname, use the current gene name as the nickname
       if (!m.nickname) m.nickname = `${m.gene}^${m.name}`;
-
-      // Use the zfin gene name as the mutation's gene name
-      m.gene = zm.geneName;
     }
     if (zm.zfinId) {
       m.zfinId = zm.zfinId;
     }
+
+    // Use the zfin gene name as the mutation's gene name
+    m.gene = zm.geneName;
     return m;
   }
 
@@ -83,13 +82,13 @@ export class ZfinService {
       // If there is not already a nickname, use the current construct name
       // as the nickname
       if (!t.nickname) t.nickname = `${t.descriptor}^${t.allele}`;
-
-      // Use the zfin construct name as the transgene's construct name
-      t.descriptor = zt.zfinConstructName;
     }
     if (zt.zfinId) {
       t.zfinId = zt.zfinId;
     }
+
+    // Use the zfin construct name as the transgene's construct name
+    t.descriptor = zt.zfinConstructName;
     return t;
   }
 }

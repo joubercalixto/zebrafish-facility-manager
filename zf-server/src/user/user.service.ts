@@ -130,12 +130,12 @@ export class UserService extends GenericService {
     if (filter.text) {
       const textFilter: string = '%' + filter.text + '%';
       q = q.andWhere(new Brackets(qb => {
-        qb.where("user.name LIKE :f", {f: textFilter})
-          .orWhere("user.email LIKE :f", {f: textFilter})
-          .orWhere("user.role LIKE :f", {f: textFilter})
-          .orWhere("user.phone LIKE :f", {f: textFilter})
-          .orWhere("user.initials LIKE :f", {f: textFilter})
-          .orWhere("user.username LIKE :f", {f: textFilter})
+        qb.where('user.name LIKE :f', {f: textFilter})
+          .orWhere('user.email LIKE :f', {f: textFilter})
+          .orWhere('user.role LIKE :f', {f: textFilter})
+          .orWhere('user.phone LIKE :f', {f: textFilter})
+          .orWhere('user.initials LIKE :f', {f: textFilter})
+          .orWhere('user.username LIKE :f', {f: textFilter})
 
       }))
     }
@@ -262,7 +262,7 @@ export class UserService extends GenericService {
     }
 
     if (errors.length > 0) {
-      this.logAndThrowException(errors.join("; "));
+      this.logAndThrowException(errors.join('; '));
     }
     return true;
   }
@@ -274,7 +274,7 @@ export class UserService extends GenericService {
       throw new UnauthorizedException('No such user.');
     }
     const rawPwd = u.setRandomPassword();
-    this.logger.info(`Pasword for ${u.username} set to ${rawPwd}.`);
+    console.log(`Password for ${u.username} set to ${rawPwd}.`);
     this.mailerService.passwordReset(u, rawPwd);
     return this.repo.save(u);
   }
@@ -283,7 +283,7 @@ export class UserService extends GenericService {
   async update(dto: UserDTO): Promise<User> {
     convertEmptyStringToNull(dto)
     if (!dto.id) {
-      this.logAndThrowException("Received a user update without a user id!");
+      this.logAndThrowException('Received a user update without a user id!');
     }
     const u: User = await this.repo.findOneOrFail(dto.id);
     // we do not update passwords this way...

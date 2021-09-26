@@ -3,8 +3,8 @@
 
 export class LineageImportDto {
   stockNumber: string;
-  internalMom: string;
-  internalDad: string;
+  internalMom?: string;
+  internalDad?: string;
   externalMomName?: string;
   externalMomDescription?: string;
   externalDadName?: string;

@@ -72,7 +72,7 @@ export class TransgeneService extends GenericService {
     return await this.repo.save(candidate);
   }
 
-  // for bulk loading, when we create a mutant we can look to ZFIN for help in filling in
+  // for bulk loading, when we create a transgene we can look to ZFIN for help in filling in
   // some of the fields and we may be getting some "owned" mutations with serial numbers
   // There are two flavours here create and update.
   async import(dto: any): Promise<Transgene> {
