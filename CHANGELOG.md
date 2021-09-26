@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.6.0](https://github.com/tmoens/zebrafish-facility-manager/compare/v2.5.0...v2.6.0) (2021-09-26)
+
+
+### Features
+
+* add a feature to import new db from excel ([9eacd48](https://github.com/tmoens/zebrafish-facility-manager/commit/9eacd4852f829de6fc6ac6d1abf0efa8eb518b6a))
+* capability to configure required password complexity ([80bd9fa](https://github.com/tmoens/zebrafish-facility-manager/commit/80bd9fab966f5f2e586cd0120b9171e8011f6049))
+
+
+### Bug Fixes
+
+* (server side) show allele summary when creating stock or cross label ([00a889b](https://github.com/tmoens/zebrafish-facility-manager/commit/00a889b183092771c3ddd942a4efd6b9bc36d621))
+* show allele summary when creating stock or cross label ([272c3f7](https://github.com/tmoens/zebrafish-facility-manager/commit/272c3f71b141037bc4cb960a7fdfb249001edf75))
+* stock not showing up in stock list if it has no description ([a59ed62](https://github.com/tmoens/zebrafish-facility-manager/commit/a59ed623e338e3d3688eead4b55ab4f1b6fa9f30))
+
 ## [2.5.0](https://github.com/tmoens/zebrafish-facility-manager/compare/v2.4.1...v2.5.0) (2021-06-06)
 
 
