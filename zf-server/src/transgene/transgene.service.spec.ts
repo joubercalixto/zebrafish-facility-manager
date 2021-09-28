@@ -16,7 +16,7 @@ import {WINSTON_MODULE_NEST_PROVIDER, WinstonModule} from 'nest-winston';
 import {AutoCompleteOptions} from '../helpers/autoCompleteOptions';
 import {ZfinModule} from '../zfin/zfin.module';
 import {ZfinService} from '../zfin/zfin.service';
-import {HttpService} from '@nestjs/common';
+import {HttpService} from '@nestjs/axios';
 
 describe('TransgeneService testing', () => {
   let logger: Logger;

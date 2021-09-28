@@ -16,7 +16,9 @@ export class MutationRepository extends Repository<Mutation> {
   }
 
   async findFiltered(filter: MutationFilter): Promise<any> {
-    if (!filter) { filter = {}; }
+    if (!filter) {
+      filter = {};
+    }
     let q = this.createQueryBuilder('m').where('1');
     if (filter.gene) {
       q = q.andWhere('m.gene Like :g', {g: '%' + filter.gene + '%'});
@@ -38,12 +40,12 @@ export class MutationRepository extends Repository<Mutation> {
     }
     if (filter.freeText) {
       const freeText = '%' + filter.freeText + '%';
-      q = q.andWhere(new Brackets( qb => {
+      q = q.andWhere(new Brackets(qb => {
         qb.where('m.comment LIKE :t OR m.morphantPhenotype LIKE :t OR m.phenotype LIKE :t ' +
           'OR m.gene LIKE :t OR m.name LIKE :t OR m.alternateGeneName LIKE :t ' +
           'OR m.nickname LIKE :t',
           {t: freeText});
-      } ));
+      }));
     }
     return await q.orderBy('m.gene')
       .addOrderBy('m.name')
@@ -54,7 +56,7 @@ export class MutationRepository extends Repository<Mutation> {
   async filterByString(filterString: string = null) {
     const freeText = '%' + filterString + '%';
     return await this.createQueryBuilder('m')
-      .where ('m.name LIKE :t ' +
+      .where('m.name LIKE :t ' +
         'OR m.gene LIKE :t ' +
         'OR m.alternateGeneName LIKE :t ' +
         'OR m.phenotype LIKE :t ' +
@@ -76,17 +78,25 @@ export class MutationRepository extends Repository<Mutation> {
     const x = await this.createQueryBuilder('m')
       .select('m.id')
       .innerJoin('m.stocks', 'stock')
-      .where('m.id = :id', { id })
+      .where('m.id = :id', {id})
       .getOne();
     return !(x);
   }
 
   async findByName(name: string): Promise<Mutation> {
-    return await this.findOne({ where: {name}});
+    const m: Mutation = await this.findOne({where: {name}});
+    if (m) {
+      m.isDeletable = await this.isDeletable(m.id);
+    }
+    return m;
   }
 
   async findById(id: number): Promise<Mutation> {
-    return await this.findOne(id);
+    const m: Mutation = await this.findOne(id);
+    if (m) {
+      m.isDeletable = await this.isDeletable(m.id);
+    }
+    return m;
   }
 
   // values that can be used to auto-complete various fields in the GUI

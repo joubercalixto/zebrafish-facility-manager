@@ -1,19 +1,14 @@
 import {Brackets, EntityRepository, Repository, SelectQueryBuilder} from 'typeorm';
-import {BadRequestException, Inject} from '@nestjs/common';
 import {Stock} from './stock.entity';
 import {StockReportDTO} from './dto/stock-report.dto';
 import {StockFilter} from './stock-filter';
 import {StockMiniDto} from '../common/Stock/stockMiniDto';
-import {Logger} from 'winston';
 import {AutoCompleteOptions} from '../helpers/autoCompleteOptions';
 import moment = require('moment');
 
-
 @EntityRepository(Stock)
 export class StockRepository extends Repository<Stock> {
-  constructor(
-    @Inject('winston') private readonly logger: Logger,
-  ) {
+  constructor() {
     super();
   }
 
@@ -26,43 +21,30 @@ export class StockRepository extends Repository<Stock> {
         'piUser', 'researcherUser',
       ]
     });
-    if (!stock) {
-      const msg = 'Stock does not exist. Id: ' + id;
-      this.logger.error(msg);
-      throw new BadRequestException(msg);
+    if (stock) {
+      await this.computeAncillaryFields(stock);
     }
-    await this.computeAncillaryFields(stock);
-
     return stock;
   }
 
-  async getStockMedium(id: number): Promise<Stock> {
-    const stock: Stock = await super.findOne(id, {relations: [
+  async getMediumById(id: number): Promise<Stock> {
+    return await super.findOne(id, {
+      relations: [
         'transgenes', 'mutations',
         'matStock',
         'patStock',
         'piUser',
         'researcherUser'
-      ]});
-    if (!stock) {
-      const msg = 'Stock does not exist. Id: ' + id;
-      this.logger.error(msg);
-      throw new BadRequestException(msg);
-    }
-
-    return stock;
+      ]
+    });
   }
 
   async getStockWithGenetics(id: number): Promise<Stock> {
-    const stock: Stock = await super.findOne(id, {relations: [
+    return await super.findOne(id, {
+      relations: [
         'transgenes', 'mutations',
-      ]});
-    if (!stock) {
-      const msg = 'Stock does not exist. Id: ' + id;
-      this.logger.error(msg);
-      throw new BadRequestException(msg);
-    }
-    return stock;
+      ]
+    });
   }
 
   async computeAncillaryFields(stock: Stock) {
@@ -87,8 +69,12 @@ export class StockRepository extends Repository<Stock> {
   // b) check before performing a delete request
   // Icky - it assumes two other ancillary fields have been computed.
   isDeletable(stock: Stock): boolean {
-    if (stock.offspringCount > 0 ) { return false; }
-    if (stock.swimmers.length > 0) {return false; }
+    if (stock.offspringCount > 0) {
+      return false;
+    }
+    if (stock.swimmers.length > 0) {
+      return false;
+    }
     return !(stock.subNumber === 0 && stock.nextSubStockNumber > 1);
   }
 
@@ -312,7 +298,7 @@ export class StockRepository extends Repository<Stock> {
 
     // a filter on the stock number matches the start of the number
     if (filter.number) {
-      q = q.andWhere('stock.name LIKE :n', {n: filter.number + "%"});
+      q = q.andWhere('stock.name LIKE :n', {n: filter.number + '%'});
     }
 
     // a filter on text looks anywhere in the stocks comment or description only.
@@ -351,7 +337,7 @@ export class StockRepository extends Repository<Stock> {
     } else if (filter.transgene) {
       q = q.andWhere(new Brackets(qb => {
         qb.where('transgene.descriptor LIKE :tg OR transgene.allele LIKE :tg OR transgene.nickname LIKE :tg',
-          {tg: "%" + filter.transgene + "%"});
+          {tg: '%' + filter.transgene + '%'});
       }));
     }
 

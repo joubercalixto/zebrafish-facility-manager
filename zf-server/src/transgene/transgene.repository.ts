@@ -1,15 +1,11 @@
 import {EntityRepository, Repository} from 'typeorm';
 import {Transgene} from './transgene.entity';
 import {TransgeneFilter} from './transgene.filter';
-import {Logger} from 'winston';
-import {Inject} from '@nestjs/common';
 import {AutoCompleteOptions} from '../helpers/autoCompleteOptions';
 
 @EntityRepository(Transgene)
 export class TransgeneRepository extends Repository<Transgene> {
-  constructor(
-    @Inject('winston') private readonly logger: Logger
-  ) {
+  constructor() {
     super();
   }
 
@@ -28,7 +24,7 @@ export class TransgeneRepository extends Repository<Transgene> {
         'm.source LIKE :t OR ' +
         'm.comment LIKE :t OR ' +
         'm.plasmid LIKE :t',
-        { t: '%' + filter.text + '%' },
+        {t: '%' + filter.text + '%'},
       );
     }
     return await q
@@ -38,7 +34,11 @@ export class TransgeneRepository extends Repository<Transgene> {
   }
 
   async findByName(allele: string): Promise<Transgene> {
-    return await this.findOne({ where: { allele } });
+    const m: Transgene = await this.findOne({where: {allele}});
+    if (m) {
+      m.isDeletable = await this.isDeletable(m.id);
+    }
+    return m;
   }
 
   // Kludge alert. When the client asks for a transgene by Id, I do an bit of
@@ -52,7 +52,9 @@ export class TransgeneRepository extends Repository<Transgene> {
   // So it is all very ugly.
   async findById(id: number): Promise<Transgene> {
     const m: Transgene = await this.findOne(id);
-    m.isDeletable = await this.isDeletable(id);
+    if (m) {
+      m.isDeletable = await this.isDeletable(m.id);
+    }
     return m;
   }
 

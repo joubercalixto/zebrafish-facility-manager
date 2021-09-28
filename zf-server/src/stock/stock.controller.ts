@@ -36,7 +36,8 @@ export class StockController {
     private readonly service: StockService,
     @InjectRepository(StockRepository)
     private readonly repo: StockRepository,
-  ) {}
+  ) {
+  }
 
   @Get('nextName')
   async getNextStockName(): Promise<any> {
@@ -51,14 +52,14 @@ export class StockController {
 
   // Get a stock with no relationships fetched.
   @Get('brief/:id')
-  async getById(@Param('id', new ParseIntPipe())  id: number): Promise<any> {
+  async getById(@Param('id', new ParseIntPipe()) id: number): Promise<any> {
     return await this.service.getById(id);
   }
 
   @Role(ADMIN_ROLE)
   @UseGuards(RoleGuard)
   @Delete(':id')
-  async delete(@Param('id', new ParseIntPipe())  id: number): Promise<any> {
+  async delete(@Param('id', new ParseIntPipe()) id: number): Promise<any> {
     return await this.service.validateAndRemove(id);
   }
 
@@ -133,13 +134,14 @@ export class StockController {
 
   // Get a stock with all relations exploded
   @Get(':id')
-  async getFullById(@Param('id', new ParseIntPipe())  id: number): Promise<any> {
-    return await this.repo.getStockWithRelations(id);
+  async getFullById(@Param('id', new ParseIntPipe()) id: number): Promise<any> {
+    return await this.service.getFullById(id);
   }
 
   // Get a reasonably comprehensive view of a stock without as much as the full stockWithRelations
+  // Hint: this is used by the Tank Walker for details about a single stock on the walk.
   @Get('medium/:id')
-  async getMediumById(@Param('id', new ParseIntPipe())  id: number): Promise<any> {
-    return await this.repo.getStockMedium(id);
+  async getMediumById(@Param('id', new ParseIntPipe()) id: number): Promise<any> {
+    return await this.service.getMediumById(id);
   }
 }

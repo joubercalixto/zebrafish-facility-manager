@@ -47,6 +47,13 @@ export class StockService extends GenericService {
     return this.mustExist(id);
   }
 
+  async getFullById(id: number): Promise<Stock> {
+    return this.repo.getStockWithRelations(id);
+  }
+
+  async getMediumById(id: number): Promise<Stock> {
+    return this.repo.getMediumById(id);
+  }
 
   //========================= Validation =======================
   async doesUserExist(username: string): Promise<User> {
@@ -405,6 +412,10 @@ export class StockService extends GenericService {
     this.ignoreAttribute(dto, 'subNumber');
     this.mustHaveAttribute(dto, 'id');
     let candidate = await this.repo.getStockWithRelations(dto.id);
+
+    if (!candidate) {
+      this.logAndThrowException(`Stock does not exist. Id: ${dto.id}`)
+    }
 
     candidate = plainToClassFromExist(candidate, dto);
 

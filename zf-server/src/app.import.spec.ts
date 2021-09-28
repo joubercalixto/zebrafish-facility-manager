@@ -32,9 +32,9 @@ import {Stock2tankRepository} from './stock2tank/stock2tank.repository';
 import {Stock2tankService} from './stock2tank/stock2tank.service';
 import {Tank} from './tank/tank.entity';
 import {Stock2tank} from './stock2tank/stock-to-tank.entity';
-import {HttpModule, HttpService} from '@nestjs/common';
 import {LineageImportDto} from './stock/lineage-import-dto';
 import {MarkerImportDto} from './stock/marker-import-dto';
+import {HttpModule, HttpService} from '@nestjs/axios';
 
 describe('Import testing', () => {
   let testName: string;
@@ -998,7 +998,7 @@ describe('Import testing', () => {
         alleles: [m1.name].join(';'),
       }
       await stockService.markerImport(alleleDto);
-      stock1 = await stockRepo.getStockWithRelations(stock1.id);
+      stock1 = await stockService.getFullById(stock1.id);
       expect(stock1.mutations.length).toBe(1);
       expect(stock1.mutations[0].name).toBe(mut1Dto.name);
       expect(stock1.mutations[0].gene).toBe(mut1Dto.gene);
@@ -1019,7 +1019,7 @@ describe('Import testing', () => {
         alleles: [tg1.allele].join(';'),
       }
       await stockService.markerImport(alleleDto);
-      stock1 = await stockRepo.getStockWithRelations(stock1.id);
+      stock1 = await stockService.getFullById(stock1.id);
       expect(stock1.transgenes.length).toBe(1);
       expect(stock1.transgenes[0].allele).toBe(tg1Dto.allele);
       expect(stock1.transgenes[0].descriptor).toBe(tg1Dto.descriptor);
@@ -1040,7 +1040,7 @@ describe('Import testing', () => {
         alleles: [tg1.allele, m2.name, m1.name, tg2.allele].join(';'),
       }
       await stockService.markerImport(alleleDto);
-      stock1 = await stockRepo.getStockWithRelations(stock1.id);
+      stock1 = await stockService.getFullById(stock1.id);
       expect(stock1.transgenes.length).toBe(2);
       expect(stock1.mutations.length).toBe(2);
       await stockService.validateAndRemove(stock1.id);
@@ -1074,7 +1074,7 @@ describe('Import testing', () => {
     //     tank4Count: 324,
     //   };
     //   let stock1 = await stockService.import(stock1Dto);
-    //   stock1 = await stockRepo.getStockWithRelations(stock1.id);
+    //   stock1 = await stockService.getFullById(stock1.id);
     //   expect(stock1.swimmers.length).toBe(1);
     //   await swimmerService.removeSwimmer(stock1.swimmers[0]);
     //   await stockService.validateAndRemove(stock1.id);
@@ -1101,7 +1101,7 @@ describe('Import testing', () => {
     //     tank6Count: 6,
     //   };
     //   let stock1 = await stockService.import(stock1Dto);
-    //   stock1 = await stockRepo.getStockWithRelations(stock1.id);
+    //   stock1 = await stockService.getFullById(stock1.id);
     //   console.log(JSON.stringify(stock1, null, 2));
     //   await swimmerService.removeSwimmer(stock1.swimmers[0]);
     //   await swimmerService.removeSwimmer(stock1.swimmers[1]);
