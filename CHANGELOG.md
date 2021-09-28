@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/tmoens/zebrafish-facility-manager/compare/v2.6.0...v3.0.0) (2021-09-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* outbound email uses a more robust mail service with TLS now.
+
+### Features
+
+* outbound email uses a more robust mail service with TLS now. ([a3a9e95](https://github.com/tmoens/zebrafish-facility-manager/commit/a3a9e950366cd2ea537ce35c14da63c6cc7225f7))
+
+
+### Bug Fixes
+
+* some queries were throwing exceptions for empty results ([78e7787](https://github.com/tmoens/zebrafish-facility-manager/commit/78e7787bf03fede5e1cf1e9755906858d621bdd9))
+
 ## [2.6.0](https://github.com/tmoens/zebrafish-facility-manager/compare/v2.5.0...v2.6.0) (2021-09-26)
 
 
