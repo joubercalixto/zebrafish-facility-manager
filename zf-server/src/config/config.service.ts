@@ -26,10 +26,10 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
     this.facility = process.env.FACILITY;
 
     if (!this.facility) {
-      throw new Error("You must set a FACILITY environment variable before running the" +
-        " Zebrafish Facility Management server. export FACILITY=some_facility_identifier" +
-        "  The system will then look for the server's configuration file in the file" +
-        " environments/some_facility_identifier.env")
+      throw new Error('You must set a FACILITY environment variable before running the' +
+        ' Zebrafish Facility Management server. export FACILITY=some_facility_identifier' +
+        '  The system will then look for the server\'s configuration file in the file' +
+        ' environments/some_facility_identifier.env')
     }
 
     const filePath = `environments/${this.facility}.env`;
@@ -39,6 +39,10 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
     }
     const config = dotenv.parse(fs.readFileSync(filePath));
     this.envConfig = ConfigService.validateInput(config);
+  }
+
+  get port(): number {
+    return Number(this.envConfig.PORT);
   }
 
   get bestPracticesSite(): string {
@@ -87,10 +91,6 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
     return this.envConfig.JWT_DURATION;
   }
 
-  get gmailSender(): string {
-    return this.envConfig.GMAIL_SENDER;
-  }
-
   get zfinAlleleLookupUrl(): string {
     return this.envConfig.ZFIN_ALLELE_LOOKUP_URL;
   }
@@ -134,64 +134,6 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
     return c;
   }
 
-  // This is used to build ORM configuration options
-  createTypeOrmOptions(): Promise<TypeOrmModuleOptions> | TypeOrmModuleOptions {
-    const SOURCE_PATH = this.nodeEnv === 'production' ? 'dist' : 'src';
-
-    const loggingOption: LoggerOptions = ['error'];
-    if (this.typeORMLogQueries) {
-      loggingOption.push('query');
-    }
-
-    if (this.envConfig.DB_SSL_PROFILE) {
-      return {
-        type: 'mariadb',
-        host: this.envConfig.DB_HOST,
-        port: 3306,
-        username: this.envConfig.DB_USER,
-        password: this.envConfig.DB_PASSWORD,
-        database: this.envConfig.DB_NAME,
-        entities: [
-          `${SOURCE_PATH}/**/*.entity{.ts,.js}`,
-        ],
-        synchronize: this.typeORMSync,
-        logging: loggingOption,
-        ssl: 'Amazon RDS',
-      };
-    } else
-      return {
-      type: 'mariadb',
-      host: this.envConfig.DB_HOST,
-      port: 3306,
-      username: this.envConfig.DB_USER,
-      password: this.envConfig.DB_PASSWORD,
-      database: this.envConfig.DB_NAME,
-      entities: [
-        `${SOURCE_PATH}/**/*.entity{.ts,.js}`,
-      ],
-      synchronize: this.typeORMSync,
-      logging: loggingOption,
-    };
-
-  }
-
-  // This is used to build Mailer configuration options
-  createMailerOptions(): Promise<MailerOptions> | MailerOptions {
-    return {
-      defaults: {
-        from: '"Zebrafish Facility Manager" <zebrafishfacilitymanager@gmail.com>'
-      },
-      transport: 'smtps://' + this.envConfig.GMAIL_SENDER + ':' + this.envConfig.GMAIL_PASSWORD + '@smtp.gmail.com',
-      template: {
-        dir: __dirname + '/templates',
-        adapter: new HandlebarsAdapter(),
-        options: {
-          strict: true,
-        },
-      },
-    }
-  }
-
   /**
    * Ensures all needed variables are set, and returns the validated JavaScript object
    * including the applied default values.
@@ -219,8 +161,12 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
       JWT_SECRET: Joi.string().required(),
       JWT_DURATION: Joi.string().required(),
 
-      GMAIL_SENDER: Joi.string().required(),
-      GMAIL_PASSWORD: Joi.string().required(),
+      MAIL_FROM: Joi.string().required(),
+      MAIL_REPLY_TO: Joi.string().required(),
+      MAIL_CC: Joi.string().required(),
+      MAIL_HOST: Joi.string().required(),
+      MAIL_USER: Joi.string().required(),
+      MAIL_PASSWORD: Joi.string().required(),
 
       DEFAULT_ADMIN_USER_NAME: Joi.string().required(),
       DEFAULT_ADMIN_USER_EMAIL: Joi.string().required(),
@@ -265,5 +211,75 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
       throw new Error(`Config validation error: ${error.message}`);
     }
     return validatedEnvConfig;
+  }
+
+  // This is used to build Mailer configuration options
+
+  // This is used to build ORM configuration options
+  createTypeOrmOptions(): Promise<TypeOrmModuleOptions> | TypeOrmModuleOptions {
+    const SOURCE_PATH = this.nodeEnv === 'production' ? 'dist' : 'src';
+
+    const loggingOption: LoggerOptions = ['error'];
+    if (this.typeORMLogQueries) {
+      loggingOption.push('query');
+    }
+
+    if (this.envConfig.DB_SSL_PROFILE) {
+      return {
+        type: 'mariadb',
+        host: this.envConfig.DB_HOST,
+        port: 3306,
+        username: this.envConfig.DB_USER,
+        password: this.envConfig.DB_PASSWORD,
+        database: this.envConfig.DB_NAME,
+        entities: [
+          `${SOURCE_PATH}/**/*.entity{.ts,.js}`,
+        ],
+        synchronize: this.typeORMSync,
+        logging: loggingOption,
+        ssl: 'Amazon RDS',
+      };
+    } else
+      return {
+        type: 'mariadb',
+        host: this.envConfig.DB_HOST,
+        port: 3306,
+        username: this.envConfig.DB_USER,
+        password: this.envConfig.DB_PASSWORD,
+        database: this.envConfig.DB_NAME,
+        entities: [
+          `${SOURCE_PATH}/**/*.entity{.ts,.js}`,
+        ],
+        synchronize: this.typeORMSync,
+        logging: loggingOption,
+      };
+
+  }
+
+  // For more information and options read https://nodemailer.com
+  createMailerOptions(): Promise<MailerOptions> | MailerOptions {
+    return {
+      defaults: {
+        from: this.envConfig.MAIL_FROM,
+        replyTo: this.envConfig.MAIL_REPLY_TO,
+        cc: this.envConfig.MAIL_CC,
+      },
+      transport: {
+        host: this.envConfig.MAIL_HOST,
+        port: 587,
+        secure: false, // the session will use STARTTLS
+        auth: {
+          user: this.envConfig.MAIL_USER,
+          pass: this.envConfig.MAIL_PASSWORD,
+        }
+      },
+      template: {
+        dir: __dirname + '/templates',
+        adapter: new HandlebarsAdapter(),
+        options: {
+          strict: true,
+        },
+      },
+    }
   }
 }

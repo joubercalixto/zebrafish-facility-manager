@@ -1,12 +1,12 @@
 import {Injectable} from '@nestjs/common';
-import {MailerService} from "@nestjs-modules/mailer";
-import {User} from "../user/user.entity";
-import {ConfigService} from "../config/config.service";
+import {MailerService} from '@nestjs-modules/mailer';
+import {User} from '../user/user.entity';
+import {ConfigService} from '../config/config.service';
 
 @Injectable()
 export class ZFMailerService {
   constructor(
-    private readonly  mailerService: MailerService,
+    private readonly mailerService: MailerService,
     private readonly configService: ConfigService,
   ) {
   }
@@ -16,13 +16,16 @@ export class ZFMailerService {
       .mailerService
       .sendMail({
         to: 'ted.moens@gmail.com', // list of receivers
-        from: 'zebrafishfacilitymanager@gmail.com', // sender address
         subject: 'Testing Nest MailerModule ✔', // Subject line
-        text: 'welcome', // plaintext body
+        text: 'welcome smelcome', // plaintext body
         html: '<b>welcome to fiddlefaddle</b>', // HTML body content
       })
-      .then(() => {})
-      .catch(() => {});
+      .then(() => {
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    //  TODO fill in the catch block
   }
 
   public passwordReset(user: User, newPassword: string): void {
@@ -30,7 +33,6 @@ export class ZFMailerService {
       .mailerService
       .sendMail({
         to: user.email,
-        from: this.configService.gmailSender,
         subject: 'Zebrafish Facility Manager Password Reset', // Subject line
         html: `<p>Greetings ${user.username}: <\p>
           <p>As requested, your password has been changed.  Your new password is 
@@ -41,8 +43,11 @@ export class ZFMailerService {
           Zebrafish Facility Manager
           ${this.configService.facilityInfo.url}`
       })
-      .then(() => {})
-      .catch(() => {});
+      .then(() => {
+      })
+      .catch(() => {
+      });
+    //  TODO fill in the catch block
   }
 
   public newUser(user: User, newPassword: string): void {
@@ -50,7 +55,6 @@ export class ZFMailerService {
       .mailerService
       .sendMail({
         to: user.email,
-        from: this.configService.gmailSender,
         subject: 'Welcome to Zebrafish Facility Manager', // Subject line
         html: `<p>Greetings ${user.username}: <\p>
           <p>Welcome to the Zebrafish facility manager for ${this.configService.facilityInfo.name}.
@@ -63,8 +67,11 @@ export class ZFMailerService {
           
           <p>Zebrafish Facility Manager`
       })
-      .then(() => {})
-      .catch(() => {});
+      .then(() => {
+      })
+      .catch(() => {
+      });
+    //  TODO fill in the catch block
   }
 
 }
