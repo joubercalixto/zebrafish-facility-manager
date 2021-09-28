@@ -1,10 +1,11 @@
-import {HttpService, Injectable} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {Mutation} from '../mutation/mutation.entity';
 import {Transgene} from '../transgene/transgene.entity';
 import {ZfinTransgeneDto} from '../common/zfin/zfin-transgene.dto';
 import {ZfinMutationDto} from '../common/zfin/zfin-mutation.dto';
 import {ConfigService} from '../config/config.service';
 import {map} from 'rxjs/operators';
+import {HttpService} from '@nestjs/axios';
 
 @Injectable()
 export class ZfinService {

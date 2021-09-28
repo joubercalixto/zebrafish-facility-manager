@@ -19,7 +19,7 @@ import {Logger} from 'winston';
 import {utilities as nestWinstonModuleUtilities} from 'nest-winston/dist/winston.utilities';
 import {UserService} from './user/user.service';
 import {ZfinService} from './zfin/zfin.service';
-import {HttpModule, HttpService} from '@nestjs/common';
+import {HttpModule, HttpService} from '@nestjs/axios';
 import {TankRepository} from './tank/tank.repository';
 import {TankService} from './tank/tank.service';
 import {Stock2tankRepository} from './stock2tank/stock2tank.repository';

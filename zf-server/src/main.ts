@@ -1,9 +1,9 @@
 import {NestFactory} from '@nestjs/core';
 import {AppModule} from './app.module';
 import {ConfigService} from './config/config.service';
-import {WINSTON_MODULE_NEST_PROVIDER, WinstonModule} from "nest-winston";
-import * as winston from "winston";
-import {utilities as nestWinstonModuleUtilities} from "nest-winston/dist/winston.utilities";
+import {WINSTON_MODULE_NEST_PROVIDER, WinstonModule} from 'nest-winston';
+import * as winston from 'winston';
+import {utilities as nestWinstonModuleUtilities} from 'nest-winston/dist/winston.utilities';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -24,8 +24,10 @@ async function bootstrap() {
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   app.enableCors();
 
-  await app.listen(app.get('ConfigService').envConfig.PORT);
 
+  const configService: ConfigService = await app.get(ConfigService);
+  console.log(JSON.stringify(configService));
+  await app.listen(configService.port);
 }
 
 bootstrap();

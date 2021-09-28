@@ -1,4 +1,5 @@
 @use '~@angular/material' as mat;
+@use "sass:math";
 
 @include mat.core();
 @import "zf-theme.scss";
@@ -24,7 +25,7 @@
 }
 
 .content {
-  width:100%;
+  width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -73,18 +74,21 @@
 
 .zf-selection-list {
   height: 100%;
-  overflow-y: scroll ;
+  overflow-y: scroll;
 }
 
 .zf-tool-content {
   padding: 25px;
 }
+
 .zf-fixed-sidenav {
   width: 400px;
 }
+
 .zf-togglable-sidenav {
   width: 95%;
 }
+
 .zf-selector {
   padding-top: 15px;
   padding-left: 15px;
@@ -119,6 +123,7 @@
 .zf-clickable {
   color: mat.get-color-from-palette(map-get($zf-app-theme, primary));
 }
+
 // I really should build a typography configuration for the app and then base this
 // size relative to some existing typography style, but I is lazy.
 .zf-title {
@@ -168,7 +173,9 @@ app-transgene-mini-viewer {
 }
 
 @media print {
-  app-root > * { display: none; }
+  app-root > * {
+    display: none;
+  }
   app-root app-tank-label {
     display: block;
   }
@@ -191,7 +198,7 @@ app-transgene-mini-viewer {
       }
 
       &-subscript-wrapper {
-        $subscript-margin-top: 0.5em / $subscript-font-scale;
+        $subscript-margin-top: math.div(0.5em, $subscript-font-scale);
         $subscript-min-height: $line-height * 1em;
         $subscript-margin-bottom: -#{$subscript-margin-top + $line-height};
 
@@ -203,8 +210,8 @@ app-transgene-mini-viewer {
 
     &-appearance-legacy &-subscript-wrapper {
       // Copy-paste from @mat-form-field-legacy-typography();
-      $line-spacing: ($line-height - 1) / 2;
-      $subscript-margin-top: 0.5em / $subscript-font-scale - ($line-spacing * 2);
+      $line-spacing: math.div(($line-height - 1), 2);
+      $subscript-margin-top: math.div(0.5em, $subscript-font-scale) - ($line-spacing * 2);
 
       $subscript-min-height: $line-height * 1em;
       $subscript-margin-bottom: -#{$subscript-margin-top + $line-height};

@@ -1,6 +1,7 @@
-import {HttpModule, Module} from '@nestjs/common';
-import { ZfinService } from './zfin.service';
-import { ZfinController } from './zfin.controller';
+import {Module} from '@nestjs/common';
+import {ZfinService} from './zfin.service';
+import {ZfinController} from './zfin.controller';
+import {HttpModule} from '@nestjs/axios';
 
 @Module({
   imports: [HttpModule],
@@ -8,4 +9,5 @@ import { ZfinController } from './zfin.controller';
   providers: [ZfinService],
   exports: [ZfinService],
 })
-export class ZfinModule {}
+export class ZfinModule {
+}

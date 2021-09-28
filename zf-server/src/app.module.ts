@@ -1,4 +1,4 @@
-import {HttpModule, MiddlewareConsumer, Module, NestModule} from '@nestjs/common';
+import {MiddlewareConsumer, Module, NestModule} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {AppController} from './app.controller';
 import {AppService} from './app.service';
@@ -10,26 +10,27 @@ import {TransgeneModule} from './transgene/transgene.module';
 import {Stock2tankModule} from './stock2tank/stock2tank.module';
 import {StockModule} from './stock/stock.module';
 import {AuthModule} from './auth/auth.module';
-import * as winston from "winston";
+import * as winston from 'winston';
 import {utilities as nestWinstonModuleUtilities, WinstonModule} from 'nest-winston';
-import * as DailyRotateFile from "winston-daily-rotate-file";
-import {UserModule} from "./user/user.module";
-import {LoggerMiddleware} from "./guards/logger.middleware";
-import {StockController} from "./stock/stock.controller";
-import {AuthController} from "./auth/auth.controller";
-import {MutationController} from "./mutation/mutation.controller";
-import {TransgeneController} from "./transgene/transgene.controller";
-import {UserController} from "./user/user.controller";
-import {LocalStrategy} from "./guards/local.strategy";
-import {JwtStrategy} from "./guards/jwt.strategy";
-import {PassportModule} from "@nestjs/passport";
-import {JwtStrategy2} from "./guards/jwt.strategy2";
-import {MailerModule} from "@nestjs-modules/mailer";
-import {ZFMailerService} from "./mailer/mailer-service";
+import * as DailyRotateFile from 'winston-daily-rotate-file';
+import {UserModule} from './user/user.module';
+import {LoggerMiddleware} from './guards/logger.middleware';
+import {StockController} from './stock/stock.controller';
+import {AuthController} from './auth/auth.controller';
+import {MutationController} from './mutation/mutation.controller';
+import {TransgeneController} from './transgene/transgene.controller';
+import {UserController} from './user/user.controller';
+import {LocalStrategy} from './guards/local.strategy';
+import {JwtStrategy} from './guards/jwt.strategy';
+import {PassportModule} from '@nestjs/passport';
+import {JwtStrategy2} from './guards/jwt.strategy2';
+import {MailerModule} from '@nestjs-modules/mailer';
+import {ZFMailerService} from './mailer/mailer-service';
 import {MutationTypeModule} from './mutation-type/mutation-type.module';
 import {ScreenTypeModule} from './screen-type/screen-type.module';
 import {ZfinModule} from './zfin/zfin.module';
 import {ZfinController} from './zfin/zfin.controller';
+import {HttpModule} from '@nestjs/axios';
 
 
 const rotatingFileLog = new DailyRotateFile({
@@ -92,7 +93,7 @@ const consoleLog = new (winston.transports.Console)({
     ZFMailerService,
   ],
 })
-export class AppModule implements NestModule{
+export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(LoggerMiddleware)

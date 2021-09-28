@@ -15,7 +15,7 @@ import {utilities as nestWinstonModuleUtilities} from 'nest-winston/dist/winston
 import {WINSTON_MODULE_NEST_PROVIDER, WinstonModule} from 'nest-winston';
 import {ZfinService} from '../zfin/zfin.service';
 import {ZfinModule} from '../zfin/zfin.module';
-import {HttpService} from '@nestjs/common';
+import {HttpService} from '@nestjs/axios';
 
 describe('MutationService testing', () => {
   let logger: Logger;
@@ -407,7 +407,7 @@ describe('MutationService testing', () => {
 
     it('1802501 minimal test of getAutoCompleteOptions',
       async () => {
-        const initialOptions: {[index: string]: string[]} = await mutationService.getAutoCompleteOptions();
+        const initialOptions: { [index: string]: string[] } = await mutationService.getAutoCompleteOptions();
         const m = {
           name: String(Math.random()).substr(0, 10),
           gene: String(Math.random()).substr(0, 10),
@@ -417,7 +417,7 @@ describe('MutationService testing', () => {
           comment: '1802501 minimal test of getAutoCompleteOptions',
         };
         const mutation: Mutation = await mutationService.validateAndCreate(m);
-        const newOptions: {[index: string]: string[]} = await mutationService.getAutoCompleteOptions();
+        const newOptions: { [index: string]: string[] } = await mutationService.getAutoCompleteOptions();
         expect(newOptions.gene.length).toBe(initialOptions.gene.length + 1);
         expect(newOptions.researcher.length).toBe(initialOptions.researcher.length + 1);
         expect(newOptions.mutationType.length).toBe(initialOptions.mutationType.length + 1);
@@ -428,7 +428,7 @@ describe('MutationService testing', () => {
       });
   });
 
-  afterAll( async () => {
+  afterAll(async () => {
     await connection.close();
   });
 

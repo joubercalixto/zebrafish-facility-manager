@@ -188,7 +188,7 @@ export class ImporterComponent implements OnInit {
     this.done = 0;
     var errorCount = 0;
     for (const dto of dtos) {
-      const response = await this.service.import(name, dto)
+      const response: any = await this.service.import(name, dto)
         .pipe(
           catchError(err => {
             dto.importResult = 'Failure: ' + err.error.message;
