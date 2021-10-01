@@ -21,7 +21,6 @@
           <mat-form-field>
             <label>
               <input [(ngModel)]="stock.description" matInput maxlength="100" name="desc" placeholder="Description"
-                     required
                      type="text">
             </label>
           </mat-form-field>
@@ -53,13 +52,15 @@
           </mat-form-field>
           <mat-form-field>
             <label>
-              <input [(ngModel)]="stock.countEnteringNursery" matInput name="entering" placeholder="Count entering nursery"
+              <input [(ngModel)]="stock.countEnteringNursery" matInput name="entering"
+                     placeholder="Count entering nursery"
                      type="number" min="1">
             </label>
           </mat-form-field>
           <mat-form-field>
             <label>
-              <input [(ngModel)]="stock.countLeavingNursery" matInput maxlength="100" name="leaving" placeholder="Count leaving nursery"
+              <input [(ngModel)]="stock.countLeavingNursery" matInput maxlength="100" name="leaving"
+                     placeholder="Count leaving nursery"
                      type="number" min="1">
             </label>
           </mat-form-field>
@@ -130,7 +131,7 @@
             <mat-radio-button class="zf-radio-button" [value]=true>Internal</mat-radio-button>
             <mat-radio-button class="zf-radio-button" [value]=false>External</mat-radio-button>
           </mat-radio-group>
-          <div *ngIf="dadInternal"  fxLayout="column">
+          <div *ngIf="dadInternal" fxLayout="column">
             <mat-form-field>
               <label>
                 <input #patStockNameF="ngModel" (keyup)="onSetPatStock()"

@@ -30,7 +30,12 @@ export class StockDto extends ZfGenericDto {
   }
 
   get title(): string {
-    return this.description;
+    if (this.description) {
+      return this.description;
+    } else if (this.alleleSummary) {
+      return this.alleleSummary;
+    }
+    return '-';
   }
 
   get details(): string[] {
