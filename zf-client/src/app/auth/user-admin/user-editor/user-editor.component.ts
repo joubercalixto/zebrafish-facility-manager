@@ -46,7 +46,7 @@ export class UserEditorComponent implements OnInit {
     isResearcher: [false],
     initials: [null, [Validators.required], [existingInitialsValidatorFn(this)]],
     isDeletable: [{value: '', disabled: true}],
-  } );
+  });
 
   constructor(
     public appState: AppStateService,
@@ -56,7 +56,8 @@ export class UserEditorComponent implements OnInit {
     public service: UserAdminService,
     private deactivationDialogService: DialogService,
     private authService: AuthService,
-  ) {}
+  ) {
+  }
 
   ngOnInit(): void {
     // watch for changes to the paramMap (i.e. changes to the route)
@@ -115,7 +116,7 @@ export class UserEditorComponent implements OnInit {
   }
 
   /* To support deactivation check  */
-  canDeactivate(): boolean | Observable<boolean> |Promise <boolean> {
+  canDeactivate(): boolean | Observable<boolean> | Promise<boolean> {
     if (this.saved) {
       return true;
     }
@@ -134,7 +135,7 @@ export class UserEditorComponent implements OnInit {
     this.getFC(name).setValue(null);
   }
 
-  getErrorMessage(fcName:string): string {
+  getErrorMessage(fcName: string): string {
     const eFC = this.getFC(fcName);
     if (eFC.hasError('required')) {
       return 'field is required';
@@ -151,7 +152,9 @@ export class UserEditorComponent implements OnInit {
 function existingEmailValidatorFn(t: UserEditorComponent): AsyncValidatorFn {
   return (control: AbstractControl): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> => {
     // don't bother with the going to the server if the email belongs to the user being edited.
-    if (t.user && t.user.email && t.user.email === control.value) { return of(null); }
+    if (t.user && t.user.email && t.user.email === control.value) {
+      return of(null);
+    }
     return t.service.isEmailInUse(control.value).pipe(
       map((result: boolean) => {
         return result ? {inUse: true} : null;
@@ -163,7 +166,9 @@ function existingEmailValidatorFn(t: UserEditorComponent): AsyncValidatorFn {
 function existingUsernameValidatorFn(t: UserEditorComponent): AsyncValidatorFn {
   return (control: AbstractControl): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> => {
     // don't bother with the going to the server if the username belongs to the user being edited.
-    if (t.user && t.user.username && t.user.username === control.value) { return of(null); }
+    if (t.user && t.user.username && t.user.username === control.value) {
+      return of(null);
+    }
     return t.service.isUsernameInUse(control.value).pipe(
       map((result: boolean) => {
         return result ? {inUse: true} : null;
@@ -175,7 +180,9 @@ function existingUsernameValidatorFn(t: UserEditorComponent): AsyncValidatorFn {
 function existingNameValidatorFn(t: UserEditorComponent): AsyncValidatorFn {
   return (control: AbstractControl): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> => {
     // don't bother with the going to the server if the name belongs to the user being edited.
-    if (t.user && t.user.name && t.user.name === control.value) { return of(null); }
+    if (t.user && t.user.name && t.user.name === control.value) {
+      return of(null);
+    }
     return t.service.isNameInUse(control.value).pipe(
       map((result: boolean) => {
         return result ? {inUse: true} : null;
@@ -187,7 +194,9 @@ function existingNameValidatorFn(t: UserEditorComponent): AsyncValidatorFn {
 function existingInitialsValidatorFn(t: UserEditorComponent): AsyncValidatorFn {
   return (control: AbstractControl): Promise<ValidationErrors | null> | Observable<ValidationErrors | null> => {
     // don't bother with the going to the server if the initials belong to the user being edited.
-    if (t.user && t.user.initials && t.user.initials === control.value) { return of(null); }
+    if (t.user && t.user.initials && t.user.initials === control.value) {
+      return of(null);
+    }
     return t.service.isInitialsInUse(control.value).pipe(
       map((result: boolean) => {
         return result ? {inUse: true} : null;

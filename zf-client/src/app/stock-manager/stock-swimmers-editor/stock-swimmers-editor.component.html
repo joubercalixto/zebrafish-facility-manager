@@ -15,24 +15,26 @@
           </mat-error>
         </mat-form-field>
         <mat-form-field>
-          <input matInput type="number" placeholder="Count" required min="12" formControlName="swimmerCount">
+          <input matInput type="number" placeholder="Count" required min="1" formControlName="swimmerCount">
         </mat-form-field>
         <mat-form-field>
             <textarea matInput placeholder="Comment" formControlName="comment"
-                      cdkTextareaAutosize="true"  cdkAutosizeMaxRows="7"
+                      cdkTextareaAutosize="true" cdkAutosizeMaxRows="7"
                       maxlength="300"></textarea>
         </mat-form-field>
         <div fxLayout="row">
-          <div class="fill-remaining-space"> </div>
+          <div class="fill-remaining-space"></div>
           <button mat-button color="primary" (click)="clearNewSwimmer()">Clear</button>
           <button mat-button color="primary" (click)="addNewSwimmer()"
-                  [disabled]="!addSwimmerForm.valid">Add</button>
+                  [disabled]="!addSwimmerForm.valid">Add
+          </button>
         </div>
       </form>
       <div fxFlex="30" *ngIf="cohabitants.length > 0">
         <p>The following stock(s) are already in tank {{tankNameFC.value}}:</p>
         <p *ngFor="let swimmer of cohabitants">{{swimmer.stock.name}} - {{swimmer.stock.description}}</p>
-        <p>You can add stock {{stockService.selected.name}} as well (usually for companionship) but please add a comment.</p>
+        <p>You can add stock {{stockService.selected.name}} as well (usually for companionship) but please add a
+          comment.</p>
       </div>
     </div>
   </div>
@@ -45,7 +47,7 @@
       <button fxFlex="60px" mat-icon-button color="primary">
         <mat-icon matListIcon (click)="onSwimmerDelete(s.key)">delete</mat-icon>
       </button>
-      <mat-form-field fxFlex="60px" disabled=true >
+      <mat-form-field fxFlex="60px" disabled=true>
         <input matInput placeholder="Tank" [(ngModel)]="s.value.swimmer.tank.name" disabled
                [class.to-be-deleted]="s.value.state === SwimmerState.DELETED">
       </mat-form-field>

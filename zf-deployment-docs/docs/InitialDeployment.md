@@ -245,26 +245,6 @@ copy every time you build the docs.
 There is nothing facility specific in the documentation so all servers can use
 the same doc site.
 
-## GMAIL Sender
-
-The application needs to send emails. For example, when a user is created, they
-get an email with password reset instructions.
-
-We did not invest a huge amount of time here, we simply send them via gmail
-which means that you will need to provide a gmail address the server can use for
-sending emails.
-
-What is more, since the application sends the emails programmatically, the gmail
-account it logs into is deemed insecure by Google, no matter how good the
-password is.
-
-1. You need to create such a Google/gmail account - do not use your own.
-1. You need to give it a very good password (again, use a password generator).
-1. You need to configure the account to allow "insecure access".
-
-In the "per facility" guide you will be entering the id and password for this
-account.
-
 ## Facility Configuration
 
 You are finally ready to configure the system to manage a zebrafish facility.

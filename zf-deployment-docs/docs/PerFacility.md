@@ -188,10 +188,10 @@ Environment=NODE_ENV=production
 # *** The next line will be different for each facility.
 Environment=FACILITY=eue
 
-# Note the absence of dist at the end of this path.
+# Note the absence of /dist at the end of this path.
 WorkingDirectory=/var/www/zfm/live/zebrafish-facility-manager/zf-server
 # *** For facilities using the staging server
-WorkingDirectory=/var/www/zfm/staging/zebrafish-facility-manager/zf-server
+#WorkingDirectory=/var/www/zfm/staging/zebrafish-facility-manager/zf-server
 
 [Install]
 WantedBy=multi-user.target
