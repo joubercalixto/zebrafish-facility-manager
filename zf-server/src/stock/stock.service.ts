@@ -55,6 +55,15 @@ export class StockService extends GenericService {
     return this.repo.getMediumById(id);
   }
 
+  //========================= helper =======================
+  extendComment(s1: string | null, s2: string): string {
+    if (s1) {
+      s1.concat('; ', s2);
+    } else {
+      return s2;
+    }
+  }
+
   //========================= Validation =======================
   async doesUserExist(username: string): Promise<User> {
     return this.userService.findByUserName(username);
@@ -87,10 +96,10 @@ export class StockService extends GenericService {
   async import(dto: StockImportDto): Promise<Stock> {
     const problems: string[] = [];
     const candidate = new Stock();
-    candidate.description = dto.description;
-    candidate.comment = dto.comment;
-    candidate.countEnteringNursery = dto.countEnteringNursery;
-    candidate.countLeavingNursery = dto.countLeavingNursery
+    if (dto.description) candidate.description = dto.description;
+    if (dto.comment) candidate.comment = dto.comment;
+    if (dto.countEnteringNursery) candidate.countEnteringNursery = dto.countEnteringNursery;
+    if (dto.countLeavingNursery) candidate.countLeavingNursery = dto.countLeavingNursery
 
     // The stock we are importing
     // - must have a name,
@@ -166,26 +175,13 @@ export class StockService extends GenericService {
       problems.push(`Cannot import lineage for a stock without a stock number.`);
     }
 
+    if (isNaN(+dto.stockNumber)) {
+      problems.push(`Skipping stock ${dto.stockNumber}, not a valid stock number.`);
+    }
+
     if ((Number(dto.stockNumber) % 1) > 0) {
       problems.push(`Lineage import for substock ${dto.stockNumber} failed. ` +
         `Only import lineage for base stock numbers, substocks will be handled automatically.`);
-    }
-
-    let dad: Stock = null;
-    let mom: Stock = null;
-
-    // We need to validate that internal parents exist
-    if (dto.internalDad) {
-      dad = await this.doesStockNameExist(String(dto.internalDad));
-      if (!dad) {
-        problems.push(`Internal dad ${dto.internalDad} does not exist.`);
-      }
-    }
-    if (dto.internalMom) {
-      mom = await this.doesStockNameExist(String(dto.internalMom));
-      if (!mom) {
-        problems.push(`Internal mom ${dto.internalMom} does not exist.`);
-      }
     }
 
     // if we have encountered problems, time to give up;
@@ -201,28 +197,40 @@ export class StockService extends GenericService {
       this.logAndThrowException(`No base stock or sub-stocks with number ${dto.stockNumber}`)
     }
 
-    // Data for internal mom or dad takes precedence of data for external mom or dad.
+    // Do the parents. Data for internal mom or dad takes precedence of data for external mom or dad.
     for (const stock of stocks) {
-      if (mom) {
-        if (stock.fertilizationDate <= mom.fertilizationDate) {
-          problems.push(`Stock  ${stock.name} (${stock.fertilizationDate}), is older than its mom: ${mom.name} (${mom.fertilizationDate})`);
+      // We need to validate that internal parents exist
+      if (dto.internalMom) {
+        const mom = await this.doesStockNameExist(String(dto.internalMom));
+        if (!mom) {
+          stock.comment = this.extendComment(stock.comment, `Import Error: Internal mom ${dto.internalMom} does not exist.`);
         } else {
-          stock.matIdInternal = mom.id;
-          stock.externalMatDescription = null;
-          stock.externalMatId = null;
+          if (stock.fertilizationDate <= mom.fertilizationDate) {
+            stock.comment = this.extendComment(stock.comment, `Import Error: Stock older than its mom: ${mom.name} (${mom.fertilizationDate})`)
+          } else {
+            stock.matIdInternal = mom.id;
+            stock.externalMatDescription = null;
+            stock.externalMatId = null;
+          }
         }
       } else {
         stock.matIdInternal = null;
         if (dto.externalMomDescription) stock.externalMatDescription = dto.externalMomDescription;
         if (dto.externalMomName) stock.externalMatId = dto.externalMomName;
       }
-      if (dad) {
-        if (stock.fertilizationDate <= dad.fertilizationDate) {
-          problems.push(`Stock  ${stock.name} (${stock.fertilizationDate}), is older than its dad: ${dad.name} (${dad.fertilizationDate})`);
+
+      if (dto.internalDad) {
+        const dad = await this.doesStockNameExist(String(dto.internalDad));
+        if (!dad) {
+          stock.comment = this.extendComment(stock.comment, `Import Error: Internal dad ${dto.internalDad} does not exist.`);
         } else {
-          stock.patIdInternal = dad.id
-          stock.externalPatDescription = null;
-          stock.externalPatId = null;
+          if (stock.fertilizationDate <= dad.fertilizationDate) {
+            stock.comment = this.extendComment(stock.comment, `Import Error: Stock older than its dad: ${dad.name} (${dad.fertilizationDate})`);
+          } else {
+            stock.patIdInternal = dad.id
+            stock.externalPatDescription = null;
+            stock.externalPatId = null;
+          }
         }
       } else {
         stock.patIdInternal = null;
@@ -235,7 +243,6 @@ export class StockService extends GenericService {
       }
       await this.repo.save(stock);
     }
-
     return true;
   }
 
@@ -402,7 +409,7 @@ export class StockService extends GenericService {
   // Note: we do not update Swimmers with this method, so if swimmers come in the
   // DTO, remove them. FWIW relationships to Transgenes and Mutations and parents
   // *are* updated.
-  // TODO dont let the parents change if they should not.
+  // TODO dont let the parents change if they should not - i.e. for substocks
   async validateAndUpdate(dto: any): Promise<any> {
     convertEmptyStringToNull(dto);
     // the client is not permitted to change the stock name, number or subNumber
