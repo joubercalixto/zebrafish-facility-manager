@@ -14,8 +14,10 @@
         <!-- Main stock information-->
         <mat-form-field *ngIf="service.selected.description">
           <label>
-            <input [value]="service.selected.description" disabled
-                   matInput placeholder="Description">
+            <textarea [value]="service.selected.description" cdkAutosizeMaxRows="7"
+                      cdkTextareaAutosize="true"
+                      disabled matInput placeholder="Description">
+            </textarea>
           </label>
         </mat-form-field>
         <mat-form-field>
