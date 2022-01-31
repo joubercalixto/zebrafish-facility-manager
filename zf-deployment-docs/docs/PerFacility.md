@@ -3,37 +3,25 @@
 Setting up a facility really means two things:
 
 1. configuring and starting a facility specific server
-1. adding a configuration file for the client
+1. adding an apache virtual host for the facility
 
-This document describes how to configure the system to manage a new facility. We
-suggest that you create a "staging"
-facility that is used to validate the most recent version of the system before
-you deploy any "live" facilities.
+When you go through this process for the first time, you might want to set up
+a "demo" facility as well.
 
-It assumes you have already created a full deployment as described in the
-[Initial Deployment Guide](InitialDeployment.md).
+Assumptions:
 
-If you are setting up your first facility you can save time by doing several
-facilities at the same time. At least, you probably want to set up a "staging"
-facility and a live facility.
+1. you have already created a full deployment as described in the
+   [Initial Deployment Guide](InitialDeployment.md).
+2. you have set up a domain called _zfm.com_
+3. you are setting up a facility for _Example University of Examples_ called
+   "eue" for short
 
-For the purpose of a running example we will assume that your live facility
+## Sub-domain setup
 
-1. you have a domain set up called _examplezfm.com_
-1. you are setting up a "staging" facility that uses the "staging" build
-1. you are setting up a facility for _Example University of Examples_ that uses
-   the "live" build
-
-If you know in advance that you will be setting up facilities for more
-facilities we suggest do them all at once.
-
-### Sub-domain setup
-
-You need to create a sub-domain for your facilities. In the example they could
-be called _staging.examplezfm.com_ and _
-eue.examplezfm.com_. The main thing you need to do is create DNS records that
-points from your sub-domain to your host's IP address. After you add the
-sub-domain it usually takes an hour or so for it to propagate around the world.
+You need to create a sub-domain for your facilities. In our case it would be
+_eue.zfm.com_. The main thing you need to do is create DNS records that points
+from your sub-domain to your host's IP address. After you add the sub-domain it
+usually takes an hour or so for it to propagate around the world.
 
 If you do not know how to do this, it is probably a capability available at the
 service you used to buy your domain. Alternately your web hosting service
@@ -41,39 +29,36 @@ probably has a DNS you can use to set up your DNS records.
 
 #### Am I ready to move on?
 
-If you can successfully ping your new subdomain _eue.examplezfm.com_, you are
-ready. If the ping fails, it may simply be that the new DNS record you
-configured has not yet propagated.
+If you can successfully ping your new subdomain _eue.zfm.com_, you are ready. If
+the ping fails, it may simply be that the new DNS record you configured has not
+yet propagated.
 
-In the meantime, you can go ahead and configure a Virtual Host on your web
-server, but you cannot do your SSL configuration until your DNS configuration is
+In the meantime, you can go ahead with much of the configuration that follows
+but you cannot do your Apache configuration until your DNS configuration is
 working.
-
-### Virtual Host setup
-
-For each facility supported by your deployment you need to set up a Virtual
-Host. This is how we suggest you do
-the [Apache Virtual Host Configuration](Apache.md).
-
-For the purpose of the running example in this guide, will assume you configured
-the port for _eue.examplezfm.com_ to be 3004 and
-_staging.examplezfm.com_ to be 3199.
 
 ## Host Setup
 
 ### Set up a database for the facility data
 
-The process of setting up a database for a facility is
-covered [here](MariaDB.md). Once you have configured the db, in keeping with the
-running example, you will have:
+We need to set up a database and a database user for the Example University of
+Examples. We need to choose three things. Please do not skimp on the password -
+generate a good one. For example:
 
 1. database: _zf_eue_
-1. db user: _zf_eue_
-1. db password: _some_very_good_eue_password_
+2. db user: _zf_eue_
+3. db password: _OmduqvHzVjbw45Ts8x3wfW_
 
-Remember to add the new database to your backup process.
+It does not matter what tool you choose to create the database, but if you want
+help, there is a script located in the repo for creating a database user and a
+database using the three parameters given above.  
+It is located at path_to_your_repo/zf-server/mysql scripts/create zfm db.sql.
 
-Repeat the process to create a database for the staging system.
+You can edit the script to place the values for three variable in it, log in to
+mariadb as admin and run the script.
+
+You now have a database. There are no tables in it, but they will be created
+automatically when the zf_server runs for the first time.
 
 #### Am I ready to move on?
 
@@ -90,23 +75,20 @@ go.
 ### zf_server configuration file
 
 You need to create a configuration file for each facility. In keeping with the
-example, we will create a configuration file called "eue.env" and another called
-staging.eue
+example, we will create a configuration file called "eue.env".
 
 ```bash 
 # copy the sample configuration file
 cp environments/sample.env environments/eue.env
-cp environments/sample.env environments/staging.env
 ```
 
-Edit your configuration files In addition to following the instructions in the
+Edit your configuration files. In addition to following the instructions in the
 file, you will need to have at hand
 
-1. the port you set in the Virtual Host configuration file. in this case 3004
-   for eue and 3199 for staging.
-1. the database user, name and password you configured for this facility.
-1. the mail configuration the system will use to send notifications to users.
-1. the site that hosts the user documentation
+1. the database, database user's name, and database user's password you set when
+   creating the database for this facility
+2. the mail configuration the system will use to send notifications to users.
+3. the site that hosts the user documentation
 
 #### Am I ready to move on?
 
@@ -115,7 +97,7 @@ line.
 The server rejects bad or missing configuration with useful error messages.
 
 ```bash
-# on the command line, navigate to the *LIVE* zf-server directory
+# on the command line, navigate to the *live* zf-server directory
 cd /var/www/zfm/live/zebrafish-facility-manager/zf-server
 
 # tell the server where to find the eue config file (eue.env)
@@ -126,24 +108,12 @@ npm run start:dev
 ```
 
 If the configuration is good, you will get a bunch of Info level logs about
-routes that have been set up. If not, you need to address the errors.
+routes that have been set up. The first time this program runs it will also
+create an admin user for you. You will see a log for that too.
+
+If not, you need to address the errors.
 
 You now have to stop the server (^C) as we need to set it up as a service.
-
-To check the staging facility:
-
-```bash
-# on the command line, navigate to the *STAGING* zf-server directory
-cd /var/www/zfm/staging/zebrafish-facility-manager/zf-server
-
-# tell the server where to find the eue config file (eue.env)
-export FACILITY=eue
-
-# run the server
-npm run start:dev
-```
-
-Remember to stop it with ^C once you are satisfied that it is running properly.
 
 ### Run the zf-server as a service
 
@@ -169,17 +139,15 @@ After=network.target mysql.service
 
 [Service]
 
-# assuming the system is in /var/www/zebrafish-facility-manager
+# assuming the deployment is in /var/www/zfm/live
 # this is where the executable lies
 ExecStart=/usr/bin/node /var/www/zfm/live/zebrafish-facility-manager/zf-server/dist/main.js
-# *** For facilities using the staging server
-# ExecStart=/usr/bin/node /var/www/zfm/staging/zebrafish-facility-manager/zf-server/dist/main.js
 
 Restart=always
 
 # choose an appropriate user and group to run the services.
-User=some_appropriate_user
-Group=some_appropriate_group
+User=zfm
+Group=zfm
 
 Environment=PATH=/usr/bin:/usr/local/bin
 Environment=NODE_ENV=production
@@ -187,11 +155,10 @@ Environment=NODE_ENV=production
 # tell the service where to find it's configuration file.
 # *** The next line will be different for each facility.
 Environment=FACILITY=eue
+# eue's config file will be in ...live/zf-server/environments/eue.env
 
 # Note the absence of /dist at the end of this path.
 WorkingDirectory=/var/www/zfm/live/zebrafish-facility-manager/zf-server
-# *** For facilities using the staging server
-#WorkingDirectory=/var/www/zfm/staging/zebrafish-facility-manager/zf-server
 
 [Install]
 WantedBy=multi-user.target
@@ -219,11 +186,14 @@ sudo systemctl start zfm-eue
 sudo journalctl -u zfm-eue
 ```
 
-Repeat for zfm-staging service config file.
-
 #### Am I ready to move on?
 
 If, when you did your journalctl, the log messages ended with "Nest application
 successfully started"
 your server is up and will stay that way indefinitely.
 
+### Virtual Host setup
+
+For each facility supported by your deployment you need to set up a Virtual
+Host. This is how we suggest you do
+the [Apache Virtual Host Configuration](Apache.md).

@@ -3,17 +3,27 @@
 This guide is for the initial deployment of a system. If you are *updating a
 running deployment*, please go [here](Update.md)
 
+## Users and Groups
+
+Create a user and a group called zfm which will be used to run a zf-server as a
+service for all customers. This user's primary group should be www-data as the
+zf-server will be writing logs in /var/www.
+
+For developers/maintainers you create user accounts with the ability to log in
+with ssh. I.e. set up their ~/.ssh/authorized_keys with the person's public key.
+These users will need to be in the sudo group and the www-data group.
+
 ## Domain name
 
 You will need a domain name for the deployment as a whole. For the purpose of
-illustration, this guide will assume you have purchased _examplezfm.com_ and
-that you set up DNS records to point at your host's IP address.
+illustration, this guide will assume you have purchased _zfm.com_ and that you
+set up DNS records to point at your host's IP address.
 
-It is a good idea to set up _staging.examplezfm.com_,
-_test.examplezfm.com_, and _demo.examplezfm.com_ as an initial sub-domains.
-Later when you are configuring a system for a particular facility, you will be
-adding one sub-domain per facility. If you happen to know that you are going set
-up managers for facilities _eue_ and _acdc_, you could create those sub-domains
+It is a good idea to set up,
+_test.zfm.com_, and _demo.zfm.com_ as an initial sub-domains. Later when you are
+configuring a system for a particular facility, you will be adding one
+sub-domain per facility. If you happen to know that you are going set up
+managers for facilities _eue_ and _acdc_, you could create those sub-domains
 too. But you can always do that later. The DNS entries should all point to the
 ip address of your host.
 
@@ -91,18 +101,66 @@ that administrative user.
 
 ### Database Backup
 
-There are many ways to do this. I install automysqlbackup and by default it
-gives me exactly what I need. Daily backups rotated every week, weekly backups
-rotated every 5 weeks and monthly backups that are never rotated.
+You need to back up your databases regularly and copy those backups to a host
+that is remote from the host that is hosting your database. There are a zillion
+ways to do this. This is what I did.
 
-FWIW, the script lives in /etc/sbin/automysqlbackup and the config file lives in
-/etc/default/automysqlbackup (you need to edit the user credentials in there).
+#### Linux user
 
-By default, the backups go to /var/lib/automysqlbackup where the daily weekly
-and monthly directories are nicely split up by database.
+Create a dedicated Linux user "dbbackups" to perform your backups.  
+Create a ssh key for this user (to allow rsync of backups to another server
+using ssh).
 
-Of course, you also want to do remote storage of the backups, but I leave that
-to you.
+#### Database user
+
+Create a database user with sufficient capabilities to dump all your databases
+but not to write to them.
+
+#### Remote Host
+
+On some "backup" host that is geographically separate from your database host,
+create a user and include the public key for "dbbackups" in that user's
+.ssh/authorized_keys file. This enables rsync from the database host to the
+backup host.
+
+#### Automysqlbackup
+
+I chose to use automysqlbackup. By default, it gives me exactly what I need.
+Daily backups rotated every week, weekly backups rotated every 5 weeks and
+monthly backups that are never rotated.
+
+Edit the automysqlbackup config file in /etc/default/automysqlbackup to
+
+1. tell it about the database user credentials
+2. change the backup directory (default = /var/lib/automysql) to
+   /home/dbbackups/backup
+3. edit the configurable command that runs after the backup is complete. The
+   command will simply rsync the backup files to the remote host. The command
+   will look something like this with the obvious substitutions:
+
+```bash
+'rsync -a /your/chosen/local/backup/dir/ remotebackupuser@remote.backup.host:/your/chosen/remote/backup/dir'
+```
+
+ToDo the --delete option to rsync does not seem to work from within the cron
+job. It can be run manually once in a while.
+
+#### Schedule Backup
+
+I believe this should be done with a timer and a service in systemd, but I
+failed, so I used a good old cron job.
+
+1. edit /etc/cron.allow to include the dbbackups user
+2. (Debian specific) create a cron file /etc/cron.d/automysqlbackup which will
+   run as user dbbackups. Mine looks like this:
+   ```
+   SHELL=/bin/sh
+   PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+   17 22 * * * dbbackups /usr/sbin/automysqlbackup
+   ```
+
+An alternate solution to all of this is to have automysqlbackup run remotely,
+but that has other attendant problems.
 
 ### Web Server
 
@@ -117,7 +175,7 @@ Apache2 is usually pre-installed on Linux servers, but just in case, here is
 friendly article
 on [how to install Apache on Debian](https://www.digitalocean.com/community/tutorials/how-to-install-the-apache-web-server-on-debian-10)
 
-Set up a virtual host for your domain (in this case examplezfm.com). You can put
+Set up a virtual host for your domain (in this case zfm.com). You can put
 anything you want in the root directory, it is a base website you can use to
 welcome folks. You might want to put the user documentation there or a demo
 system or whatever you like.
@@ -145,32 +203,19 @@ cd zfm
 # create a directory with a date where you plan to clone and build the code.
 mkdir 2021-02-27
 
-
-# Create a new symbolic link from the build directory to the staging build area
-ln -s 2021-02-27 staging
-
-# For your initial deployment, your "staging" and "live" builds will be the same so
-# you need a second symbolic link
+# create a symbolic link called "live" for ease of updating later on when
+# a new build is deployed.
 ln -s 2021-02-27 live
 ```
 
-Just for clarity, when we go to do an update to a new revision of the system,
-
-1. we will clone the repo into a new directory,
-1. point the "staging" link at the new directory
-1. build in the staging directory and verify that the system is fine
-1. move the "live" to point at the new directory
-
 ### Clone the GitHub repository
 
-This is where you download all zf-client and zf-server code. You would normally
-work in your staging directory until you are satisfied that everything is
-perfect.
+This is where you download all zf-client and zf-server code.
 
 ```bash
-# go to your staging directory
+# go to your live directory
 # For example:
-cd /var/www/zfm/staging
+cd /var/www/zfm/live
 git clone https://github.com/tmoens/zebrafish-facility-manager
 ```
 
@@ -178,7 +223,7 @@ git clone https://github.com/tmoens/zebrafish-facility-manager
 
 ```bash
 # navigate to the zf-server sub-directory
-cd /var/www/zfm/staging/zebrafish-facility-manager/zf-server
+cd /var/www/zfm/live/zebrafish-facility-manager/zf-server
 
 # Download npm packages
 npm install
@@ -193,7 +238,7 @@ This generates a "dist" directory containing the main server executable main.js.
 
 ```bash 
 # navigate to the the zf-client sub-directory
-cd /var/www/zfm/staging/zebrafish-facility-manager/zf-client
+cd /var/www/zfm/live/zebrafish-facility-manager/zf-client
 
 # Download npm packages
 npm install
@@ -208,10 +253,10 @@ to tweak and rebuild the zf-client without affecting the users.
 
 ```shell
 # go to the "distribution" client directory
-cd /var/www/zfm/staging/zebrafish-facility-manager/zf-client/dist
+cd /var/www/zfm/live/zebrafish-facility-manager/zf-client/dist
 
 # copy it to a well known place
-sudo cp -R zf-client /var/www/staging
+sudo cp -R zf-client /var/www/live
 ```
 
 ### User Documentation Build
@@ -229,7 +274,7 @@ Once that's done, you build the documentation website:
 
 ```shell
 # navigate to the root of the repository
-cd /var/www/zfm/staging/zebrafish-facility-manager/zf-usage-docs
+cd /var/www/zfm/live/zebrafish-facility-manager/zf-usage-docs
 mkdocs build
 ```
 
