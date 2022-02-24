@@ -157,4 +157,5 @@ export function authServiceProviderFactory(provider: AppStateService) {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
