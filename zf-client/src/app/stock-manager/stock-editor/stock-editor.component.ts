@@ -176,7 +176,7 @@ export class StockEditorComponent implements OnInit {
     this.stock.id = null; // can't reuse the initial selected item's id.
     this.stock.subNumber = this.baseStock.nextSubStockNumber;
     this.stock.nextSubStockNumber++; // required: ensures parents and fertilizationDate not editable.
-    this.stock.name = this.stock.number + '.' + this.stock.subNumber;
+    this.stock.name = `${this.stock.number}.${(this.stock.nextSubStockNumber < 10) ? '0' : ''}${this.stock.nextSubStockNumber}`;
     // when creating a sub-stock, we get the transgenes and mutations automatically
     // but we need to make sure we don't get any live instances in tanks.
     this.stock.swimmers = [];
@@ -189,18 +189,22 @@ export class StockEditorComponent implements OnInit {
   }
 
   prepParents() {
-    if (!this.stock.matStock) { this.stock.matStock = new StockDto(); }
-    if (!this.stock.patStock) { this.stock.patStock = new StockDto(); }
+    if (!this.stock.matStock) {
+      this.stock.matStock = new StockDto();
+    }
+    if (!this.stock.patStock) {
+      this.stock.patStock = new StockDto();
+    }
     this.loadPIsAndResearchers();
     if (this.stock.fertilizationDate) {
-      this.fertilizationDate = new Date(this.stock.fertilizationDate + "T00:00:00");
+      this.fertilizationDate = new Date(this.stock.fertilizationDate + 'T00:00:00');
     } else {
       this.fertilizationDate = null;
     }
   }
 
   onFertilizationDateChange() {
-    this.stock.fertilizationDate = this.fertilizationDate.toISOString().substr(0,10);
+    this.stock.fertilizationDate = this.fertilizationDate.toISOString().substr(0, 10);
   }
 
   onSetMatStock() {
@@ -246,7 +250,7 @@ export class StockEditorComponent implements OnInit {
       this.stock.patIdInternal = null;
       this.stock.patStock = null;
     }
-    this.title.substr(0,2);
+    this.title.substr(0, 2);
     switch (this.editMode) {
       case EditMode.CREATE_NEXT:
         this.service.create(this.stock);
@@ -279,7 +283,7 @@ export class StockEditorComponent implements OnInit {
   }
 
   /* To support deactivation check  */
-  canDeactivate(): boolean | Observable<boolean> |Promise <boolean> {
+  canDeactivate(): boolean | Observable<boolean> | Promise<boolean> {
     if (this.saved || this.isUnchanged()) {
       return true;
     } else {

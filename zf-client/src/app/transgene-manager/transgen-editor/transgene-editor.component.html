@@ -7,10 +7,11 @@
   <form [formGroup]="mfForm">
 
     <div fxLayout="column">
-      <mat-form-field >
+      <mat-form-field>
         <input required matInput type="text" placeholder="Genomic feature name"
                formControlName="allele"
                maxlength="20" (focusout)="checkZfin()">
+        <mat-error *ngIf="alleleControl.touched && alleleControl.invalid">{{getAlleleError()}}</mat-error>
         <mat-error *ngIf="!mfForm.valid">{{getUniquenessError()}}</mat-error>
         <mat-hint *ngIf="zfinAlleleHint">{{zfinAlleleHint}}</mat-hint>
       </mat-form-field>
@@ -35,9 +36,9 @@
                maxlength="250">
       </mat-form-field>
 
-      <mat-form-field >
+      <mat-form-field>
         <input matInput type="text" placeholder="Source" formControlName="source"
-                [matAutocomplete]="autoSource"
+               [matAutocomplete]="autoSource"
                maxlength="40">
         <button mat-button matSuffix mat-icon-button *ngIf="getControl('source').value"
                 (click)="clearFormControl('source')">
@@ -52,14 +53,14 @@
         </mat-select>
       </mat-form-field>
 
-      <mat-form-field >
+      <mat-form-field>
         <input matInput type="number" placeholder="Vials Frozen" formControlName="vialsFrozen"
                min="0">
       </mat-form-field>
 
       <mat-form-field>
         <textarea matInput placeholder="Comment" formControlName="comment"
-                  maxlength="3000" cdkTextareaAutosize="true"  cdkAutosizeMaxRows="7">
+                  cdkAutosizeMaxRows="7" cdkTextareaAutosize="true" maxlength="3000">
         </textarea>
       </mat-form-field>
 
@@ -80,7 +81,8 @@
     <button mat-button color="primary" (click)="cancel()">Cancel</button>
     <button mat-button color="primary" [disabled]='mfForm.pristine' (click)="revert()">Revert</button>
     <button mat-button type="submit" color="primary" [disabled]='!mfForm.valid || mfForm.pristine'
-            (click)="save()">Save</button>
+            (click)="save()">Save
+    </button>
   </div>
 </div>
 

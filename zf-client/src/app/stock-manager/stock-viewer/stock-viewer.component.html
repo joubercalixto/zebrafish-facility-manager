@@ -22,9 +22,10 @@
         </mat-form-field>
         <mat-form-field>
           <label>
-            <input [value]=" service.selected.alleleSummary
-        " disabled
-                   matInput placeholder="Allele Summary">
+            <textarea [value]=" service.selected.alleleSummary" cdkAutosizeMaxRows="7"
+                      cdkTextareaAutosize="true"
+                      disabled matInput placeholder="Allele Summary">
+            </textarea>
           </label>
         </mat-form-field>
         <mat-form-field>
@@ -49,10 +50,8 @@
         </mat-form-field>
         <div fxLayout="row" fxLayoutGap="10px">
           <mat-form-field *ngIf="service.selected.countEnteringNursery" fxFlex="45%">
-            <label>
-              <input [value]="service.selected.countEnteringNursery" disabled
-                     matInput placeholder="Count entering nursery">
-            </label>
+            <input [value]="service.selected.countEnteringNursery" disabled
+                   matInput placeholder="Count entering nursery" type="number">
           </mat-form-field>
           <mat-form-field *ngIf="service.selected.countLeavingNursery" fxFlex="45%">
             <label>

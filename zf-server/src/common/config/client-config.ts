@@ -6,6 +6,7 @@ import {TankLabelConfig} from './tank-label-config';
 export class ClientConfig {
   facilityName = 'Facility name not configured';
   facilityAbbrv = 'Facility abbreviation not configured';
+  facilityPrefix = 'The allele prefix for this facility';
 
   hidePI = false;
   hideImportTool = true;
@@ -27,4 +28,6 @@ export class ClientConfig {
   passwordRequiresNumbers: boolean;
   passwordRequiresSpecialCharacters: boolean;
   passwordMinimumStrength: number;
+
+  autoAppendTgToOwnedAlleles: boolean;
 }

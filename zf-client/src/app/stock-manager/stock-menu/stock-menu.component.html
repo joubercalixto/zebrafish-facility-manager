@@ -1,7 +1,7 @@
 <button mat-button [matMenuTriggerFor]="stockMenu">
   <mat-icon>more_vert</mat-icon>
 </button>
-<mat-menu #stockMenu="matMenu" >
+<mat-menu #stockMenu="matMenu">
   <!--  Create a new stock-->
   <button zfmHideUnauthorized="user" mat-menu-item (click)="onCreate()">
     <mat-icon>add</mat-icon>
@@ -12,7 +12,7 @@
     <!--  Create a sub-stock of the currently selected stock -->
     <button mat-menu-item zfmHideUnauthorized="user" (click)="createSubStock()">
       <mat-icon>add</mat-icon>
-      <span>Create Sub Stock {{service.selected.number}}.{{service.selected.nextSubStockNumber}}</span>
+      <span>Create Sub Stock {{service.selected.nextSubStock}}</span>
     </button>
 
     <!-- Edit selected stock -->

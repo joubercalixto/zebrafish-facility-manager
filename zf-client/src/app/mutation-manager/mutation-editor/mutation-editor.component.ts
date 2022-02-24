@@ -6,10 +6,10 @@ import {MutationService} from '../mutation.service';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {EditMode} from '../../zf-generic/zf-edit-modes';
 import {DialogService} from '../../dialog.service';
-import {MAT_DATE_FORMATS} from "@angular/material/core";
-import {ZF_DATE_FORMATS} from "../../helpers/dateFormats";
-import {ScreenSizes} from "../../helpers/screen-sizes";
-import {AppStateService} from "../../app-state.service";
+import {MAT_DATE_FORMATS} from '@angular/material/core';
+import {ZF_DATE_FORMATS} from '../../helpers/dateFormats';
+import {ScreenSizes} from '../../helpers/screen-sizes';
+import {AppStateService} from '../../app-state.service';
 import {LoaderService} from '../../loader.service';
 import {ZfinMutationDto} from '../../common/zfin/zfin-mutation.dto';
 import {ZFTool} from '../../helpers/zf-tool';
@@ -167,6 +167,11 @@ export class MutationEditorComponent implements OnInit {
     if (!this.item) {
       return null;
     }
+    if (this.editMode === EditMode.CREATE || this.editMode === EditMode.EDIT) {
+      if (control.value && control.value.startsWith(this.appState.facilityConfig.facilityPrefix)) {
+        return {'prefix': {value: control.value}};
+      }
+    }
     // do not do a "name in use" check against your own name.
     if (this.item.name === control.value) {
       return null;
@@ -200,6 +205,9 @@ export class MutationEditorComponent implements OnInit {
   getNameError() {
     if (this.nameControl.hasError('unique')) {
       return 'The name ' + this.nameControl.value + ' is already in use.';
+    }
+    if (this.nameControl.hasError('prefix')) {
+      return `The prefix ${this.appState.facilityConfig.facilityPrefix} is reserved for "owned" mutations`;
     }
   }
 
@@ -248,21 +256,21 @@ export class MutationEditorComponent implements OnInit {
     this.zfinScreenTypeHint = null;
     this.loader.getZfinMutationByName(this.getControlValue('name'))
       .subscribe((zm: ZfinMutationDto) => {
-      if (!zm) {
-        this.zfinMutation = null;
-        return;
-      } else {
-        this.zfinMutation = zm;
-        if (this.getControlValue('gene') !== zm.geneName) {
-          this.canUpdateFromZfin = true;
-          this.zfinGeneNameHint = `ZFIN gene name is ${zm.geneName}`
+        if (!zm) {
+          this.zfinMutation = null;
+          return;
+        } else {
+          this.zfinMutation = zm;
+          if (this.getControlValue('gene') !== zm.geneName) {
+            this.canUpdateFromZfin = true;
+            this.zfinGeneNameHint = `ZFIN gene name is ${zm.geneName}`
+          }
+          if (this.getControlValue('zfinId') !== zm.zfinId) {
+            this.canUpdateFromZfin = true;
+            this.zfinIdHint = `ZFIN Id is ${zm.zfinId}`
+          }
         }
-        if (this.getControlValue('zfinId') !== zm.zfinId) {
-          this.canUpdateFromZfin = true;
-          this.zfinIdHint = `ZFIN Id is ${zm.zfinId}`
-        }
-      }
-    })
+      })
   }
 
   updateFromZfin() {

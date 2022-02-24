@@ -5,11 +5,11 @@ import {LoaderService} from '../loader.service';
 import {FieldOptions} from '../helpers/field-options';
 import {ZfGenericFilter} from './zfgeneric-filter';
 import {AppStateService, ZFToolStates} from '../app-state.service';
-import {ZFTypes} from "../helpers/zf-types";
-import {Router} from "@angular/router";
-import {AuthService} from "../auth/auth.service";
-import {ZfGenericDto} from "./zfgeneric-dto";
-import * as XLSX from "xlsx";
+import {ZFTypes} from '../helpers/zf-types';
+import {Router} from '@angular/router';
+import {AuthService} from '../auth/auth.service';
+import {ZfGenericDto} from './zfgeneric-dto';
+import * as XLSX from 'xlsx';
 
 /**
  * There is a service for every different type of object in the system.
@@ -39,12 +39,10 @@ import * as XLSX from "xlsx";
  */
 
 @Injectable()
-export class ZFGenericService<
-  // The SIMPLE_OBJ is a simple version of an object (Transgene, Mutation, Stock)
+export class ZFGenericService<// The SIMPLE_OBJ is a simple version of an object (Transgene, Mutation, Stock)
   // It is SIMPLE because it does not contain related objects.  So, it is used
   // for things like the filteredList.
   SIMPLE_OBJ extends ZfGenericDto,
-
   // The FULL_OBJ is the full version including some related objects.
   // It is FULL because it *does* (or can) contain related objects.  So, it is used
   // for things like the selectedObject.
@@ -87,17 +85,24 @@ export class ZFGenericService<
     return this._filteredList;
   }
 
-  // The ZF objects usually have a name that is assigned by the the system. The
+  // The ZF objects usually have a name that is assigned by the system. The
   // name is sequential and the user does not get to choose it, again usually.
   // So we keep track of what the next designated name for the next object.
   // The next name is only "likely" because some other GUI client may grab it
   // first.
   private _likelyNextName$: BehaviorSubject<string> = new BehaviorSubject<string>(null);
-  get likelyNextName$(): BehaviorSubject<string> { return this._likelyNextName$; }
-  get likelyNextName(): string { return this.likelyNextName$.value; }
+  get likelyNextName$(): BehaviorSubject<string> {
+    return this._likelyNextName$;
+  }
+
+  get likelyNextName(): string {
+    return this.likelyNextName$.value;
+  }
 
   protected _fieldOptions: FieldOptions;
-  get fieldOptions(): FieldOptions { return this._fieldOptions; }
+  get fieldOptions(): FieldOptions {
+    return this._fieldOptions;
+  }
 
   // This keeps track of whether the user is editing or browsing
   public inEditMode = false;

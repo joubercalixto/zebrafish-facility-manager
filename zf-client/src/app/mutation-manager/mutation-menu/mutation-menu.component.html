@@ -3,7 +3,7 @@
   Actions
 </button>
 
-<mat-menu #mutationMenu="matMenu" >
+<mat-menu #mutationMenu="matMenu">
   <!-- Create Mutation-->
   <button mat-menu-item zfmHideUnauthorized="user" (click)="create()">
     <mat-icon>add</mat-icon>
@@ -13,7 +13,7 @@
   <!-- Create Owned Mutation-->
   <button mat-menu-item zfmHideUnauthorized="user" (click)="createNext()">
     <mat-icon>add</mat-icon>
-    <span>Create Owned Mutation {{service.likelyNextName}}</span>
+    <span>Create {{service.likelyNextName}}</span>
   </button>
 
   <div *ngIf="service.selected">

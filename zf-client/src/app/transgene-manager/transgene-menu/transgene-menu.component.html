@@ -4,17 +4,17 @@
 </button>
 
 <!--Create a new Transgene-->
-<mat-menu #tgMenu="matMenu" >
-    <button mat-menu-item zfmHideUnauthorized="user" (click)="create()">
-      <mat-icon>add</mat-icon>
-      <span>Create Transgene</span>
-    </button>
+<mat-menu #tgMenu="matMenu">
+  <button (click)="create()" mat-menu-item zfmHideUnauthorized="user">
+    <mat-icon>add</mat-icon>
+    <span>Create Transgene</span>
+  </button>
 
-    <!--Create a transgene "owned" by this facility  -->
-    <button (click)="createNext()" mat-menu-item zfmHideUnauthorized="user">
-      <mat-icon>add</mat-icon>
-      <span>Create Owned Transgene {{service.likelyNextName}}</span>
-    </button>
+  <!--Create a transgene "owned" by this facility  -->
+  <button (click)="createNext()" mat-menu-item zfmHideUnauthorized="user">
+    <mat-icon>add</mat-icon>
+    <span>Create {{service.likelyNextName}}{{(appState.facilityConfig.autoAppendTgToOwnedAlleles) ? 'Tg' : ''}}</span>
+  </button>
 
   <div *ngIf="service.selected">
     <!--  Edit a transgene-->

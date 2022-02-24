@@ -104,6 +104,7 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
     const c = new ClientConfig();
     c.facilityName = this.envConfig.FACILITY_NAME;
     c.facilityAbbrv = this.envConfig.FACILITY_SHORT_NAME;
+    c.facilityPrefix = this.envConfig.FACILITY_PREFIX;
     c.hidePI = Boolean(this.envConfig.HIDE_PRIMARY_INVESTIGATOR);
     c.hideImportTool = Boolean(this.envConfig.HIDE_IMPORT_TOOL);
     c.tankNumberingHint = this.envConfig.TANK_NUMBERING_HINT;
@@ -131,6 +132,7 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
     c.passwordRequiresLowercase = Boolean(this.envConfig.PASSWORD_REQUIRES_LOWERCASE);
     c.passwordRequiresNumbers = Boolean(this.envConfig.PASSWORD_REQUIRES_NUMBERS);
     c.passwordRequiresSpecialCharacters = Boolean(this.envConfig.PASSWORD_REQUIRES_SPECIAL_CHARACTERS);
+    c.autoAppendTgToOwnedAlleles = Boolean(this.envConfig.AUTO_APPEND_Tg_TO_OWNED_ALLELES);
     return c;
   }
 
@@ -202,6 +204,7 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
       PASSWORD_REQUIRES_NUMBERS: Joi.boolean().default(false),
       PASSWORD_REQUIRES_SPECIAL_CHARACTERS: Joi.boolean().default(false),
       ALLOW_STOCK_NUMBER_OVERRIDE: Joi.boolean().default(false),
+      AUTO_APPEND_Tg_TO_OWNED_ALLELES: Joi.boolean().default(false),
     });
 
     const {error, value: validatedEnvConfig} = envVarsSchema.validate(

@@ -303,8 +303,10 @@ export class StockRepository extends Repository<Stock> {
 
     // a filter on text looks anywhere in the stocks comment or description only.
     if (filter.text) {
+      // const text = filter.text
       const text = '%' + filter.text + '%';
       q = q.andWhere(new Brackets(qb => {
+        // qb.where('stock.comment REGEXP :t OR stock.description REGEXP :t',
         qb.where('stock.comment LIKE :t OR stock.description LIKE :t',
           {t: text});
       }));

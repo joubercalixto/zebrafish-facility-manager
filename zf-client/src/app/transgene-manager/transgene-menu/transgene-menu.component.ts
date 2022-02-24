@@ -2,8 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {EditMode} from '../../zf-generic/zf-edit-modes';
 import {TransgeneService} from '../transgene.service';
-import {ZFTypes} from '../../helpers/zf-types';
 import {ZFTool} from '../../helpers/zf-tool';
+import {AppStateService} from '../../app-state.service';
 
 @Component({
   selector: 'app-transgene-menu',
@@ -14,6 +14,7 @@ import {ZFTool} from '../../helpers/zf-tool';
 export class TransgeneMenuComponent implements OnInit {
 
   constructor(
+    public appState: AppStateService,
     private router: Router,
     public service: TransgeneService,
   ) {

@@ -47,7 +47,11 @@ export class StockFullDto extends ZfGenericDto {
     super();
   }
 
+  get nextSubStock(): string {
+    return `${this.number}.${(this.nextSubStockNumber < 10) ? '0' : ''}${this.nextSubStockNumber}`
+  }
+
   test(): string {
-    return "Why not?";
+    return 'Why not?';
   }
 }
