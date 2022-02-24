@@ -33,7 +33,6 @@ import {StockManagerModule} from './stock-manager/stock-manager.module';
 import {MutationManagerModule} from './mutation-manager/mutation-manager.module';
 import {ZfGenericModule} from './zf-generic/zf-generic.module';
 import {CanDeactivateComponent} from './guards/can-deactivate-component';
-import {StockGeneticsEditorComponent} from './stock-manager/stock-genetics-editor/stock-genetics-editor.component';
 import {CanDeactivateGuard} from './guards/can-deactivate-guard';
 import {DialogService} from './dialog.service';
 import {AuthTokenInterceptor} from './auth/auth-token.interceptor';
@@ -135,15 +134,16 @@ export function authServiceProviderFactory(provider: AppStateService) {
     MatTooltipModule,
     AppRoutingModule,
   ],
-  entryComponents: [
-    StockGeneticsEditorComponent,
-    CanDeactivateComponent,
-  ],
   providers: [
     {provide: APP_INITIALIZER, useFactory: appStateProviderFactory, deps: [AppStateService], multi: true},
     {provide: APP_INITIALIZER, useFactory: configProviderFactory, deps: [ConfigService, AppStateService], multi: true},
     {provide: APP_INITIALIZER, useFactory: stockServiceProviderFactory, deps: [StockService], multi: true},
-    {provide: APP_INITIALIZER, useFactory: userAdminServiceProviderFactory, deps: [UserAdminService, AppStateService], multi: true},
+    {
+      provide: APP_INITIALIZER,
+      useFactory: userAdminServiceProviderFactory,
+      deps: [UserAdminService, AppStateService],
+      multi: true
+    },
     {provide: LocationStrategy, useClass: PathLocationStrategy},
     {provide: APP_INITIALIZER, useFactory: authServiceProviderFactory, deps: [AuthService], multi: true},
     CanDeactivateGuard,
