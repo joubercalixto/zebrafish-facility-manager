@@ -7,9 +7,6 @@ set foreign_key_checks = 0;
 delete
 from stock
 where 1;
-set foreign_key_checks = 1;
-
-
 delete
 from transgene
 where 1;
@@ -19,3 +16,4 @@ where 1;
 delete
 from user
 where role != 'admin';
+set foreign_key_checks = 1;

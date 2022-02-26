@@ -176,7 +176,7 @@ export class StockEditorComponent implements OnInit {
     this.stock.id = null; // can't reuse the initial selected item's id.
     this.stock.subNumber = this.baseStock.nextSubStockNumber;
     this.stock.nextSubStockNumber++; // required: ensures parents and fertilizationDate not editable.
-    this.stock.name = `${this.stock.number}.${(this.stock.nextSubStockNumber < 10) ? '0' : ''}${this.stock.nextSubStockNumber}`;
+    this.stock.name = `${this.stock.number}.${(this.stock.subNumber < 10) ? '0' : ''}${this.stock.subNumber}`;
     // when creating a sub-stock, we get the transgenes and mutations automatically
     // but we need to make sure we don't get any live instances in tanks.
     this.stock.swimmers = [];
