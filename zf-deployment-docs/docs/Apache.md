@@ -8,16 +8,16 @@ Examples and another for Staging (i.e. a test facility).
 
 ### Prerequisites:
 
-1. you have purchased the domain _zfm.com_
+1. you have purchased the domain _zsm.com_
 1. you have set up a sub-domain for the Example University of Examples called _
-   eue.zfm.com_
+   eue.zsm.com_
 1. you have chosen to run the zf-server for _eue_ on port 3004.
 1. you have built the zf-client and installed it in the appropriate directory.
-   In the deployment doc we suggested /var/www/zfm/live/zf-client
+   In the deployment doc we suggested /var/www/zsm/zf-client
 
 ### Virtual Host Files
 
-You are now ready to create your virtual host for eue.zfm.com
+You are now ready to create your virtual host for eue.zsm.com
 
 ---
 **Note**
@@ -28,17 +28,17 @@ process will update this file.
 
 1. go to your apache configuration directory. On Debian this is in
    /etc/apache2/sites-available.
-1. create a new virtual host configuration file called eue.zfm.com.conf.
+1. create a new virtual host configuration file called eue.zsm.com.conf.
 1. edit the file appropriately by copying the example below and adjusting it to
    how you have deployed your client and configured your server.
 
 ```bash 
 <VirtualHost *:80>
     ServerAdmin email_for_your_server_administrator@some_email_provider.whatever
-    ServerName eue.zfm.com
+    ServerName eue.zsm.com
 
-    # Note *ALL Live* facilities share the same zf-client from the "live" build
-    DocumentRoot /var/www/zfm/live/zf-client
+    # Note *ALL* facilities share the same zf-client 
+    DocumentRoot /var/www/zsm/zf-client
 
     ErrorLog ${APACHE_LOG_DIR}/eue.error.log
     CustomLog ${APACHE_LOG_DIR}/eue.access.log combined
@@ -67,10 +67,7 @@ After editing the file you need to:
 
 ```bash
 # enable the new site
-sudo a2ensite .../sites-available/eue.zfm.com.conf
-# Others too if you did multiples
-#sudo a2ensite .../sites-available/demo.zfm.com.conf
-#sudo a2ensite .../sites-available/test.zfm.com.conf
+sudo a2ensite .../sites-available/eue.zsm.com.conf
 
 # validate your configuration
 sudo apachectl configtest
@@ -85,12 +82,12 @@ In order to proceed, the DNS configuration for the sites you are going to secure
 must be working. You can test this with a simple ping:
 
 ```shell
-ping eue.zfm.com
+ping eue.zsm.com
 # should tell you the IP address of your deployment host
 ```
 
 Once that is working, you can now enter your subdomain in your browser. In the
-example you would put http://eue.zfm.com. If you get a message like "This site
+example you would put http://eue.zsm.com. If you get a message like "This site
 can't be reached", then there is a problem with your Apache configuration. If
 you get a blank screen your site has been reached, but it is not up yet. You can
 move on.
@@ -148,7 +145,7 @@ use multiple -d options, one for your domain and one for each sub-domain. For
 example:
 
 ```bash
-sudo certbot --apache -d zfm.com -d eue.zfm.com -d demo.zfm.com
+sudo certbot --apache -d zsm.com -d eue.zsm.com -d demo.zsm.com
 ```
 
 When you run the above command, we suggest that you allow certbot to modify your
@@ -172,14 +169,14 @@ sudo certbot certificates
 
 Suppose that your certificate says your certificate supports
 
-Domains: zfm.com, eue.zfm.com and demo.zfm.com
+Domains: zsm.com, eue.zsm.com and demo.zsm.com
 
 You now need to "expand" the certificate to include the domain
-newcustomer.zfm.com. To do so, you need to issue a new certbot command that
+newcustomer.zsm.com. To do so, you need to issue a new certbot command that
 includes all the existing supported domains!
 
 ```bash
-sudo certbot --expand -d zfm.com -d eue.zfm.com -d demo.zfm.com -d newcustomer.zfm.com
+sudo certbot --expand -d zsm.com -d eue.zsm.com -d demo.zsm.com -d newcustomer.zsm.com
 ```
 
 Certbot will guide you through the rest of the process of installing the
@@ -191,17 +188,17 @@ to https.
 Certbot will have created and enabled a https site for you. It will even have
 tried to edit the Virtual Host file you already created, but the RewriteRules it
 added to the config file are insufficient. Just edit your apache config file (
-eue.zfm.com.conf) to permanently redirect all insecure (http://) traffic to your
+eue.zsm.com.conf) to permanently redirect all insecure (http://) traffic to your
 secure (https://).
 
 The file will look like this:
 
 ```bash
 <VirtualHost *:80>
-    ServerName eue.zfm.com
-    Redirect permanent / https://eue.zfm.com
+    ServerName eue.zsm.com
+    Redirect permanent / https://eue.zsm.com
     RewriteEngine On
-    RewriteCond %{SERVER_NAME} =eue.zfm.com
+    RewriteCond %{SERVER_NAME} =eue.zsm.com
     RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,NE,R=permanent]
 </VirtualHost>
 ```
@@ -214,7 +211,7 @@ You might also want to go to this site:
 
 https://www.ssllabs.com/ssltest/
 
-Enter your subdomain (in this case eue.zfm.com) in the Hostname, hit the "
+Enter your subdomain (in this case eue.zsm.com) in the Hostname, hit the "
 Submit" button. You should get a reasonably good report!
 It takes a couple of minutes to run.
 
