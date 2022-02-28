@@ -12,14 +12,14 @@ Assumptions:
 
 1. you have already created a full deployment as described in the
    [Initial Deployment Guide](InitialDeployment.md).
-2. you have set up a domain called _zfm.com_
+2. you have set up a domain called _zsm.com_
 3. you are setting up a facility for _Example University of Examples_ called
    "eue" for short
 
 ## Sub-domain setup
 
 You need to create a sub-domain for your facilities. In our case it would be
-_eue.zfm.com_. The main thing you need to do is create DNS records that points
+_eue.zsm.com_. The main thing you need to do is create DNS records that points
 from your sub-domain to your host's IP address. After you add the sub-domain it
 usually takes an hour or so for it to propagate around the world.
 
@@ -29,7 +29,7 @@ probably has a DNS you can use to set up your DNS records.
 
 #### Am I ready to move on?
 
-If you can successfully ping your new subdomain _eue.zfm.com_, you are ready. If
+If you can successfully ping your new subdomain _eue.zsm.com_, you are ready. If
 the ping fails, it may simply be that the new DNS record you configured has not
 yet propagated.
 
@@ -52,7 +52,7 @@ generate a good one. For example:
 It does not matter what tool you choose to create the database, but if you want
 help, there is a script located in the repo for creating a database user and a
 database using the three parameters given above.  
-It is located at path_to_your_repo/zf-server/mysql scripts/create zfm db.sql.
+It is located at path_to_your_repo/zf-server/mysql scripts/create zsm db.sql.
 
 You can edit the script to place the values for three variable in it, log in to
 mariadb as admin and run the script.
@@ -98,7 +98,7 @@ The server rejects bad or missing configuration with useful error messages.
 
 ```bash
 # on the command line, navigate to the *live* zf-server directory
-cd /var/www/zfm/live/zebrafish-facility-manager/zf-server
+cd /var/www/zsm/zebrafish-facility-manager/zf-server
 
 # tell the server where to find the eue config file (eue.env)
 export FACILITY=eue
@@ -139,15 +139,14 @@ After=network.target mysql.service
 
 [Service]
 
-# assuming the deployment is in /var/www/zfm/live
-# this is where the executable lies
-ExecStart=/usr/bin/node /var/www/zfm/live/zebrafish-facility-manager/zf-server/dist/main.js
+# assuming the deployment is in /var/www/zsm, then this is where the executable lies
+ExecStart=/usr/bin/node /var/www/zsm/zebrafish-facility-manager/zf-server/dist/main.js
 
 Restart=always
 
 # choose an appropriate user and group to run the services.
-User=zfm
-Group=zfm
+User=zsm
+Group=zsm
 
 Environment=PATH=/usr/bin:/usr/local/bin
 Environment=NODE_ENV=production
@@ -155,10 +154,10 @@ Environment=NODE_ENV=production
 # tell the service where to find it's configuration file.
 # *** The next line will be different for each facility.
 Environment=FACILITY=eue
-# eue's config file will be in ...live/zf-server/environments/eue.env
+# eue's config file will be in /var/www/zsm/zebrafish-facility-manager/zf-server/environments/eue.env
 
 # Note the absence of /dist at the end of this path.
-WorkingDirectory=/var/www/zfm/live/zebrafish-facility-manager/zf-server
+WorkingDirectory=/var/www/zsm/zebrafish-facility-manager/zf-server
 
 [Install]
 WantedBy=multi-user.target
@@ -168,22 +167,22 @@ On the command line:
 
 ```shell
 # create service configuration file in the directory /etc/systemd/system
-# name the file something like zfm-eue.service (If all your services start with
-# a shared prefix like zfm, they will be easier to find, edit and extend.)
+# name the file something like zsm-eue.service (If all your services start with
+# a shared prefix like zsm, they will be easier to find, edit and extend.)
 # Use whatever editor you want - the example uses vi because I am old.
-sudo vi /etc/systemd/system/zfm-eue.service
+sudo vi /etc/systemd/system/zsm-eue.service
 
-# copy the file content from above (or from an existing zfm-xxx.service file),
+# copy the file content from above (or from an existing zsm-xxx.service file),
 # paste it in the editor and edit as appropriate. Save the file
 
 # enable the service
-sudo systemctl enable zfm-eue
+sudo systemctl enable zsm-eue
 
 # start the service
-sudo systemctl start zfm-eue
+sudo systemctl start zsm-eue
 
 # check that it is running properly
-sudo journalctl -u zfm-eue
+sudo journalctl -u zsm-eue
 ```
 
 #### Am I ready to move on?

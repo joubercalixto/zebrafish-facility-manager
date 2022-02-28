@@ -157,7 +157,7 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
       DB_HOST: Joi.string().optional().default('localhost'),
       DB_SSL_PROFILE: Joi.string().optional().default(null),
 
-      TYPEORM_SYNC_DATABASE: Joi.boolean().default(true),
+      TYPEORM_SYNC_DATABASE: Joi.boolean().default(false),
       TYPEORM_LOG_QUERIES: Joi.boolean().default(false),
 
       JWT_SECRET: Joi.string().required(),
