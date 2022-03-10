@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {MatDialog} from "@angular/material/dialog";
-import {ZFTool} from "../helpers/zf-tool";
-import {AuthApiService} from "../auth/auth-api.service";
-import {AuthService} from "../auth/auth.service";
-import {AppStateService} from "../app-state.service";
-import {ScreenSizes} from "../helpers/screen-sizes";
+import {MatDialog} from '@angular/material/dialog';
+import {ZFTool} from '../helpers/zf-tool';
+import {AuthApiService} from '../auth/auth-api.service';
+import {AuthService} from '../auth/auth.service';
+import {AppStateService} from '../app-state.service';
+import {ScreenSizes} from '../helpers/screen-sizes';
 
 @Component({
   selector: 'app-top-bar',
@@ -30,7 +30,7 @@ export class TopBarComponent implements OnInit {
   }
 
   goToBestPractices(): void {
-    window.open('https://zebrafishfacilitymanager.com/best-practices/stocks');
+    window.open(`${this.appState.facilityConfig.bestPracticesSite}/stocks`);
   }
 
   login() {
@@ -39,7 +39,7 @@ export class TopBarComponent implements OnInit {
 
   logout() {
     if (this.authService.isAuthenticated) {
-      this.authApiService.logout().subscribe( () => {
+      this.authApiService.logout().subscribe(() => {
         this.authService.onLogout();
         this.router.navigateByUrl('/splash').then();
       });

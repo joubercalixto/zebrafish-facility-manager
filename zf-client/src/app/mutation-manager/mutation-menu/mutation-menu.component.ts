@@ -2,7 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {MutationService} from '../mutation.service';
 import {Router} from '@angular/router';
 import {EditMode} from '../../zf-generic/zf-edit-modes';
-import {ZFTool} from "../../helpers/zf-tool";
+import {ZFTool} from '../../helpers/zf-tool';
+import {AppStateService} from '../../app-state.service';
 
 @Component({
   selector: 'app-mutation-menu',
@@ -13,6 +14,7 @@ import {ZFTool} from "../../helpers/zf-tool";
 export class MutationMenuComponent implements OnInit {
 
   constructor(
+    private appState: AppStateService,
     private router: Router,
     public service: MutationService,
   ) {
@@ -46,6 +48,6 @@ export class MutationMenuComponent implements OnInit {
 
 
   goToBestPractices(): void {
-    window.open('https://zebrafishfacilitymanager.com/best-practices/mutations');
+    window.open(`${this.appState.facilityConfig.bestPracticesSite}/mutations`);
   }
 }

@@ -47,7 +47,7 @@ export class TransgeneMenuComponent implements OnInit {
   }
 
   goToBestPractices(): void {
-    window.open('https://zebrafishfacilitymanager.com/best-practices/mutations');
+    window.open(`${this.appState.facilityConfig.bestPracticesSite}/mutations`);
   }
 }
 

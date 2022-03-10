@@ -8,6 +8,8 @@ export class ClientConfig {
   facilityAbbrv = 'Facility abbreviation not configured';
   facilityPrefix = 'The allele prefix for this facility';
 
+  bestPracticesSite: string;
+
   hidePI = false;
   hideImportTool = true;
   tankNumberingHint: string = 'Tank numbering hint not configured'

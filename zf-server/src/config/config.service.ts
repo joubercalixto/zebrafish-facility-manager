@@ -45,10 +45,6 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
     return Number(this.envConfig.PORT);
   }
 
-  get bestPracticesSite(): string {
-    return this.envConfig.BEST_PARACTICES_SITE;
-  }
-
   get nodeEnv(): string {
     return this.envConfig.NODE_ENV;
   }
@@ -59,6 +55,10 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
 
   get typeORMSync(): boolean {
     return Boolean(this.envConfig.TYPEORM_SYNC_DATABASE);
+  }
+
+  get typeORMMigrationRun(): boolean {
+    return Boolean(this.envConfig.TYPEORM_MIGRATION_RUN);
   }
 
   get facilityInfo(): FacilityDto {
@@ -105,6 +105,7 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
     c.facilityName = this.envConfig.FACILITY_NAME;
     c.facilityAbbrv = this.envConfig.FACILITY_SHORT_NAME;
     c.facilityPrefix = this.envConfig.FACILITY_PREFIX;
+    c.bestPracticesSite = this.envConfig.BEST_PRACTICES_SITE;
     c.hidePI = Boolean(this.envConfig.HIDE_PRIMARY_INVESTIGATOR);
     c.hideImportTool = Boolean(this.envConfig.HIDE_IMPORT_TOOL);
     c.tankNumberingHint = this.envConfig.TANK_NUMBERING_HINT;
@@ -158,6 +159,7 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
       DB_SSL_PROFILE: Joi.string().optional().default(null),
 
       TYPEORM_SYNC_DATABASE: Joi.boolean().default(false),
+      TYPEORM_MIGRATION_RUN: Joi.boolean().default(false),
       TYPEORM_LOG_QUERIES: Joi.boolean().default(false),
 
       JWT_SECRET: Joi.string().required(),
@@ -174,7 +176,7 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
       DEFAULT_ADMIN_USER_EMAIL: Joi.string().required(),
       DEFAULT_ADMIN_USER_PASSWORD: Joi.string().required(),
 
-      BEST_PRACTICES_SITE: Joi.string().default('https://zebrafishfacilitymanager.com'),
+      BEST_PRACTICES_SITE: Joi.string().default('https://zebrafishfacilitymanager.com/best-practices'),
 
       ZFIN_ALLELE_LOOKUP_URL: Joi.string().default('https://zfin.zebrafishfacilitymanager.com'),
 
@@ -239,6 +241,8 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
           `${SOURCE_PATH}/**/*.entity{.ts,.js}`,
         ],
         synchronize: this.typeORMSync,
+        'migrations': [`${SOURCE_PATH}/migrations/*{.ts,.js}`],
+        'migrationsRun': this.typeORMMigrationRun,
         logging: loggingOption,
         ssl: 'Amazon RDS',
       };
@@ -254,6 +258,8 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
           `${SOURCE_PATH}/**/*.entity{.ts,.js}`,
         ],
         synchronize: this.typeORMSync,
+        'migrations': [`${SOURCE_PATH}/migrations/*{.ts,.js}`],
+        'migrationsRun': this.typeORMMigrationRun,
         logging: loggingOption,
       };
 

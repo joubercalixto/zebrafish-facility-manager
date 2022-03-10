@@ -4,6 +4,7 @@ import {Router} from '@angular/router';
 import {EditMode} from '../../zf-generic/zf-edit-modes';
 import {ZFTool} from '../../helpers/zf-tool';
 import {PrintService} from '../../printing/print.service';
+import {AppStateService} from '../../app-state.service';
 
 @Component({
   selector: 'app-stock-menu',
@@ -14,6 +15,7 @@ import {PrintService} from '../../printing/print.service';
 export class StockMenuComponent implements OnInit {
 
   constructor(
+    private appState: AppStateService,
     private router: Router,
     public service: StockService,
     private printService: PrintService,
@@ -72,7 +74,7 @@ export class StockMenuComponent implements OnInit {
   }
 
   goToBestPractices(): void {
-    window.open('https://zebrafishfacilitymanager.com/best-practices/stocks');
+    window.open(`${this.appState.facilityConfig.bestPracticesSite}/stocks`);
   }
 
 }
