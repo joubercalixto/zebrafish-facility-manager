@@ -1,5 +1,5 @@
-SET @username := 'zf_some_facility';
-SET @password := 'some_good_password';
+SET @username := 'zf_uva';
+SET @password := 'zf_uva';
 SET @host := 'localhost';
 
 SET @query1 = CONCAT(
