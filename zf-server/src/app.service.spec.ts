@@ -223,7 +223,7 @@ describe('App Level testing', () => {
       };
       const stock: Stock = await stockService.validateAndCreate(s);
       // retrieve it again
-      const retrievedStock: Stock = await stockRepo.getStockWithRelations(stock.id);
+      const retrievedStock: Stock = await stockService.getFullById(stock.id);
       expect(retrievedStock.description).toBe(s.description);
       expect(retrievedStock.transgenes.length).toBe(0);
       expect(retrievedStock.mutations.length).toBe(0);
@@ -234,7 +234,7 @@ describe('App Level testing', () => {
       const stockIndex = 0;
       stocks[stockIndex].mutations = [mutations[0], mutations[1]];
       await stockService.validateAndUpdate(stocks[stockIndex]);
-      const retrievedStock: Stock = await stockRepo.getStockWithRelations(stocks[stockIndex].id);
+      const retrievedStock: Stock = await stockService.getFullById(stocks[stockIndex].id);
       expect(retrievedStock.description).toBe(stockData[stockIndex].description);
       expect(retrievedStock.transgenes.length).toBe(0);
       expect(retrievedStock.mutations.length).toBe(2);
@@ -245,7 +245,7 @@ describe('App Level testing', () => {
       const stockIndex = 1;
       stocks[stockIndex].transgenes = [transgenes[0], transgenes[1]];
       await stockService.validateAndUpdate(stocks[stockIndex]);
-      const retrievedStock: Stock = await stockRepo.getStockWithRelations(stocks[stockIndex].id);
+      const retrievedStock: Stock = await stockService.getFullById(stocks[stockIndex].id);
       expect(retrievedStock.description).toBe(stockData[stockIndex].description);
       expect(retrievedStock.transgenes.length).toBe(2);
       expect(retrievedStock.mutations.length).toBe(0);
@@ -257,7 +257,7 @@ describe('App Level testing', () => {
       stocks[stockIndex].transgenes = [transgenes[2]];
       stocks[stockIndex].mutations = [mutations[2]];
       await stockService.validateAndUpdate(stocks[stockIndex]);
-      const retrievedStock: Stock = await stockRepo.getStockWithRelations(stocks[stockIndex].id);
+      const retrievedStock: Stock = await stockService.getFullById(stocks[stockIndex].id);
       expect(retrievedStock.description).toBe(stockData[stockIndex].description);
       expect(retrievedStock.transgenes.length).toBe(1);
       expect(retrievedStock.mutations.length).toBe(1);
@@ -269,7 +269,7 @@ describe('App Level testing', () => {
       stocks[stockIndex].transgenes = [transgenes[2], transgenes[0]];
       stocks[stockIndex].mutations = [mutations[2], mutations[0]];
       await stockService.validateAndUpdate(stocks[stockIndex]);
-      const retrievedStock: Stock = await stockRepo.getStockWithRelations(stocks[stockIndex].id);
+      const retrievedStock: Stock = await stockService.getFullById(stocks[stockIndex].id);
       expect(retrievedStock.description).toBe(stockData[stockIndex].description);
       expect(retrievedStock.transgenes.length).toBe(2);
       expect(retrievedStock.mutations.length).toBe(2);
@@ -286,7 +286,7 @@ describe('App Level testing', () => {
       const newSubStock: any = classToPlain(stocks[3]);
       newSubStock.description = 'substock created from whatever';
       const subStock = await stockService.validateAndCreate(newSubStock, true);
-      const retrievedStock: Stock = await stockRepo.getStockWithRelations(subStock.id);
+      const retrievedStock: Stock = await stockService.getFullById(subStock.id);
       expect(retrievedStock.description).toBe(newSubStock.description);
       expect(retrievedStock.transgenes.length).toBe(2);
       expect(retrievedStock.mutations.length).toBe(2);
@@ -300,7 +300,7 @@ describe('App Level testing', () => {
         matIdInternal: stocks[stockIndex].id,
       };
       const s = await stockService.validateAndCreate(stockD);
-      const retrievedStock: Stock = await stockRepo.getStockWithRelations(s.id);
+      const retrievedStock: Stock = await stockService.getFullById(s.id);
       expect(retrievedStock.description).toBe(stockD.description);
       expect(retrievedStock.transgenes.length).toBe(2);
       expect(retrievedStock.mutations.length).toBe(2);
@@ -314,7 +314,7 @@ describe('App Level testing', () => {
         patIdInternal: stocks[stockIndex].id,
       };
       const s = await stockService.validateAndCreate(stockD);
-      const retrievedStock: Stock = await stockRepo.getStockWithRelations(s.id);
+      const retrievedStock: Stock = await stockService.getFullById(s.id);
       expect(retrievedStock.description).toBe(stockD.description);
       expect(retrievedStock.transgenes.length).toBe(2);
       expect(retrievedStock.mutations.length).toBe(2);
@@ -330,7 +330,7 @@ describe('App Level testing', () => {
         patIdInternal: dad.id,
       };
       const s = await stockService.validateAndCreate(stockD);
-      const retrievedStock: Stock = await stockRepo.getStockWithRelations(s.id);
+      const retrievedStock: Stock = await stockService.getFullById(s.id);
       expect(retrievedStock.description).toBe(stockD.description);
       expect(retrievedStock.transgenes.length).toBe(2);
       expect(retrievedStock.mutations.length).toBe(2);
@@ -346,7 +346,7 @@ describe('App Level testing', () => {
         patIdInternal: dad.id,
       };
       const s = await stockService.validateAndCreate(stockD);
-      const retrievedStock: Stock = await stockRepo.getStockWithRelations(s.id);
+      const retrievedStock: Stock = await stockService.getFullById(s.id);
       expect(retrievedStock.description).toBe(stockD.description);
       expect(retrievedStock.transgenes.length).toBe(1);
       expect(retrievedStock.mutations.length).toBe(3);
@@ -362,7 +362,7 @@ describe('App Level testing', () => {
         patIdInternal: dad.id,
       };
       const s = await stockService.validateAndCreate(stockD);
-      const retrievedStock: Stock = await stockRepo.getStockWithRelations(s.id);
+      const retrievedStock: Stock = await stockService.getFullById(s.id);
       expect(retrievedStock.description).toBe(stockD.description);
       expect(retrievedStock.transgenes.length).toBe(0);
       expect(retrievedStock.mutations.length).toBe(2);
@@ -378,7 +378,7 @@ describe('App Level testing', () => {
         patIdInternal: dad.id,
       };
       const s = await stockService.validateAndCreate(stockD);
-      const retrievedStock: Stock = await stockRepo.getStockWithRelations(s.id);
+      const retrievedStock: Stock = await stockService.getFullById(s.id);
       expect(retrievedStock.description).toBe(stockD.description);
       expect(retrievedStock.transgenes.length).toBe(2);
       expect(retrievedStock.mutations.length).toBe(2);

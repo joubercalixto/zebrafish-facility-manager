@@ -13,7 +13,7 @@ export interface EnvConfig {
 
 class FacilityDto {
   name: string;
-  short_name: string;
+  shortName: string;
   prefix: string;
   url: string;
 }
@@ -64,7 +64,7 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
   get facilityInfo(): FacilityDto {
     return {
       name: this.envConfig.FACILITY_NAME,
-      short_name: this.envConfig.FACILITY_SHORT_NAME,
+      shortName: this.envConfig.FACILITY_SHORT_NAME,
       prefix: this.envConfig.FACILITY_PREFIX,
       url: this.envConfig.FACILITY_URL,
     };
@@ -97,6 +97,10 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
 
   get allowStockNumberOverride(): boolean {
     return Boolean(this.envConfig.ALLOW_STOCK_NUMBER_OVERRIDE);
+  }
+
+  get allowRegexStockSearch(): boolean {
+    return Boolean(this.envConfig.ALLOW_REGEX_STOCK_SEARCH);
   }
 
   // This is used to build a ClientConfig object to send to the client
@@ -206,6 +210,7 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
       PASSWORD_REQUIRES_NUMBERS: Joi.boolean().default(false),
       PASSWORD_REQUIRES_SPECIAL_CHARACTERS: Joi.boolean().default(false),
       ALLOW_STOCK_NUMBER_OVERRIDE: Joi.boolean().default(false),
+      ALLOW_REGEX_STOCK_SEARCH: Joi.boolean().default(false),
       AUTO_APPEND_Tg_TO_OWNED_ALLELES: Joi.boolean().default(false),
     });
 

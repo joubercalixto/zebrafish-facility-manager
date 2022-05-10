@@ -12,8 +12,6 @@ import {
   UseGuards,
   UseInterceptors
 } from '@nestjs/common';
-import {InjectRepository} from '@nestjs/typeorm';
-import {StockRepository} from './stock.repository';
 import {Stock} from './stock.entity';
 import {StockService} from './stock.service';
 import {StockFilter} from './stock-filter';
@@ -34,14 +32,12 @@ import {MarkerImportDto} from './marker-import-dto';
 export class StockController {
   constructor(
     private readonly service: StockService,
-    @InjectRepository(StockRepository)
-    private readonly repo: StockRepository,
   ) {
   }
 
   @Get('nextName')
   async getNextStockName(): Promise<any> {
-    return await this.repo.getNextStockName();
+    return await this.service.getNextStockName();
   }
 
   // Get stocks for export
@@ -101,23 +97,23 @@ export class StockController {
   @Get()
   async findFiltered(@Query() params): Promise<any[]> {
     const filter: StockFilter = plainToClass(StockFilter, params);
-    return await this.repo.findFiltered(filter);
+    return await this.service.findFiltered(filter);
   }
 
   @Get('tankWalk')
   async getTankWalk(@Query() params): Promise<any[]> {
     const filter: StockFilter = plainToClass(StockFilter, params);
-    return await this.repo.getStocksForTankWalk(filter);
+    return await this.service.getStocksForTankWalk(filter);
   }
 
   @Get('report')
   async getReport(@Query() params): Promise<any[]> {
-    return await this.repo.getStocksForReport(params);
+    return await this.service.getStocksForReport(params);
   }
 
   @Get('autoCompleteOptions')
   async getAutoCompleteOptions(): Promise<any> {
-    return await this.repo.getAutoCompleteOptions();
+    return await this.service.getAutoCompleteOptions();
   }
 
   @Get('name/:name')

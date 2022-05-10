@@ -143,7 +143,7 @@ export class ImporterComponent implements OnInit {
     this.selectedFile = event.target.files[0];
     this.problems = [];
     this.notes = [];
-    this.notes.push(`File selected: ${this.selectedFile.name}`)
+    this.notes.push(`File selected: ${this.selectedFile.name}`);
     this.currentlyImporting = null;
     this.selectedFile = event.target.files[0];
   }
@@ -177,16 +177,16 @@ export class ImporterComponent implements OnInit {
     if (resultWb.SheetNames.length > 0) {
       XLSX.writeFile(resultWb, `ImportResults-${now}.xlsx`);
     } else {
-      this.problems.push('No imports')
+      this.problems.push('No imports');
     }
   }
 
   async importSheet(name: ZFImportType, ws: WorkSheet): Promise<WorkSheet> {
-    this.notes.push(`Importing ${name} worksheet...`)
+    this.notes.push(`Importing ${name} worksheet...`);
     const dtos: any[] = XLSX.utils.sheet_to_json(ws);
     this.total = dtos.length;
     this.done = 0;
-    var errorCount = 0;
+    let errorCount = 0;
     for (const dto of dtos) {
       const response: any = await this.service.import(name, dto)
         .pipe(
@@ -204,7 +204,7 @@ export class ImporterComponent implements OnInit {
       this.done = this.done + 1;
       this.progress = this.done / this.total * 100;
     }
-    this.notes.push(`Done ${name} importing. Number imported: ${this.done}. Number Errors: ${errorCount}`)
+    this.notes.push(`Done ${name} importing. Number imported: ${this.done}. Number Errors: ${errorCount}`);
     return XLSX.utils.json_to_sheet(dtos);
   }
 
@@ -224,4 +224,4 @@ const readFileAsArrayBuffer = (inputFile) => {
     };
     temporaryFileReader.readAsArrayBuffer(inputFile);
   });
-}
+};

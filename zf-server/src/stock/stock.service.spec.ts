@@ -116,7 +116,7 @@ describe('Stock Service testing', () => {
       });
 
       it('7675427 create (and get and delete) minimal sub stock', async () => {
-        const nextStockNumber: number = await stockRepo.getNextStockNumber();
+        const nextStockNumber: number = await stockService.getNextStockNumber();
         const s = {
           description: String(Math.random()),
           comment: '7675427 create (and get and delete) minimal sub stock',
@@ -193,7 +193,7 @@ describe('Stock Service testing', () => {
         };
         const baby: Stock = await stockService.validateAndCreate(b);
         // retrieve it again
-        const retrievedStock: Stock = await stockRepo.getStockWithRelations(baby.id);
+        const retrievedStock: Stock = await stockService.getFullById(baby.id);
         expect(retrievedStock.description).toBe(b.description);
         expect(retrievedStock.matStock.description).toBe(m.description);
         expect(retrievedStock.patStock.description).toBe(d.description);
@@ -450,7 +450,7 @@ describe('Stock Service testing', () => {
         };
         const baby: Stock = await stockService.validateAndCreate(b);
         // re-fetch mom now that she has kids
-        mom = await stockRepo.getStockWithRelations(mom.id);
+        mom = await stockService.getFullById(mom.id);
         mom.fertilizationDate = '2019-03-19';
         const momDTO = classToPlain(mom);
         await expect(stockService.validateAndUpdate(momDTO)).rejects.toThrow();
@@ -511,21 +511,21 @@ describe('Stock Service testing', () => {
 
     it('5684573 open filter. Will fail if db not empty before test.', async () => {
       const filter: StockFilter = new StockFilter();
-      const list = await stockRepo.findFiltered(filter);
+      const list = await stockService.findFiltered(filter);
       expect(list.length).toBe(5);
-      const reportList = await stockRepo.getStocksForReport(filter);
+      const reportList = await stockService.getStocksForReport(filter);
       expect(reportList.length).toBe(5);
     });
 
     it('9468788 direct match smallest number.', async () => {
       const filter: StockFilter = new StockFilter();
       filter.number = String(stocks[0].number);
-      const list = await stockRepo.findFiltered(filter);
+      const list = await stockService.findFiltered(filter);
       // check the returned length
       expect(list.length).toBe(1);
       // check the returned value
       expect(list[0].description).toBe(stocksForFilterTests[0].description);
-      const reportList = await stockRepo.getStocksForReport(filter);
+      const reportList = await stockService.getStocksForReport(filter);
       expect(reportList.length).toBe(1);
     });
 
@@ -536,27 +536,27 @@ describe('Stock Service testing', () => {
       // TMOTS is that names are a sucky way to filter.
       const filter: StockFilter = new StockFilter();
       filter.number = String(stocks[3].name);
-      const list = await stockRepo.findFiltered(filter);
+      const list = await stockService.findFiltered(filter);
       expect(list.length).toBe(1);
-      const reportList = await stockRepo.getStocksForReport(filter);
+      const reportList = await stockService.getStocksForReport(filter);
       expect(reportList.length).toBe(1);
     });
 
     it('7583787 direct match unique description', async () => {
       const filter: StockFilter = new StockFilter();
       filter.text = '8188099 stock11 x';
-      const list = await stockRepo.findFiltered(filter);
+      const list = await stockService.findFiltered(filter);
       expect(list.length).toBe(1);
-      const reportList = await stockRepo.getStocksForReport(filter);
+      const reportList = await stockService.getStocksForReport(filter);
       expect(reportList.length).toBe(1);
     });
 
     it('4137399 matches 4 descriptions', async () => {
       const filter: StockFilter = new StockFilter();
       filter.text = 'stock2';
-      const list = await stockRepo.findFiltered(filter);
+      const list = await stockService.findFiltered(filter);
       expect(list.length).toBe(4);
-      const reportList = await stockRepo.getStocksForReport(filter);
+      const reportList = await stockService.getStocksForReport(filter);
       expect(reportList.length).toBe(4);
     });
 
@@ -564,9 +564,9 @@ describe('Stock Service testing', () => {
       const filter: StockFilter = new StockFilter();
       filter.age = 10;
       filter.ageModifier = 'or_older';
-      const list = await stockRepo.findFiltered(filter);
+      const list = await stockService.findFiltered(filter);
       expect(list.length).toBe(5);
-      const reportList = await stockRepo.getStocksForReport(filter);
+      const reportList = await stockService.getStocksForReport(filter);
       expect(reportList.length).toBe(5);
     });
 
@@ -574,9 +574,9 @@ describe('Stock Service testing', () => {
       const filter: StockFilter = new StockFilter();
       filter.age = 9;
       filter.ageModifier = 'or_younger';
-      const list = await stockRepo.findFiltered(filter);
+      const list = await stockService.findFiltered(filter);
       expect(list.length).toBe(0);
-      const reportList = await stockRepo.getStocksForReport(filter);
+      const reportList = await stockService.getStocksForReport(filter);
       expect(reportList.length).toBe(0);
     });
 
@@ -584,9 +584,9 @@ describe('Stock Service testing', () => {
       const filter: StockFilter = new StockFilter();
       filter.age = 10;
       filter.ageModifier = 'or_younger';
-      const list = await stockRepo.findFiltered(filter);
+      const list = await stockService.findFiltered(filter);
       expect(list.length).toBe(2);
-      const reportList = await stockRepo.getStocksForReport(filter);
+      const reportList = await stockService.getStocksForReport(filter);
       expect(reportList.length).toBe(2);
     });
 

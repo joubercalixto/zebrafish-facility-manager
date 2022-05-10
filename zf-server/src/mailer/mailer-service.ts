@@ -35,7 +35,7 @@ export class ZFMailerService {
         to: user.email,
         subject: 'Zebrafish Facility Manager Password Reset', // Subject line
         html: `<p>Greetings ${user.username}: <\p>
-          <p>As requested, your password has been changed.  Your new password is 
+          <p>As requested, your password has been changed.  Your new password is
           <b>${newPassword}</b>. Use it to log in, and then to change your password to whatever you like.
           
           Regards,
