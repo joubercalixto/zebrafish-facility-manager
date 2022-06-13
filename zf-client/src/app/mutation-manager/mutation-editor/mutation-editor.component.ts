@@ -101,7 +101,6 @@ export class MutationEditorComponent implements OnInit {
           break;
       }
       this.initialize();
-      this.checkZfin();
     });
   }
 

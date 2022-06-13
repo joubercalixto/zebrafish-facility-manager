@@ -5,15 +5,15 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {FieldOptions} from '../helpers/field-options';
 import {ZFGenericService} from '../zf-generic/zfgeneric-service';
 import * as XLSX from 'xlsx';
-import {AppStateService, ZFToolStates} from '../app-state.service';
-import {plainToClass} from "class-transformer";
-import {ZFTypes} from "../helpers/zf-types";
-import {Router} from "@angular/router";
-import {AuthService} from "../auth/auth.service";
-import {MutationDto} from "./mutation-dto";
-import {MutationTypeDto} from "./mutation-types/mutation-type-dto";
-import {ScreenTypeDto} from "./screen-types/screen-type-dto";
 import {WorkSheet} from 'xlsx';
+import {AppStateService, ZFToolStates} from '../app-state.service';
+import {plainToClass} from 'class-transformer';
+import {ZFTypes} from '../helpers/zf-types';
+import {Router} from '@angular/router';
+import {AuthService} from '../auth/auth.service';
+import {MutationDto} from './mutation-dto';
+import {MutationTypeDto} from './mutation-types/mutation-type-dto';
+import {ScreenTypeDto} from './screen-types/screen-type-dto';
 
 /**
  * This is the model for mutation information displayed in the GUI.
@@ -42,7 +42,7 @@ export class MutationService extends ZFGenericService<MutationDto, MutationDto, 
       if (loggedIn) {
         this.initialize();
       }
-    })
+    });
   }
 
   // convert a plain (json) object to a FullDTO
@@ -67,10 +67,10 @@ export class MutationService extends ZFGenericService<MutationDto, MutationDto, 
     this.loader.getScreenTypes().subscribe((mts: ScreenTypeDto[]) => this.screenTypes = mts);
 
     this._fieldOptions = new FieldOptions({
-      'name': [],
-      'gene': [],
-      'screenType': [],
-      'mutationType': [],
+      name: [],
+      gene: [],
+      screenType: [],
+      mutationType: [],
     });
     this.refresh();
   }
@@ -105,10 +105,11 @@ export class MutationService extends ZFGenericService<MutationDto, MutationDto, 
   toExcel() {
     const wb = XLSX.utils.book_new();
     const mutationSheet = XLSX.utils.json_to_sheet(this.filteredList.map((m: MutationDto) => {
-      return {id: m.id, serialNumber: m.serialNumber,
+      return {
+        id: m.id, serialNumber: m.serialNumber,
         name: m.name, gene: m.gene, 'Alt Gene': m.alternateGeneName, researcher: m.researcher,
-        'aaChange': m.aaChange, 'actgChange': m.actgChange, spermFreezePlan: m.spermFreezePlan, vialsFrozen: m.vialsFrozen,
-        comment: m.comment, phenotype: m.phenotype, 'morphantPhenotype': m.morphantPhenotype,
+        aaChange: m.aaChange, actgChange: m.actgChange, spermFreezePlan: m.spermFreezePlan, vialsFrozen: m.vialsFrozen,
+        comment: m.comment, phenotype: m.phenotype, morphantPhenotype: m.morphantPhenotype,
         mutationType: m.mutationType, screenType: m.screenType, zfinId: m.zfinId,
       };
     }));
@@ -142,13 +143,23 @@ export class MutationService extends ZFGenericService<MutationDto, MutationDto, 
   getExportWorksheet(): WorkSheet {
     const mutationSheet = XLSX.utils.json_to_sheet(this.all.map((m: MutationDto) => {
       return {
-        id: m.id, "Serial#": m.serialNumber,
-        Allele: m.name, Nickname: m.nickname,
-        Gene: m.gene, 'Alt Gene': m.alternateGeneName,
-        'ZFIN Id': m.zfinId, Source: m.researcher,
-        Comment: m.comment, 'Mutation Type': m.mutationType, 'ScreenType': m.screenType,
-        'aaChange': m.aaChange, 'actgChange': m.actgChange, 'Sperm Freeze Plan': m.spermFreezePlan, 'Vials Frozen': m.vialsFrozen,
-        Phenotype: m.phenotype, 'Morphant Phenotype': m.morphantPhenotype,
+        id: m.id,
+        'Serial#': m.serialNumber,
+        Allele: m.name,
+        Nickname: m.nickname,
+        Gene: m.gene,
+        'Alt Gene': m.alternateGeneName,
+        'ZFIN Id': m.zfinId,
+        Source: m.researcher,
+        Comment: m.comment,
+        'Mutation Type': m.mutationType,
+        ScreenType: m.screenType,
+        aaChange: m.aaChange,
+        actgChange: m.actgChange,
+        'Sperm Freeze Plan': m.spermFreezePlan,
+        'Vials Frozen': m.vialsFrozen,
+        Phenotype: m.phenotype,
+        'Morphant Phenotype': m.morphantPhenotype,
       };
     }));
     mutationSheet['!cols'] = [
