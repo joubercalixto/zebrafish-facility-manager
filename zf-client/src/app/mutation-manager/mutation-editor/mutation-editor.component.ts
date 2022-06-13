@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {MutationDto} from '../mutation-dto';
 import {Observable} from 'rxjs';
-import {AbstractControl, FormBuilder, FormControl, ValidationErrors, Validators} from '@angular/forms';
+import {AbstractControl, FormBuilder, ValidationErrors, Validators} from '@angular/forms';
 import {MutationService} from '../mutation.service';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {EditMode} from '../../zf-generic/zf-edit-modes';
@@ -38,8 +38,6 @@ export class MutationEditorComponent implements OnInit {
   zfinIdHint: string;
   zfinScreenTypeHint: string;
 
-  mutationTypeFC: FormControl = new FormControl();
-
   // Build the edit form.
   // Even though the form does not support editing of every field,
   // all the fields that *can* come in the DTO require a formControl
@@ -67,13 +65,6 @@ export class MutationEditorComponent implements OnInit {
     fullName: [null],
   });
 
-// These are arrays containing options for the various filter fields
-  filteredGeneOptions: Observable<string[]>;
-  filteredResearcherOptions: Observable<string[]>;
-  filteredMutationTypeOptions: Observable<string[]>;
-  filteredScreenTypeOptions: Observable<string[]>;
-  spermFreezeOptions: string[];
-
   constructor(
     public appState: AppStateService,
     private route: ActivatedRoute,
@@ -93,6 +84,14 @@ export class MutationEditorComponent implements OnInit {
         case EditMode.EDIT:
           this.editMode = EditMode.EDIT;
           this.id = +pm.get('id');
+          this.service.getById(this.id).subscribe((item: MutationDto) => {
+            this.item = item;
+            if (this.item.serialNumber) {
+              this.mfForm.get('name').disable();
+            } else {
+              this.mfForm.get('name').enable();
+            }
+          });
           break;
         case EditMode.CREATE:
           this.editMode = EditMode.CREATE;
@@ -102,6 +101,7 @@ export class MutationEditorComponent implements OnInit {
           break;
       }
       this.initialize();
+      this.checkZfin();
     });
   }
 
@@ -169,7 +169,7 @@ export class MutationEditorComponent implements OnInit {
     }
     if (this.editMode === EditMode.CREATE || this.editMode === EditMode.EDIT) {
       if (control.value && control.value.startsWith(this.appState.facilityConfig.facilityPrefix)) {
-        return {'prefix': {value: control.value}};
+        return {prefix: {value: control.value}};
       }
     }
     // do not do a "name in use" check against your own name.
@@ -177,7 +177,7 @@ export class MutationEditorComponent implements OnInit {
       return null;
     }
     if (this.service.nameIsInUse(control.value)) {
-      return {'unique': {value: control.value}};
+      return {unique: {value: control.value}};
     } else {
       return null;
     }
@@ -192,7 +192,7 @@ export class MutationEditorComponent implements OnInit {
       return null;
     }
     if (this.service.nicknameIsInUse(control.value)) {
-      return {'unique': {value: control.value}};
+      return {unique: {value: control.value}};
     } else {
       return null;
     }
@@ -263,14 +263,14 @@ export class MutationEditorComponent implements OnInit {
           this.zfinMutation = zm;
           if (this.getControlValue('gene') !== zm.geneName) {
             this.canUpdateFromZfin = true;
-            this.zfinGeneNameHint = `ZFIN gene name is ${zm.geneName}`
+            this.zfinGeneNameHint = `ZFIN gene name is ${zm.geneName}`;
           }
           if (this.getControlValue('zfinId') !== zm.zfinId) {
             this.canUpdateFromZfin = true;
-            this.zfinIdHint = `ZFIN Id is ${zm.zfinId}`
+            this.zfinIdHint = `ZFIN Id is ${zm.zfinId}`;
           }
         }
-      })
+      });
   }
 
   updateFromZfin() {
