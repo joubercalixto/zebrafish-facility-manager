@@ -5,10 +5,10 @@ import {Observable} from 'rxjs';
 import {FormBuilder} from '@angular/forms';
 import {debounceTime, map, startWith} from 'rxjs/operators';
 import {MutationFilter} from '../mutation-filter';
-import {MutationDto} from "../mutation-dto";
-import {AppStateService} from "../../app-state.service";
-import {ZfGenericDto} from "../../zf-generic/zfgeneric-dto";
-import {ScreenSizes} from "../../helpers/screen-sizes";
+import {MutationDto} from '../mutation-dto';
+import {AppStateService} from '../../app-state.service';
+import {ZfGenericDto} from '../../zf-generic/zfgeneric-dto';
+import {ScreenSizes} from '../../helpers/screen-sizes';
 import {ZFTool} from '../../helpers/zf-tool';
 
 @Component({
@@ -20,7 +20,6 @@ export class MutationSelectorComponent implements OnInit {
   ScreenSizes = ScreenSizes;
 
   @Output() selected = new EventEmitter<MutationDto>();
-  focusId: number;
 
   // Build the filter form.
   mfForm = this.fb.group(this.service.filter);
@@ -86,9 +85,5 @@ export class MutationSelectorComponent implements OnInit {
   onSelect(instance: ZfGenericDto | null) {
     this.selected.emit(instance as MutationDto);
     this.router.navigate([ZFTool.MUTATION_MANAGER.route + '/view/' + instance.id]).then();
-  }
-
-  onPreselect(id) {
-    this.focusId = id;
   }
 }

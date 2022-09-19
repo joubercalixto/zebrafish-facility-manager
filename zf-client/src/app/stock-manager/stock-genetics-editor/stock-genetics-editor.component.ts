@@ -1,27 +1,27 @@
 import {Component, OnInit} from '@angular/core';
 import {ZfSelectionList} from '../../helpers/selection-list';
 import {StockService} from '../stock.service';
-import {ActivatedRoute, ParamMap, Router} from "@angular/router";
-import {DialogService} from "../../dialog.service";
-import {FormBuilder, FormControl} from "@angular/forms";
-import {MutationService} from "../../mutation-manager/mutation.service";
-import {TransgeneService} from "../../transgene-manager/transgene.service";
-import {Observable} from "rxjs";
-import {StockFullDto} from "../dto/stock-full-dto";
-import {classToClass} from "class-transformer";
-import {MutationDto} from "../../mutation-manager/mutation-dto";
-import {TransgeneDto} from "../../transgene-manager/transgene-dto";
-import {debounceTime, startWith} from "rxjs/operators";
-import {ScreenSizes} from "../../helpers/screen-sizes";
-import {AppStateService} from "../../app-state.service";
+import {ActivatedRoute, ParamMap, Router} from '@angular/router';
+import {DialogService} from '../../dialog.service';
+import {FormBuilder, FormControl} from '@angular/forms';
+import {MutationService} from '../../mutation-manager/mutation.service';
+import {TransgeneService} from '../../transgene-manager/transgene.service';
+import {Observable} from 'rxjs';
+import {StockFullDto} from '../dto/stock-full-dto';
+import {classToClass} from 'class-transformer';
+import {MutationDto} from '../../mutation-manager/mutation-dto';
+import {TransgeneDto} from '../../transgene-manager/transgene-dto';
+import {debounceTime, startWith} from 'rxjs/operators';
+import {ScreenSizes} from '../../helpers/screen-sizes';
+import {AppStateService} from '../../app-state.service';
 import {ZFTool} from '../../helpers/zf-tool';
 
 /**
  * This dialog allows the user to indicate which mutations/transgenes (markers) are present
  * in a particular stock.  The user is presented with check boxes to choose from
  * markers present in the parent stock (normal case). The user is also given the
- * opportunity to look up and add non-parental mutations which happens a) when a
- * new marked was introduced or b) when a stock is imported from another lab and
+ * opportunity to look up and add non-parental mutations which happens when a
+ * new marked was introduced or when a stock is imported from another lab and
  * markers have to be added.
  */
 
@@ -34,7 +34,6 @@ export class StockGeneticsEditorComponent implements OnInit {
   ScreenSizes = ScreenSizes;
 
   id: number;
-  highlightId: number;
 
   // form controls for adding novel mutations and transgenes
   newMutationFC: FormControl = new FormControl();
@@ -65,12 +64,8 @@ export class StockGeneticsEditorComponent implements OnInit {
   initialMutations: MutationDto[];
   initialTransgenes: TransgeneDto[];
 
-  // whether or not the working copy differs from the initial
+  // true if the working copy differs from the initial
   ownListChanged = false;
-
-  // To present Mutation/Transgene in the GUI rather than mutation/transgene
-  // Please excuse the expedience
-  capitalizedType: string;
 
   // used to check if it is safe to navigate away before a save
   saved = false;
@@ -153,7 +148,7 @@ export class StockGeneticsEditorComponent implements OnInit {
     });
 
     // If the stock has any markers that neither parent has, these are "additional"
-    // or "non parental" markers.
+    // or "non-parental" markers.
     this.stock.mutations.map((item: MutationDto) => {
       if (!this.parentalMutations.containsId(item.id)) {
         this.nonParentalMutations.insert(classToClass(item), true);
@@ -172,7 +167,7 @@ export class StockGeneticsEditorComponent implements OnInit {
     });
 
     // If the stock has any markers that neither parent has, these are "additional"
-    // or "non parental" markers.
+    // or "non-parental" markers.
     this.stock.transgenes.map((item: TransgeneDto) => {
       if (!this.parentalTransgenes.containsId(item.id)) {
         this.nonParentalTransgenes.insert(classToClass(item), true);
@@ -264,13 +259,13 @@ export class StockGeneticsEditorComponent implements OnInit {
 
   onDeleteNonParentalMutation(item: MutationDto) {
     this.ownMutations.removeId(item.id);
-    this.nonParentalMutations.removeId(item.id)
+    this.nonParentalMutations.removeId(item.id);
     this.hasOwnListChanged();
   }
 
   onDeleteNonParentalTransgene(item: TransgeneDto) {
     this.ownTransgenes.removeId(item.id);
-    this.nonParentalTransgenes.removeId(item.id)
+    this.nonParentalTransgenes.removeId(item.id);
     this.hasOwnListChanged();
   }
 

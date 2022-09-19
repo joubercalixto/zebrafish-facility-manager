@@ -4,9 +4,9 @@ import {AbstractControl, FormBuilder} from '@angular/forms';
 import {debounceTime} from 'rxjs/operators';
 import {TransgeneFilter} from '../transgene-filter';
 import {Router} from '@angular/router';
-import {TransgeneDto} from "../transgene-dto";
-import {AppStateService} from "../../app-state.service";
-import {ZfGenericDto} from "../../zf-generic/zfgeneric-dto";
+import {TransgeneDto} from '../transgene-dto';
+import {AppStateService} from '../../app-state.service';
+import {ZfGenericDto} from '../../zf-generic/zfgeneric-dto';
 import {ZFTool} from '../../helpers/zf-tool';
 
 @Component({
@@ -15,7 +15,6 @@ import {ZFTool} from '../../helpers/zf-tool';
 })
 export class TransgeneSelectorComponent implements OnInit {
   @Output() selected = new EventEmitter<TransgeneDto>();
-  focusId: number;
 
   // Build the filter form.
   mfForm = this.fb.group(this.service.filter);
@@ -50,12 +49,7 @@ export class TransgeneSelectorComponent implements OnInit {
   //    toggle itself closed before
   // b) navigate to view the selected transgene
   onSelect(instance: ZfGenericDto | null) {
-    this.focusId = instance.id;
     this.selected.emit(instance as TransgeneDto);
     this.router.navigate([ZFTool.TRANSGENE_MANAGER.route + '/view/' + instance.id]).then();
-  }
-
-  onPreselect(id) {
-    this.focusId = id;
   }
 }

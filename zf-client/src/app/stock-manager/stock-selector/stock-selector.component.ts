@@ -15,6 +15,7 @@ import {ZFTypes} from '../../helpers/zf-types';
 import {UserDTO} from '../../auth/UserDTO';
 import {AuthApiService} from '../../auth/auth-api.service';
 import {ZFTool} from '../../helpers/zf-tool';
+import {lastValueFrom} from 'rxjs';
 
 /**
  * A two-part component: a filter for stocks and a list of filtered stocks.
@@ -33,16 +34,6 @@ import {ZFTool} from '../../helpers/zf-tool';
 })
 export class StockSelectorComponent implements OnInit {
   @Output() selected = new EventEmitter<StockDto>();
-  // This is the id of the stock that the mouse is currently over
-  // The GUI uses this to present a little extra info about that stock
-  focusId: number;
-
-  // This is the id of the mutation the mouse is currently over in the mutation filter
-  // autocomplete field.  It allows the GUI to present a little extra info about that mutation.
-  mutationInFocus: number;
-
-  // same for transgenes
-  transgeneInFocus: number;
 
   // Build the filter form.
   mfForm = this.fb.group(this.service.filter);
@@ -79,13 +70,13 @@ export class StockSelectorComponent implements OnInit {
     if (storedFilter && storedFilter.mutation) {
       this.mutationFilterFC.setValue(storedFilter.mutation);
     } else if (storedFilter && storedFilter.mutationId) {
-      const m = await this.mutationService.getById(storedFilter.mutationId).toPromise();
+      const m = await lastValueFrom(this.mutationService.getById(storedFilter.mutationId));
       this.mutationFilterFC.setValue(m);
     }
     if (storedFilter && storedFilter.transgene) {
       this.transgeneFilterFC.setValue(storedFilter.transgene);
     } else if (storedFilter && storedFilter.transgeneId) {
-      this.transgeneFilterFC.setValue(await this.transgeneService.getById(storedFilter.transgeneId).toPromise());
+      this.transgeneFilterFC.setValue(await lastValueFrom(this.transgeneService.getById(storedFilter.transgeneId)));
     }
     // any time a filter value changes, reapply it
     this.mfForm.valueChanges
@@ -169,14 +160,14 @@ export class StockSelectorComponent implements OnInit {
   }
 
   clearMutationFilter() {
-    this.mutationFilterFC.setValue('')
+    this.mutationFilterFC.setValue('');
   }
 
   clearTransgeneFilter() {
-    this.transgeneFilterFC.setValue('')
+    this.transgeneFilterFC.setValue('');
   }
 
-  // when clearing everything, you dont want to simply set the value
+  // when clearing everything, you don't want to simply set the value
   // to an empty string because that will trigger additional filter
   // reapplications.  That's what the emitEvent: false is all about.
   onClearFilters() {
@@ -193,10 +184,6 @@ export class StockSelectorComponent implements OnInit {
   onSelect(instance: ZfGenericDto | null) {
     this.selected.emit(instance as StockDto);
     this.router.navigate([ZFTool.STOCK_MANAGER.route + '/view/' + instance.id]).then();
-  }
-
-  onPreselect(id) {
-    this.focusId = id;
   }
 }
 

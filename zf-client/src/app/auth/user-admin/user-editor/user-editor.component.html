@@ -50,9 +50,11 @@
       <div class="fill-remaining-space"></div>
       <button mat-button (click)="cancel()" color="primary">Cancel</button>
       <button mat-button (click)="revert()" color="primary"
-              [disabled]='mfForm.pristine'>Revert</button>
-      <button mat-button (click)="save() "color="primary"
-              [disabled]='!mfForm.valid || mfForm.pristine'>Save</button>
+              [disabled]='mfForm.pristine'>Revert
+      </button>
+      <button mat-button (click)="save()" color="primary"
+              [disabled]='!mfForm.valid || mfForm.pristine'>Save
+      </button>
     </div>
   </form>
 </div>

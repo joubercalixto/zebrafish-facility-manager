@@ -29,8 +29,8 @@ export class UserEditorComponent implements OnInit {
   // these need to call the api service to do their checks, but not if the email/username
   // is the same as it was when we started editing the user.  For this the validator needs
   // to be able to see both the api service and the "original" user.  I can pass the api
-  // service to the validator function easily enough but I cannot pass the current user dto.
-  // SO, out comes the sledge hammer and I pass the whole of "this" to the validators, which
+  // service to the validator function easily enough, but I cannot pass the current user dto.
+  // So, I bring out the sledgehammer and I pass the whole of "this" to the validators, which
   // now have everything they need.
   mfForm = this.fb.group({
     email: ['', [Validators.required, Validators.email], [existingEmailValidatorFn(this)]],
@@ -92,7 +92,7 @@ export class UserEditorComponent implements OnInit {
     if (this.user.id === this.authService.loggedInUserId()) {
       this.getFC('role').disable();
     }
-  };
+  }
 
   save() {
     this.saved = true;
@@ -108,7 +108,7 @@ export class UserEditorComponent implements OnInit {
   }
 
   cancel() {
-    this.router.navigate([ZFTool.USER_MANAGER.route + '/view']);
+    this.router.navigate([ZFTool.USER_MANAGER.route + '/view']).then();
   }
 
   revert() {
@@ -129,10 +129,6 @@ export class UserEditorComponent implements OnInit {
 
   getFC(name: string): AbstractControl {
     return this.mfForm.get(name);
-  }
-
-  clearFormControl(name: string) {
-    this.getFC(name).setValue(null);
   }
 
   getErrorMessage(fcName: string): string {

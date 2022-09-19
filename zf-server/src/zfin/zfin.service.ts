@@ -6,6 +6,7 @@ import {ZfinMutationDto} from '../common/zfin/zfin-mutation.dto';
 import {ConfigService} from '../config/config.service';
 import {map} from 'rxjs/operators';
 import {HttpService} from '@nestjs/axios';
+import {lastValueFrom} from 'rxjs';
 
 @Injectable()
 export class ZfinService {
@@ -21,18 +22,18 @@ export class ZfinService {
    * @param alleleName
    */
   async findMutationByName(alleleName: string): Promise<ZfinMutationDto> {
-    return this.httpService.get(this.configService.zfinAlleleLookupUrl + '/mutation/allele/' + alleleName)
+    return lastValueFrom(this.httpService.get(this.configService.zfinAlleleLookupUrl + '/mutation/allele/' + alleleName)
       .pipe(
         map(response => response.data)
-      ).toPromise();
+      ));
 
   }
 
   async findTransgeneByName(alleleName: string): Promise<any> {
-    return this.httpService.get(this.configService.zfinAlleleLookupUrl + '/transgene/allele/' + alleleName)
+    return lastValueFrom(this.httpService.get(this.configService.zfinAlleleLookupUrl + '/transgene/allele/' + alleleName)
       .pipe(
         map(response => response.data)
-      ).toPromise();
+      ));
   }
 
   async updateMutationUsingZfin(m: Mutation): Promise<Mutation> {
@@ -71,7 +72,7 @@ export class ZfinService {
     if (!t.allele) return t;
 
     // See if we can dig up a zfin record for the allele name.
-    let zt: ZfinTransgeneDto = await this.findTransgeneByName(t.allele);
+    const zt: ZfinTransgeneDto = await this.findTransgeneByName(t.allele);
 
     if (!zt) {
       return t;

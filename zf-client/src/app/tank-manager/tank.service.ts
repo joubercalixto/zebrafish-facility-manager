@@ -1,14 +1,14 @@
 import {Injectable} from '@angular/core';
 import {LoaderService} from '../loader.service';
-import {Observable, of} from 'rxjs';
+import {lastValueFrom, Observable, of} from 'rxjs';
 import {Tank} from './tank';
 import {TankDto} from '../common/tank.dto';
 import {SwimmerFullDto} from '../common/swimmer-full.dto';
 import {SwimmerDto} from '../common/swimmer.dto';
 import {plainToClass} from 'class-transformer';
 import {ZFTypes} from '../helpers/zf-types';
-import {WorkSheet} from 'xlsx';
 import * as XLSX from 'xlsx';
+import {WorkSheet} from 'xlsx';
 
 /**
  * This is mostly just a cache of all the known tanks at the facility.
@@ -43,7 +43,9 @@ export class TankService {
   }
 
   getTankByName(putativeName: string): Tank | null {
-    if (!putativeName) return null;
+    if (!putativeName) {
+      return null;
+    }
     if (this.indexedAll[putativeName.toLowerCase()]) {
       return this.indexedAll[putativeName.toLowerCase()];
     } else {
@@ -75,7 +77,7 @@ export class TankService {
   }
 
   async getExportWorksheet(): Promise<WorkSheet> {
-    const tanks: any[] = await this.loader.getAuditReport().toPromise();
+    const tanks: any[] = await lastValueFrom(this.loader.getAuditReport());
     const ws = XLSX.utils.json_to_sheet(tanks);
     ws['!cols'] = [ {wch: 8}, {wch: 8}, {wch: 8}, {wch: 8}, {wch: 8},
       {wch: 8}, {wch: 40}];

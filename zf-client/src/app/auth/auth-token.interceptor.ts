@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
-import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor} from '@angular/common/http';
-import { Observable, from } from 'rxjs';
-import {AppStateService} from "../app-state.service";
-import {AuthService} from "./auth.service";
+import {Injectable} from '@angular/core';
+import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {from, lastValueFrom, Observable} from 'rxjs';
+import {AuthService} from './auth.service';
+
 /**
  * This just intercepts the outbound http requests and inserts the jwt
  * More efficient than doing it in every single http request.
@@ -36,6 +36,6 @@ export class AuthTokenInterceptor implements HttpInterceptor {
       // TODO Log this.
       // console.log("No token available for url: " + request.url);
     }
-    return next.handle(request).toPromise();
+    return lastValueFrom(next.handle(request));
   }
 }

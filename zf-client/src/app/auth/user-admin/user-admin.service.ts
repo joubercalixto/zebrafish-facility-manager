@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {UserDTO} from '../UserDTO';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, lastValueFrom, Observable} from 'rxjs';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {AppStateService, ZFToolStates} from '../../app-state.service';
 import {AuthApiService} from '../auth-api.service';
@@ -9,8 +9,8 @@ import {UserFilter} from './user-filter';
 import {ZFTypes} from '../../helpers/zf-types';
 import {plainToClass} from 'class-transformer';
 import {ZFTool} from '../../helpers/zf-tool';
-import {WorkSheet} from 'xlsx';
 import * as XLSX from 'xlsx';
+import {WorkSheet} from 'xlsx';
 
 @Injectable({
   providedIn: 'root'
@@ -78,7 +78,9 @@ export class UserAdminService {
 
   create(u: UserDTO) {
     this.authApiService.create(u)
-      .subscribe((u: UserDTO) => this.refilterAndNavigate(u));
+      .subscribe((user: UserDTO) => {
+        this.refilterAndNavigate(user);
+      });
   }
 
   delete(id: string) {
@@ -92,30 +94,30 @@ export class UserAdminService {
 
   update(u: UserDTO) {
     this.authApiService.update(u)
-      .subscribe((u: UserDTO) => {
-        this.refilterAndNavigate(u);
-      })
+      .subscribe((user: UserDTO) => {
+        this.refilterAndNavigate(user);
+      });
   }
 
   activate(u: UserDTO) {
     this.authApiService.activate(u)
-      .subscribe((u: UserDTO) => {
-        this.refilterAndNavigate(u);
-      })
+      .subscribe((user: UserDTO) => {
+        this.refilterAndNavigate(user);
+      });
   }
 
   deactivate(u: UserDTO) {
     this.authApiService.deactivate(u)
-      .subscribe((u: UserDTO) => {
-        this.refilterAndNavigate(u);
-      })
+      .subscribe((user: UserDTO) => {
+        this.refilterAndNavigate(user);
+      });
   }
 
   forceLogout(u: UserDTO) {
     this.authApiService.forceLogout(u)
-      .subscribe((u: UserDTO) => {
-        this.refilterAndNavigate(u);
-      })
+      .subscribe((user: UserDTO) => {
+        this.refilterAndNavigate(user);
+      });
   }
 
   refilterAndNavigate(user?: UserDTO) {
@@ -126,7 +128,7 @@ export class UserAdminService {
       this.select(null);
     }
     this.applyFilter(this.filter);
-    this.router.navigateByUrl(ZFTool.USER_MANAGER.route + '/view' + ((user) ? '/' + user.id : ''));
+    this.router.navigateByUrl(ZFTool.USER_MANAGER.route + '/view' + ((user) ? '/' + user.id : '')).then();
   }
 
   isEmailInUse(email: string): Observable<boolean> {
@@ -153,7 +155,7 @@ export class UserAdminService {
   }
 
   async getExportWorkSheet(): Promise<WorkSheet> {
-    const users = await this.authApiService.getUsers(new UserFilter({})).toPromise();
+    const users = await lastValueFrom(this.authApiService.getUsers(new UserFilter({})));
     const ws = XLSX.utils.json_to_sheet(users.map((u: UserDTO) => {
       return {
         Username: u.username,
@@ -165,7 +167,7 @@ export class UserAdminService {
         'Is Researcher': u.isResearcher,
         'Is PI': u.isPrimaryInvestigator,
         'Internal Id': u.id,
-      }
+      };
     }));
     ws['!cols'] = [
       {wch: 12}, {wch: 24}, {wch: 24}, {wch: 8}, {wch: 8},

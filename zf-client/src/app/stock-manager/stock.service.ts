@@ -4,9 +4,10 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {StockFilter} from './stock-selector/stock-filter';
 import {FieldOptions} from '../helpers/field-options';
 import * as XLSX from 'xlsx';
+import {WorkBook, WorkSheet} from 'xlsx';
 import {map} from 'rxjs/operators';
 import {ZFGenericService} from '../zf-generic/zfgeneric-service';
-import {Observable} from 'rxjs';
+import {lastValueFrom, Observable} from 'rxjs';
 import {AppStateService, ZFToolStates} from '../app-state.service';
 import {plainToClass} from 'class-transformer';
 import {ZFTypes} from '../helpers/zf-types';
@@ -16,7 +17,6 @@ import {StockDto} from './dto/stock-dto';
 import {StockFullDto} from './dto/stock-full-dto';
 import {MutationDto} from '../mutation-manager/mutation-dto';
 import {TransgeneDto} from '../transgene-manager/transgene-dto';
-import {WorkBook, WorkSheet} from 'xlsx';
 
 /**
  * This is the model for stock information displayed in the GUI.
@@ -61,7 +61,7 @@ export class StockService extends ZFGenericService<
       if (loggedIn) {
         this.initialize();
       }
-    })
+    });
   }
 
   placeholder() {
@@ -89,7 +89,7 @@ export class StockService extends ZFGenericService<
         // rather than make another round trip to re-fetch the object from the server.
         // BUT the object you get back from the creation call is not reliable.  For
         // example, the "is Deletable" flag is not in the value returned here.
-        // Also the new object may or may not meet the filter criteria and
+        // Also, the new object may or may not meet the filter criteria and
         // therefore will or will not be in the filtered list.
         this.setSelectedId(result.id);
         this.refresh();
@@ -110,7 +110,7 @@ export class StockService extends ZFGenericService<
     return Number(this.likelyNextName);
   }
 
-  // To make the excel report happen, you gotta go get all stocks that meet the current filter
+  // To make the Excel report happen, go get all stocks that meet the current filter
   getStockReport() {
     this.loader.getReport(ZFTypes.STOCK, this.filter)
       .subscribe((data) => {
@@ -167,7 +167,7 @@ export class StockService extends ZFGenericService<
   }
 
   getStockWalkerList(): Observable<any> {
-    return this.loader.getTankWalkerList(this.filter)
+    return this.loader.getTankWalkerList(this.filter);
   }
 
   async getExportWorkbook(): Promise<WorkBook> {
@@ -175,30 +175,30 @@ export class StockService extends ZFGenericService<
     const stockJSON = [];
     const swimmerJSON = [];
 
-    const stockExportData: StockExportData[] = await this.loader.getExportData().toPromise();
+    const stockExportData: StockExportData[] = await lastValueFrom(this.loader.getExportData());
     stockExportData.map((s: StockExportData) => {
       stockJSON.push({
-        "Stock Number": s.name,
-        "Description": s.description,
-        "Allele Summary": s.alleleSummary,
-        "Fertilization Date": s.fertilizationDate,
+        'Stock Number': s.name,
+        Description: s.description,
+        'Allele Summary': s.alleleSummary,
+        'Fertilization Date': s.fertilizationDate,
         Mom: (s.matStock) ? s.matStock.name : null,
         Dad: (s.patStock) ? s.patStock.name : null,
-        "Into Nursery": s.countEnteringNursery,
-        "Out of Nursery": s.countLeavingNursery,
-        "Researcher": (s.researcherUser) ? s.researcherUser.username : null,
-        "PI:": (s.piUser) ? s.piUser.username: null,
+        'Into Nursery': s.countEnteringNursery,
+        'Out of Nursery': s.countLeavingNursery,
+        Researcher: (s.researcherUser) ? s.researcherUser.username : null,
+        'PI:': (s.piUser) ? s.piUser.username : null,
         Comment: s.comment,
       });
       s.swimmers.map((swimmer) => {
         swimmerJSON.push({
-          "Stock Number": s.name,
+          'Stock Number': s.name,
           Tank: swimmer.tank.name,
           Count: swimmer.number,
           Comment: swimmer.comment,
         });
-      })
-    })
+      });
+    });
 
     const stockWS: WorkSheet = XLSX.utils.json_to_sheet(stockJSON);
     stockWS['!cols'] = [
@@ -206,9 +206,9 @@ export class StockService extends ZFGenericService<
       {wch: 12}, {wch: 12}, {wch: 20}, {wch: 20},
       {wch: 40}];
     const swimmerWS: WorkSheet = XLSX.utils.json_to_sheet(swimmerJSON);
-    swimmerWS['!cols'] = [ {wch: 12}, {wch: 8}, {wch: 8}, {wch: 40}];
-    XLSX.utils.book_append_sheet(wb,stockWS, 'Stocks');
-    XLSX.utils.book_append_sheet(wb,swimmerWS, 'Swimmers');
+    swimmerWS['!cols'] = [{wch: 12}, {wch: 8}, {wch: 8}, {wch: 40}];
+    XLSX.utils.book_append_sheet(wb, stockWS, 'Stocks');
+    XLSX.utils.book_append_sheet(wb, swimmerWS, 'Swimmers');
     return wb;
   }
 
@@ -241,8 +241,8 @@ class StockExportData {
   ];
   researcherUser: {
     username: string;
-  }
+  };
   piUser: {
     username: string;
-  }
+  };
 }

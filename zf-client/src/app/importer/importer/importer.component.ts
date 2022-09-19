@@ -7,7 +7,7 @@ import * as XLSX from 'xlsx';
 import {ParsingOptions, WorkBook, WorkSheet} from 'xlsx';
 import {LoaderService} from '../../loader.service';
 import {catchError} from 'rxjs/operators';
-import {of} from 'rxjs';
+import {lastValueFrom, of} from 'rxjs';
 
 class ImportSwitch {
   constructor(public name: ZFImportType,
@@ -188,15 +188,14 @@ export class ImporterComponent implements OnInit {
     this.done = 0;
     let errorCount = 0;
     for (const dto of dtos) {
-      const response: any = await this.service.import(name, dto)
+      const response: any = await lastValueFrom(this.service.import(name, dto)
         .pipe(
           catchError(err => {
             dto.importResult = 'Failure: ' + err.error.message;
             errorCount++;
             return of(null);
           })
-        )
-        .toPromise();
+        ));
       if (response) {
         dto.id = response.id;
         dto.importResult = 'Success';
