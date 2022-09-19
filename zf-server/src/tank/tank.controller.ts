@@ -1,9 +1,9 @@
 import {Body, Controller, Get, Param, Post, Query, UseGuards} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { TankService } from './tank.service';
-import { TankRepository } from './tank.repository';
-import { Tank } from './tank.entity';
-import {JwtAuthGuard} from "../guards/jwt-auth.guard";
+import {InjectRepository} from '@nestjs/typeorm';
+import {TankService} from './tank.service';
+import {TankRepository} from './tank.repository';
+import {Tank} from './tank.entity';
+import {JwtAuthGuard} from '../guards/jwt-auth.guard';
 import {Role} from '../guards/role.decorator';
 import {ADMIN_ROLE} from '../common/auth/zf-roles';
 import {RoleGuard} from '../guards/role-guard.service';

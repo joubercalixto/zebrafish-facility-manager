@@ -20,7 +20,7 @@ import {StockFilter} from './stock-filter';
 import {StockMiniDto} from '../common/Stock/stockMiniDto';
 import {Brackets, SelectQueryBuilder} from 'typeorm';
 import {StockReportDTO} from './dto/stock-report.dto';
-import moment from 'moment';
+import * as moment from 'moment';
 import {AutoCompleteOptions} from '../helpers/autoCompleteOptions';
 
 @Injectable()

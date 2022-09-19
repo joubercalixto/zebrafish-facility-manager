@@ -8,5 +8,5 @@ export enum ZFImportType {
   ZF_IMPORT_USER = 'user',
   ZF_IMPORT_MUTATION_TYPES = 'mutation-type',
   ZF_IMPORT_SCREEN_TYPES = 'screen-type',
-  ZF_IMPORT_TANKS = 'tanks',
+  ZF_IMPORT_TANKS = 'tank',
 }
