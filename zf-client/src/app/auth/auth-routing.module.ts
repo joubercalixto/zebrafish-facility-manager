@@ -1,7 +1,7 @@
 import {RouterModule, Routes} from '@angular/router';
 import {NgModule} from '@angular/core';
 import {PasswordChangeContainerComponent} from './login/password-change/password-change-container.component';
-import {LoginContainerComponent} from "./login/login/login-container.component";
+import {LoginContainerComponent} from './login/login/login-container.component';
 
 const userAdminRoutes: Routes = [
   {

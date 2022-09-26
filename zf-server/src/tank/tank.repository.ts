@@ -1,18 +1,17 @@
-import { EntityRepository, Repository } from 'typeorm';
-import { Tank } from './tank.entity';
+import {EntityRepository, Repository} from 'typeorm';
+import {Tank} from './tank.entity';
 
 @EntityRepository(Tank)
 export class TankRepository extends Repository<Tank> {
 
-  constructor(
-  ) {
+  constructor() {
     super();
   }
 
   async getAuditReport(): Promise<any[]> {
-    // Sorry for the raw query here.  I did not add reverse many to one relationship from
+    // Sorry for the raw query here.  I did not add reverse many-to-one relationship from
     // tank to stocks in the entity definition for swimmers.
-    // Had I don that I could have use the standard .leftJoin operation with QueryBuilder.
+    // Had I done that I could have use the standard .leftJoin operation with QueryBuilder.
     // The above is all wrong you can join relations back to stock via stock2Tank, Ted
     const items: any[] = await this.query('SELECT t.name Tank, t.rack Rack, t.shelf Shelf, t.slot Spigot,' +
       's.name Stock, s2t.num FishCount, s2t.comment Comment ' +

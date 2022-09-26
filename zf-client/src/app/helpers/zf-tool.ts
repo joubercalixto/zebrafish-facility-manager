@@ -44,7 +44,7 @@ export class ZFTool {
   ) {
   }
 
-  // If you talk about a particular tool without specifying an attribute, you get it's route.
+  // If you talk about a particular tool without specifying an attribute, you get its route.
   toString() {
     return this.route;
   }

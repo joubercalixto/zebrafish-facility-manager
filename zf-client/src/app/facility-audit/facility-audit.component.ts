@@ -32,11 +32,11 @@ import {ZFTool} from '../helpers/zf-tool';
 // tank - as this does in fact happen on occasion.
 
 // Somehow we have to deal with "virtual" tanks like "Nursery" where there
-// can be many many stocks and the audit is not rational for those tanks.
+// can be many stocks and the audit is not rational for those tanks.
 
 // Guiding philosophy - this has to be super efficient in terms of screen
-// touches because there can be thousands of tanks in a facility so it
-// has to be super easy to:
+// touches because there can be thousands of tanks in a facility,
+// so it has to be super easy to:
 // - achieve the three main functions listed above
 // - navigate to the next tank (or the previous)
 // - jump to any tank in the facility and get going from there
@@ -71,7 +71,7 @@ export class FacilityAuditComponent implements OnInit {
   }
   tankHint = '';
 
-  // The tank whose name the user has entered in the "jumpTank" form
+  // The tank whose from the "jumpTank" form
   jumpTank: TankDto;
 
   constructor(
@@ -88,13 +88,13 @@ export class FacilityAuditComponent implements OnInit {
   ngOnInit(): void {
     const startingTank: TankDto = this.appState.getState(AUDITING_TANK_REMEMORY);
     if (startingTank) {
-      this.navigateTo(startingTank)
+      this.navigateTo(startingTank);
     } else {
       this.loader.getFirstTank().subscribe((tank: TankDto) => {
         if (tank) {
           this.navigateTo(tank);
         }
-      })
+      });
     }
     this.tankNameFC.valueChanges.subscribe(value => this.onTankNameChange(value));
   }
@@ -124,16 +124,20 @@ export class FacilityAuditComponent implements OnInit {
     if (this.currentTank) {
       this.loader.getTankNeighbors(this.currentTank).subscribe((neighbors: TankNeighborsDto) => {
         this.neighbors = neighbors;
-      })
+      });
     }
   }
 
   previousTank() {
-    if (this.neighbors && this.neighbors.previous) this.navigateTo(this.neighbors.previous);
+    if (this.neighbors && this.neighbors.previous) {
+      this.navigateTo(this.neighbors.previous);
+    }
   }
 
   nextTank() {
-    if (this.neighbors && this.neighbors.next) this.navigateTo(this.neighbors.next);
+    if (this.neighbors && this.neighbors.next) {
+      this.navigateTo(this.neighbors.next);
+    }
   }
 
   jumpToTank() {
@@ -155,10 +159,10 @@ export class FacilityAuditComponent implements OnInit {
     // can't really *change* a stock in a tank.  It is really just a shortcut
     // for saying delete the one that was in the tank and add this new one.
     this.tankService.deleteSwimmer(originalSwimmer).subscribe(_ => {
-      this.tankService.addSwimmer(newSwimmer).subscribe(_ => {
+      this.tankService.addSwimmer(newSwimmer).subscribe(__ => {
         this.getStocksInCurrentTank();
-      })
-    })
+      });
+    });
   }
 
   onDelete(swimmer: SwimmerFullDto) {

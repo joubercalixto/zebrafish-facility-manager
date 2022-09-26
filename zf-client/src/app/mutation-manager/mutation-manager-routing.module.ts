@@ -5,16 +5,16 @@ import {MutationViewerComponent} from './mutation-viewer/mutation-viewer.compone
 import {EditMode} from '../zf-generic/zf-edit-modes';
 import {MutationEditorComponent} from './mutation-editor/mutation-editor.component';
 import {CanDeactivateGuard} from '../guards/can-deactivate-guard';
-import {LoginGuardService as LoginGuard} from "../auth/guards/login-guard.service";
-import {RoleGuardService as RoleGuard} from "../auth/guards/role-guard.service";
-import {ADMIN_ROLE, USER_ROLE} from '../auth/app-roles';
+import {LoginGuardService as LoginGuard} from '../auth/guards/login-guard.service';
+import {RoleGuardService as RoleGuard} from '../auth/guards/role-guard.service';
+import {USER_ROLE} from '../auth/app-roles';
 
 
 /**
- * Exposing ignorance: If you do not have the "edit" route, the router.navigate
+ * Exposing ignorance: If you do not have the "edit" route, the 'router.navigate'
  * will crash if you to navigate to the "edit/:id" route.
  * I do not understand why. But I do know it is so.
- * This is a very hard earned lesson.
+ * This is a very hard-earned lesson.
  */
 const mutationManagerRoutes: Routes = [
   {

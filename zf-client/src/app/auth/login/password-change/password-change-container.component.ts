@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import {MatDialog} from "@angular/material/dialog";
-import {PasswordChangeComponent} from "./password-change.component";
-import {Location} from "@angular/common";
+import {Component, OnInit} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
+import {PasswordChangeComponent} from './password-change.component';
+import {Location} from '@angular/common';
 
 @Component({
   selector: 'app-password-change-container',

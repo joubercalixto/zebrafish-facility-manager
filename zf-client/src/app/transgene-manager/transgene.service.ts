@@ -4,6 +4,7 @@ import {TransgeneFilter} from './transgene-filter';
 import {FieldOptions} from '../helpers/field-options';
 import {ZFGenericService} from '../zf-generic/zfgeneric-service';
 import * as XLSX from 'xlsx';
+import {WorkSheet} from 'xlsx';
 import {AppStateService, ZFToolStates} from '../app-state.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {plainToClass} from 'class-transformer';
@@ -11,7 +12,6 @@ import {ZFTypes} from '../helpers/zf-types';
 import {Router} from '@angular/router';
 import {AuthService} from '../auth/auth.service';
 import {TransgeneDto} from './transgene-dto';
-import {WorkSheet} from 'xlsx';
 
 /**
  * This is the model for transgene information displayed in the GUI.
@@ -67,7 +67,7 @@ export class TransgeneService extends ZFGenericService<TransgeneDto, TransgeneDt
   }
 
 
-  // This is used to populate a autocomplete field of transgenes
+  // This is used to populate an autocomplete field of transgenes
   getListFilteredByString(searchString: string): TransgeneDto[] {
     return this.all.filter((t: TransgeneDto) => {
       const ss: string = searchString.toLowerCase();

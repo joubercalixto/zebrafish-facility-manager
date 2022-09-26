@@ -36,7 +36,7 @@ export class TankController {
   }
 
   @Get('getFirst')
-  async getfirst(): Promise<TankDto> {
+  async getFirst(): Promise<TankDto> {
     return this.service.findTankAfter('');
   }
 

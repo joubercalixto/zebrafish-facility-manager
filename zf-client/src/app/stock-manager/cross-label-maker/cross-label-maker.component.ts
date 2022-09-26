@@ -28,7 +28,7 @@ export class CrossLabelMakerComponent implements OnInit {
   labelHeight: number;
   labelWidth: number;
 
-  fonts = ['Roboto', 'Arial', 'Arial Narrow', 'Arial Black', 'Calibri', 'Helvetica', 'PT Sans']
+  fonts = ['Roboto', 'Arial', 'Arial Narrow', 'Arial Black', 'Calibri', 'Helvetica', 'PT Sans'];
 
   constructor(
     private appState: AppStateService,
@@ -52,7 +52,7 @@ export class CrossLabelMakerComponent implements OnInit {
       });
 
     // The default date is today
-    this.crossLabel.dateString = this.date.toISOString().substr(0, 10);
+    this.crossLabel.dateString = this.date.toISOString().slice(0, 10);
 
     // by default, the stock last viewed is the mom of the cross. This is just a guess
     // and the user can change it easily.  Someone will complain that I guessed wrong.
@@ -79,7 +79,7 @@ export class CrossLabelMakerComponent implements OnInit {
       if (r.id === researcherId) {
         this.crossLabel.researcherName = r.name;
       }
-    })
+    });
   }
 
   onSetMatStock() {
@@ -94,7 +94,7 @@ export class CrossLabelMakerComponent implements OnInit {
           if (this.momFull.swimmers.length > 0) {
             this.crossLabel.momTank = this.momFull.swimmers[0].tank.name;
           }
-        })
+        });
       } else {
         this.mom = null;
         this.momFull = null;
@@ -117,7 +117,7 @@ export class CrossLabelMakerComponent implements OnInit {
           if (this.dadFull.swimmers.length > 0) {
             this.crossLabel.dadTank = this.dadFull.swimmers[0].tank.name;
           }
-        })
+        });
       } else {
         this.dad = null;
         this.dadFull = null;
@@ -134,11 +134,11 @@ export class CrossLabelMakerComponent implements OnInit {
 
   isValid(): boolean {
     return true;
-  };
+  }
 
   done() {
     this.router.navigateByUrl(ZFTool.STOCK_MANAGER.route + '/view').then();
-  };
+  }
 
   print() {
     // We just stick the crossLabel in the appState before we go to print it.
@@ -148,5 +148,5 @@ export class CrossLabelMakerComponent implements OnInit {
     // is around anyway - this seems like a good idea.
     this.appState.setState('crossLabel', this.crossLabel, false);
     this.printService.printDocument('crossLabel');
-  };
+  }
 }

@@ -3,10 +3,10 @@ import {FormBuilder} from '@angular/forms';
 import {MutationService} from '../mutation.service';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {EditMode} from '../../zf-generic/zf-edit-modes';
-import {MutationDto} from "../mutation-dto";
-import {AppStateService, ZFToolStates} from "../../app-state.service";
-import {ScreenSizes} from "../../helpers/screen-sizes";
-import {ZFTypes} from "../../helpers/zf-types";
+import {MutationDto} from '../mutation-dto';
+import {AppStateService, ZFToolStates} from '../../app-state.service';
+import {ScreenSizes} from '../../helpers/screen-sizes';
+import {ZFTypes} from '../../helpers/zf-types';
 import {ZFTool} from '../../helpers/zf-tool';
 
 /**
@@ -16,7 +16,7 @@ import {ZFTool} from '../../helpers/zf-tool';
 /**
  * Design note - the service is where the data model for the various
  * components of the Mutation Manager GUI live.  So, the MutationViewer
- * component has very little in the way of it's own data.  It is just a
+ * component has very little in the way of its own data.  It is just a
  * GUI component with the single purpose.
  */
 

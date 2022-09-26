@@ -4,8 +4,7 @@
 // I could (should?) have used a Map, but this thing has the advantage that both
 // the index and the data are typed.
 
-import {ZfGenericClass} from '../zf-generic/zfgeneric-class';
-import {ZfGenericDto} from "../zf-generic/zfgeneric-dto";
+import {ZfGenericDto} from '../zf-generic/zfgeneric-dto';
 
 
 export class ZfSelectionList<OBJ extends ZfGenericDto> {
@@ -16,7 +15,7 @@ export class ZfSelectionList<OBJ extends ZfGenericDto> {
 
   insert(item: OBJ, selected = false) {
     if (!this.items[item.id]) { this.count++; }
-    this.items[item.id] = {item: item, selected: selected};
+    this.items[item.id] = {item, selected};
   }
 
   remove(item: OBJ) {
@@ -38,11 +37,6 @@ export class ZfSelectionList<OBJ extends ZfGenericDto> {
     return !!(this.items[id]);
   }
 
-  toggleId(id: number) {
-    if (this.containsId(id)) {
-      this.items[id].selected = !this.items[id].selected;
-    }
-  }
   getList(): ZfGenericDto[] {
     return Object.values(this.items).map(item => item.item);
   }

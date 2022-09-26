@@ -1,13 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import {TankWalkerDto} from "./tank-walker-dto";
-import {StockService} from "../stock.service";
-import {StockFullDto} from "../dto/stock-full-dto";
-import {AppStateService} from "../../app-state.service";
-import {Location} from "@angular/common";
-import {FormControl} from "@angular/forms";
-import {LoaderService} from "../../loader.service";
-import {TankService} from "../../tank-manager/tank.service";
-import {SwimmerDto} from "../../common/swimmer.dto";
+import {TankWalkerDto} from './tank-walker-dto';
+import {StockService} from '../stock.service';
+import {StockFullDto} from '../dto/stock-full-dto';
+import {AppStateService} from '../../app-state.service';
+import {Location} from '@angular/common';
+import {FormControl} from '@angular/forms';
+import {LoaderService} from '../../loader.service';
+import {TankService} from '../../tank-manager/tank.service';
+import {SwimmerDto} from '../../common/swimmer.dto';
 
 @Component({
   selector: 'app-stock-walker',
@@ -45,7 +45,7 @@ export class TankWalkerComponent implements OnInit {
     });
   }
 
-  // Decision: since there are only two fields and we want this to be
+  // Decision: since there are only two fields, and we want this to be
   // really easy, we do not ask the user to explicitly "save" changes
   // to the number of fish in the tank or the comment.
   // If they have changed when we navigate away, save the changes.
@@ -79,7 +79,7 @@ export class TankWalkerComponent implements OnInit {
       tankId: Number(this.tankList[this.inFocusIndex].tankId),
       number: this.countFC.value,
       comment: this.commentFC.value,
-    }
+    };
     this.tankService.updateSwimmer(swimmerDto).subscribe();
     }
 

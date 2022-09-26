@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {MutationDto} from "../mutation-dto";
+import {MutationDto} from '../mutation-dto';
 
 @Component({
   selector: 'app-mutation-tiny-viewer',

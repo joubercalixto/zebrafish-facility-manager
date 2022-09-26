@@ -1,8 +1,8 @@
 // A cross label is just a bunch of data that describes a cross between
 // two stocks and a bit of ancillary data like which researcher is doing the work.
-// The data for a cross label is totally transient.  It is never stored in the
+// The data for a cross label is totally transient.  It is never stored in
 // the database.  It is basically an aide for people with bad handwriting to put
-// a whole bunch of text on a small label in a consistent and legible way.
+// a bunch of text on a small label in a consistent and legible way.
 export class CrossLabel {
   researcherName: string = null;
   momName: string = null;
@@ -15,6 +15,6 @@ export class CrossLabel {
   dadAlleleSummary: string = null;
   dateString: string = null;
   note: string = null;
-  fontFamily: string = 'Arial';
-  fontSize: number = 11;
+  fontFamily = 'Arial';
+  fontSize = 11;
 }

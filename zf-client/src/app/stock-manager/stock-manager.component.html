@@ -16,14 +16,13 @@
     <mat-sidenav-container>
 
       <!-- The sidenav should collapse when editing an item  or when the screen is small -->
-      <mat-sidenav #selector fixedInViewport style="overflow-y: hidden !important;"
+      <mat-sidenav #selector fixedInViewport style="overflow-y: hidden !important; background: inherit; border: none;"
                    [disableClose]="true"
                    [class.zf-fixed-sidenav]="appState.selectorFixed"
                    [class.zf-togglable-sidenav]="!appState.selectorFixed"
                    fixedTopGap="120"
                    [mode]="(appState.selectorFixed) ? 'side' : 'over'"
-                   [opened]="(appState.selectorFixed) && !(service.inEditMode)"
-                   style="background: inherit; border: none">
+                   [opened]="(appState.selectorFixed) && !(service.inEditMode)">
 
         <!-- When the selector is in toggle mode (small screen) and -->
         <!-- the user selects something, toggle the selector closed. -->

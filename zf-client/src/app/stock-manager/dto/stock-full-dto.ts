@@ -35,7 +35,7 @@ export class StockFullDto extends ZfGenericDto {
   @Type(() => StockDto)
   offspring: StockDto[] = [];
   nextSubStockNumber: number = null;
-  parentsEditable: boolean = false;
+  parentsEditable = false;
   alleleSummary: string = null;
   @Type(() => UserDTO)
   researcherUser: UserDTO = null;
@@ -48,7 +48,7 @@ export class StockFullDto extends ZfGenericDto {
   }
 
   get nextSubStock(): string {
-    return `${this.number}.${(this.nextSubStockNumber < 10) ? '0' : ''}${this.nextSubStockNumber}`
+    return `${this.number}.${(this.nextSubStockNumber < 10) ? '0' : ''}${this.nextSubStockNumber}`;
   }
 
   test(): string {

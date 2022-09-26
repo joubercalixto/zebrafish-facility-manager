@@ -81,7 +81,7 @@ export class PasswordChangeComponent implements OnInit {
         this.dialogRef.close();
         this.authService.onLogin(token.access_token);
         this.message.open(
-          "Your password has been changed.",
+          'Your password has been changed.',
           null, {duration: this.appState.confirmMessageDuration});
       }
     });
@@ -95,13 +95,13 @@ const repeatPasswordValidator: ValidatorFn = (control: FormGroup): ValidationErr
     control.setErrors(null);
     return null;
   } else {
-    control.setErrors({'mismatch': true});
-    return { 'mismatch': true};
+    control.setErrors({mismatch: true});
+    return {mismatch: true};
   }
-}
+};
 
 function passwordValidator(
-  minLength:number,
+  minLength: number,
   minStrength: number,
   requiresUC: boolean = false,
   requiresLC: boolean = false,
@@ -112,7 +112,7 @@ function passwordValidator(
     let errors: ValidationErrors = null;
 
     if (pass.length < minLength) {
-      errors = {'minLength': minLength };
+      errors = {minLength};
     }
 
     let score = 0;
@@ -130,7 +130,7 @@ function passwordValidator(
       lower: /[a-z]/.test(pass),
       upper: /[A-Z]/.test(pass),
       nonWords: /\W/.test(pass),
-    }
+    };
 
     let variationCount = 0;
     for (let check in variations) {
@@ -144,5 +144,5 @@ function passwordValidator(
     }
 
     return errors;
-  }
+  };
 }

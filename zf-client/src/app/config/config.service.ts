@@ -26,7 +26,7 @@ export class ConfigService {
   // Load the facility specific client configuration data.
   load() {
     this.loader.getClientConfig().subscribe((config: ClientConfig) => {
-      this.appStateService.facilityConfig = config
+      this.appStateService.facilityConfig = config;
     });
   }
 }

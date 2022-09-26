@@ -25,12 +25,12 @@ import * as XLSX from 'xlsx';
  * - the currently selected item
  * - a filter object that determines which of the items are in the filtered list
  * - the filtered list itself
- * - array of known values for each of several fields (to facilitate auto completion)
+ * - array of known values for each of several fields (to facilitate auto-completion)
  *
  * The service provides a mechanism for converting received DTOs to actual objects.
  *
  * This service is also provides support for CRUD operations for GUI clients.
- * An important note is that after certain operations (like like creating a object),
+ * An important note is that after certain operations (like creating an object),
  * the other stuff (like the known values for autocomplete options) may also change.
  * So this service is responsible for keeping all of that information in sync.
  *
@@ -55,6 +55,7 @@ export class ZFGenericService<// The SIMPLE_OBJ is a simple version of an object
 
   // Some extensions like transgeneService and mutationService will cache all instances and
   protected _filteredList: SIMPLE_OBJ[] = [];
+
   // Flag indicating that the service is meant to cache all instances of this type.
   private readonly cacheAll: boolean;
 
@@ -112,9 +113,9 @@ export class ZFGenericService<// The SIMPLE_OBJ is a simple version of an object
     private zfType: ZFTypes, // stock, mutation or transgene.
 
     // The loaderService is used in all instances of the generic service
-    // but I cannot figure out how to inject it into the generic service.
+    // but, I cannot figure out how to inject it into the generic service.
     // So, instead every instance does the injection and passes it to
-    // the generic service in it's super call.
+    // the generic service in its super call.
     protected readonly loaderService: LoaderService,
     // The snackbar is used to give quick progress messages and like the
     // loaderService, I cannot figure out how to inject one in this generic class.
@@ -123,9 +124,9 @@ export class ZFGenericService<// The SIMPLE_OBJ is a simple version of an object
     private authorizationService: AuthService,
     private routerService: Router,
   ) {
-    // problem: I want to pass to the constructor a flag indicating whether or not the
+    // problem: I want to pass to the constructor a flag indicating whether the
     // service is meant to cache the full list of instances of this zfType.
-    // However if I use: private cacheAll: boolean = false, of course angular tries
+    // However, if I use: private cacheAll: boolean = false, of course angular tries
     // to inject cacheAll, which it cannot do. at least I know for now that only
     // transgenes and mutations want to cache all, so...
     // TODO Remove this kludge
@@ -190,11 +191,7 @@ export class ZFGenericService<// The SIMPLE_OBJ is a simple version of an object
     this.loadSelected();
   }
 
-  getFirstFiltered(): number {
-    return (this.filteredList.length > 0) ? this.filteredList[0].id : 0;
-  }
-
-  // fetch an instance from the server.
+// fetch an instance from the server.
   getById(id: number): Observable<FULL_OBJ> {
     return this.loaderService.getInstance(this.zfType, id);
   }
@@ -211,7 +208,7 @@ export class ZFGenericService<// The SIMPLE_OBJ is a simple version of an object
         // If there is no object selected when this list comes back, go ahead and select
         // the first item of the filtered list.
         if (!this.getSelectedId() && this.filteredList.length > 0) {
-          this.selectByIdAndLoad(this.filteredList[0].id)
+          this.selectByIdAndLoad(this.filteredList[0].id);
         }
       });
   }
@@ -282,13 +279,15 @@ export class ZFGenericService<// The SIMPLE_OBJ is a simple version of an object
 
   // load up all the cache info this service needs.  This is done
   // a) when a client of this service changes something that invalidates the cache such as:
-  //    i) an item changes so it now does or does not match the filter,
+  //    i) an item changes, so it now does or does not match the filter,
   //    ii) an item is added
   //    iii) and item is deleted
   // b) periodic reload of the cache.
   refresh() {
     if (this.authorizationService.isAuthenticated) {
-      if (this.cacheAll) this.loadAll();
+      if (this.cacheAll) {
+        this.loadAll();
+      }
       this.loadFieldOptions();
       this.getLikelyNextName();
       this.applyFilter(); // apply the filter to reload the filtered list.

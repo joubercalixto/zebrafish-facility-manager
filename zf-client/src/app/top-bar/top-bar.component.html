@@ -25,31 +25,30 @@
         <mat-menu #moreMenu="matMenu">
           <button mat-menu-item zfmHideUnauthorized="admin"
                   [disabled]="appState.activeTool === zfTool.FACILITY_AUDIT"
-                  [routerLink]="zfTool.FACILITY_AUDIT.route" color="primary">
+                  [routerLink]="zfTool.FACILITY_AUDIT.route">
             <mat-icon>assignment</mat-icon>
             {{zfTool.FACILITY_AUDIT.display_name}}
           </button>
           <button mat-menu-item zfmHideUnauthorized="admin"
                   [disabled]="appState.activeTool === zfTool.USER_MANAGER"
-                  [routerLink]="zfTool.USER_MANAGER.route" color="primary">
+                  [routerLink]="zfTool.USER_MANAGER.route">
             <mat-icon>people</mat-icon>
             {{zfTool.USER_MANAGER.display_name}}
           </button>
           <button mat-menu-item zfmHideUnauthorized="admin"
                   [disabled]="appState.activeTool === zfTool.EXPORT_TOOL"
-                  [routerLink]="zfTool.EXPORT_TOOL.route" color="primary">
+                  [routerLink]="zfTool.EXPORT_TOOL.route">
             <mat-icon>cloud_download</mat-icon>
             {{zfTool.EXPORT_TOOL.display_name}}
           </button>
           <button mat-menu-item *ngIf="!appState.facilityConfig.hideImportTool" zfmHideUnauthorized="admin"
                   [disabled]="appState.activeTool === zfTool.IMPORT_TOOL"
-                  [routerLink]="zfTool.IMPORT_TOOL.route" color="primary">
+                  [routerLink]="zfTool.IMPORT_TOOL.route">
             <mat-icon>file_upload</mat-icon>
             {{zfTool.IMPORT_TOOL.display_name}}
           </button>
           <mat-divider></mat-divider>
-          <button mat-menu-item *ngIf="authService.loggedIn$ | async"
-                  routerLink="change_password" color="primary">
+          <button mat-menu-item *ngIf="authService.loggedIn$ | async" routerLink="change_password">
             <mat-icon>password</mat-icon>
             Change Password
           </button>
@@ -96,17 +95,17 @@
           </button>
           <button mat-menu-item zfmHideUnauthorized="user"
                   [disabled]="appState.activeTool === zfTool.FACILITY_AUDIT"
-                  [routerLink]="zfTool.FACILITY_AUDIT.route" color="primary">
+                  [routerLink]="zfTool.FACILITY_AUDIT.route">
             <mat-icon>assignment</mat-icon>
             {{zfTool.FACILITY_AUDIT.display_name}}
           </button>
           <button mat-menu-item zfmHideUnauthorized="admin" [disabled]="appState.activeTool === zfTool.USER_MANAGER"
-                  [routerLink]="zfTool.USER_MANAGER.route" color="primary">
+                  [routerLink]="zfTool.USER_MANAGER.route">
             <mat-icon>people</mat-icon>
             {{zfTool.USER_MANAGER.display_name}}
           </button>
           <button mat-menu-item zfmHideUnauthorized="admin" [disabled]="appState.activeTool === zfTool.IMPORT_TOOL"
-                  [routerLink]="zfTool.IMPORT_TOOL.route" color="primary">
+                  [routerLink]="zfTool.IMPORT_TOOL.route">
             <mat-icon>upload</mat-icon>
             {{zfTool.IMPORT_TOOL.display_name}}
           </button>
@@ -116,7 +115,7 @@
             Best Practices
           </button>
           <mat-divider></mat-divider>
-          <button mat-menu-item routerLink="change_password" color="primary">
+          <button mat-menu-item routerLink="change_password">
             <mat-icon>password</mat-icon>
             Change Password
           </button>
@@ -130,7 +129,7 @@
       <mat-toolbar *ngIf="!(authService.loggedIn$ | async)">
         <span>Facility Manager for {{appState.facilityConfig.facilityAbbrv}}</span>
         <span class="fill-remaining-space"></span>
-        <button mat-button (click)="login()" color="priary">
+        <button mat-button (click)="login()" color="primary">
           <mat-icon>login</mat-icon>
           Login
         </button>

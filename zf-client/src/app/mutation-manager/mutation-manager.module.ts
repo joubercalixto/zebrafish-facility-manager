@@ -20,12 +20,12 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatMenuModule} from '@angular/material/menu';
 import {CommonModule} from '@angular/common';
-import {AuthModule} from "../auth/auth.module";
-import {MatCheckboxModule} from "@angular/material/checkbox";
-import {MatSidenavModule} from "@angular/material/sidenav";
+import {AuthModule} from '../auth/auth.module';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatSidenavModule} from '@angular/material/sidenav';
 import {MutationMiniViewerComponent} from './mutation-mini-viewer/mutation-mini-viewer.component';
-import {MutationTinyViewerComponent} from "./mutation-mini-viewer/mutation-tiny-viewer.component";
-import {ZfGenericModule} from "../zf-generic/zf-generic.module";
+import {MutationTinyViewerComponent} from './mutation-mini-viewer/mutation-tiny-viewer.component';
+import {ZfGenericModule} from '../zf-generic/zf-generic.module';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @NgModule({

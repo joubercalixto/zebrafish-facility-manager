@@ -1,5 +1,5 @@
 // The user interface adjusts to some screen sizes
-// I'm using an ennumeration so we can use arithmetic comparissons like foo > ScreenSizes.MEDIUM
+// I'm using an enumeration, so we can use arithmetic comparisons like foo > ScreenSizes.MEDIUM
 export enum ScreenSizes {
   EXTRA_SMALL,
   SMALL,

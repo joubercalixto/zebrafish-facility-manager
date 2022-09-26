@@ -131,7 +131,7 @@ export class ImporterComponent implements OnInit {
    * in the file chooser showing up.
    * Further note to self - if the Angular button label uses the
    * label-for="fileToUpload" attribute, then the Chrome browser is smart
-   * enough to know what you are trying to do and it automatically pops up the
+   * enough to know what you are trying to do, and it automatically pops up the
    * file chooser - meaning that it shows up twice.  Firefox is not so smart.
    * So do not use the label-for and both browsers work.
    */

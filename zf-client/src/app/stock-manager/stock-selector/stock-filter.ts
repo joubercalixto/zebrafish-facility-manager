@@ -9,11 +9,13 @@ export class StockFilter {
   transgene: string = null;
   transgeneId: number = null;
   age: number = null;
+  // The following is NOT unused.
+  // It is used when a Form value (with an age-modifier form field) is used to fill a StockFilter.
   ageModifier: string = null;
   researcherId: string = null;
   piId: string = null;
 
-  public constructor( init?: Partial<StockFilter>) {
+  public constructor(init?: Partial<StockFilter>) {
     Object.assign(this, init);
   }
 

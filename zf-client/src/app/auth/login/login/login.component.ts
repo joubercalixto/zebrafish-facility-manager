@@ -1,12 +1,11 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
-import {AppStateService} from '../../../app-state.service';
-import {AuthApiService} from "../../auth-api.service";
-import {AuthService} from "../../auth.service";
-import {FormControl} from "@angular/forms";
+import {AuthApiService} from '../../auth-api.service';
+import {AuthService} from '../../auth.service';
+import {FormControl} from '@angular/forms';
 
 @Component({
-  selector: 'zfm-login',
+  selector: 'app-zfm-login',
   template: `
     <section class="mat-typography">
       <div mat-dialog-title>Login</div>
@@ -14,7 +13,7 @@ import {FormControl} from "@angular/forms";
         <div mat-dialog-content>
           <div fxLayout="column">
             <mat-form-field>
-              <input matInput name="username"  type="text" placeholder="Username"
+              <input matInput name="username" type="text" placeholder="Username"
                      [formControl]="usernameFC">
             </mat-form-field>
             <mat-form-field>

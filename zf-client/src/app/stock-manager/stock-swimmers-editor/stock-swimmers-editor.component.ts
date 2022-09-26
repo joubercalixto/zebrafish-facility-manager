@@ -92,9 +92,11 @@ export class StockSwimmersEditorComponent implements OnInit {
     this.needsSaving = false;
 
     // We might get called when no stock is selected - just ignore it.
-    // We are pretty confident that a stock will be selected shortly and
-    // then we LEAP into action.
-    if (!this.stockService.selected) { return; }
+    // We are pretty confident that a stock will be selected shortly.
+    // Then we LEAP into action.
+    if (!this.stockService.selected) {
+      return;
+    }
     // make a copy of the swimmers in the selected stock (we do not operate on them directly).
     this.originalSwimmers = this.stockService.selected.swimmers.map(s => ({...s}));
     this.swimmers = {};
@@ -102,7 +104,8 @@ export class StockSwimmersEditorComponent implements OnInit {
       this.swimmers[s.tankId] = {
         swimmer: Object.assign(new SwimmerDto(), s),
         originalSwimmer: s,
-        state: SwimmerState.UNCHANGED};
+        state: SwimmerState.UNCHANGED
+      };
     });
     this.cohabitants = [];
     this.clearNewSwimmer();
@@ -129,7 +132,7 @@ export class StockSwimmersEditorComponent implements OnInit {
   // When the user hits the delete button, it could mean a couple of things
   // If the swimmer is "new" i.e. scheduled for addition, we can just delete it because it was not
   // yet added.
-  // Otherwise we mark it as deleted.
+  // Otherwise, we mark it as deleted.
   onSwimmerDelete(tankId: string) {
     if (this.swimmers[tankId].state === SwimmerState.NEW) {
       delete this.swimmers[tankId];
@@ -142,7 +145,7 @@ export class StockSwimmersEditorComponent implements OnInit {
   // When the user changes a count or comment for a swimmer
   // If the swimmer is "new" i.e. scheduled for addition, we can just delete it because it was not
   // yet added.
-  // Otherwise we mark it as deleted.
+  // Otherwise, we mark it as deleted.
   onSwimmerChange(tankId: string) {
     switch (this.swimmers[tankId].state) {
       case SwimmerState.NEW:
@@ -214,7 +217,7 @@ export class StockSwimmersEditorComponent implements OnInit {
       }
     }
 
-    // after changes complete, force the reload of the updated stock by re-selecting it.
+    // after changes complete, force reloading of the updated stock by re-selecting it.
     forkJoin(responses).subscribe(_ => this.stockService.selectByIdAndLoad(this.stockId));
     this.router.navigateByUrl(ZFTool.STOCK_MANAGER.route + '/view').then();
   }

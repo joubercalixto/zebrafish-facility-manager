@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
-import {ZFTool} from "../helpers/zf-tool";
-import {AppStateService} from "../app-state.service";
-import {MutationService} from "./mutation.service";
-import {AuthService} from "../auth/auth.service";
+import {ZFTool} from '../helpers/zf-tool';
+import {AppStateService} from '../app-state.service';
+import {MutationService} from './mutation.service';
+import {AuthService} from '../auth/auth.service';
 
 @Component({
   selector: 'app-mutation-manager',

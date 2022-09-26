@@ -5,7 +5,7 @@
     <mat-toolbar class="zf-mini-toolbar">Customize Tank Label</mat-toolbar>
 
     <!-- Stock Description -->
-    <div fxLayoutAlign="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
       <mat-checkbox [(ngModel)]="label.layoutConfig.showDescription" color="primary" name="showDescription">
       </mat-checkbox>
       <mat-form-field fxFlex>
@@ -17,7 +17,7 @@
       </mat-form-field>
     </div>
     <!-- Mutations -->
-    <div fxLayoutAlign="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
       <mat-checkbox [(ngModel)]="label.layoutConfig.showMutations" color="primary" name="showMuts">
       </mat-checkbox>
       <mat-form-field fxFlex>
@@ -30,7 +30,7 @@
     </div>
 
     <!-- Transgenes -->
-    <div fxLayoutAlign="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
       <mat-checkbox [(ngModel)]="label.layoutConfig.showTransgenes" color="primary" name="showTGs">
       </mat-checkbox>
       <mat-form-field fxFlex>
@@ -43,7 +43,7 @@
     </div>
 
     <!-- Label Note -->
-    <div fxLayoutAlign="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
       <mat-checkbox [(ngModel)]="label.layoutConfig.showAdditionalNote" color="primary" name="showNote">
       </mat-checkbox>
       <mat-form-field fxFlex>
@@ -56,8 +56,8 @@
     </div>
 
     <!--Toggle the QR code-->
-    <div fxLayoutAlign="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
-      <mat-checkbox [(ngModel)]="label.layoutConfig.showQrCode" color="primary" name="shoqQrCode">
+    <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="10px">
+      <mat-checkbox [(ngModel)]="label.layoutConfig.showQrCode" color="primary" name="showQrCode">
         QR Code
       </mat-checkbox>
       <mat-checkbox *ngIf="!appState.facilityConfig.hidePI" [(ngModel)]="label.layoutConfig.showPiInitials"
@@ -78,7 +78,7 @@
 
     <!--Half-assed simulation of what the label might look like...-->
     <div class="zf-mini-title">Label mock-up</div>
-    <div fxLayoutAlign="center center" fxLayoutGap="10px" fxlayout="row">
+    <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10">
       <div fxLayout="column" fxLayoutAlign="center center">
         <button (click)="changeFontSize(1)" aria-label="Increase font size" color="primary" mat-icon-button>
           <mat-icon>arrow_drop_up</mat-icon>

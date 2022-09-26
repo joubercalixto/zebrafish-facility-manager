@@ -10,7 +10,7 @@ export class FieldOptions {
   }
 
   // Fill the options from a plain object
-  // Normally we receive a plain object from and HTTP request and we stick it in here.
+  // Normally we receive a plain object from and HTTP request, and we stick it in here.
   fillFromPlain(options: {[key: string]: string[]} = {}) {
     this.options = options;
   }

@@ -3,10 +3,10 @@ import {BehaviorSubject, interval} from 'rxjs';
 import {Router} from '@angular/router';
 import {LOCAL_STORAGE, StorageService} from 'ngx-webstorage-service';
 import {plainToClass} from 'class-transformer';
-import {AccessTokenPayload} from "./zfm-access-token-payload";
-import {AppStateService} from "../app-state.service";
-import {ZFTool} from "../helpers/zf-tool";
-import {AppRoles} from "./app-roles";
+import {AccessTokenPayload} from './zfm-access-token-payload';
+import {AppStateService} from '../app-state.service';
+import {ZFTool} from '../helpers/zf-tool';
+import {AppRoles} from './app-roles';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +16,7 @@ export class AuthService {
   public intendedPath: string;
 
   public loggedIn$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
   // This is used in case the GUI needs to know if the user has been authenticated, i.e. logged in.
   get isAuthenticated(): boolean { return this.loggedIn$.value; }
 
@@ -133,7 +134,7 @@ export class AuthService {
     }
   }
 
-  // Check if the logged in user is allowed to perform a particular role.
+  // Check if the logged-in user is allowed to perform a particular role.
   canPerformRole(roleInQuestion: string): boolean {
     if (!this.isAuthenticated) {
       return false;

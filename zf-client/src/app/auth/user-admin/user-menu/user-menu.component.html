@@ -7,7 +7,7 @@
   <div *ngIf="user">
 
     <!-- Edit the currently selected user -->
-    <button mat-menu-item color="primary" (click)="edit()">
+    <button mat-menu-item (click)="edit()">
       <mat-icon>edit</mat-icon>
       <span>Edit {{user.email}}</span>
     </button>
@@ -18,7 +18,7 @@
       <span>Create User</span>
     </button>
 
-    <!-- Activate the surrently selected user -->
+    <!-- Activate the currently selected user -->
     <button (click)="service.activate(user)" [disabled]="user.isActive" mat-menu-item>
       <mat-icon></mat-icon>
       <span>Activate {{user.email}}</span>

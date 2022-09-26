@@ -19,8 +19,8 @@ export class CrossLabelComponent implements OnInit {
 
   ngOnInit(): void {
     // The assumption is that before this gets invoked, the invoker stuffs the data
-    // for the label in the appState and now we just go fetch it.  It may be a
-    // sub optimal design, but it is really easy.
+    // for the label in the appState, and now we just go fetch it.  It may be a
+    // suboptimal design, but it is really easy.
     this.crossLabel = this.appState.getState('crossLabel');
     this.printService.onDataReady();
   }

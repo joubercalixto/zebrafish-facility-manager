@@ -211,13 +211,6 @@ export class LoaderService {
       );
   }
 
-  getTankByName(tankName:string): Observable<any> {
-    return this.http.get(this.serverURL + '/tank/name/' + tankName)
-      .pipe(
-        catchError(this.handleError('get tank by name' + '.', []))
-      );
-  }
-
   getTankNeighbors(tank: TankDto): Observable<any> {
     return this.http.get(this.serverURL + '/tank/getNeighbors/' + tank.sortOrder)
       .pipe(

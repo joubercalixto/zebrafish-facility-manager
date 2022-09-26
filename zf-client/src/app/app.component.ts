@@ -1,14 +1,14 @@
 import {Component, OnInit} from '@angular/core';
-import {BreakpointObserver} from "@angular/cdk/layout";
-import {AppStateService} from "./app-state.service";
-import {ScreenSizes} from "./helpers/screen-sizes";
+import {BreakpointObserver} from '@angular/cdk/layout';
+import {AppStateService} from './app-state.service';
+import {ScreenSizes} from './helpers/screen-sizes';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
   title = 'zf-client';
 
   constructor(
@@ -25,15 +25,15 @@ export class AppComponent implements OnInit{
     this.breakpointObserver.observe([small, medium, large])
       .subscribe(result => {
           if (result.breakpoints[small]) {
-            this.appState.screenSize = ScreenSizes.SMALL
+            this.appState.screenSize = ScreenSizes.SMALL;
             this.appState.selectorFixed = false;
           }
           if (result.breakpoints[medium]) {
-            this.appState.screenSize = ScreenSizes.MEDIUM
+            this.appState.screenSize = ScreenSizes.MEDIUM;
             this.appState.selectorFixed = true;
           }
           if (result.breakpoints[large]) {
-            this.appState.screenSize = ScreenSizes.LARGE
+            this.appState.screenSize = ScreenSizes.LARGE;
             this.appState.selectorFixed = true;
           }
         }
@@ -41,6 +41,6 @@ export class AppComponent implements OnInit{
   }
 
   getStyle(): string {
-    return "backgroundColor: " + this.appState.facilityConfig.backgroundColor;
+    return 'backgroundColor: ' + this.appState.facilityConfig.backgroundColor;
   }
 }

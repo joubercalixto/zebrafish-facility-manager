@@ -31,7 +31,7 @@ export class AppStateService {
   // for storing arbitrary state data and arbitrary state data that persists over restarts
   state: { [name: string]: any } = {};
   persistentState: { [name: string]: any } = {};
-  selectorFixed: boolean = true;
+  selectorFixed = true;
   screenSize: ScreenSizes = ScreenSizes.LARGE;
 
   private _activeTool$: BehaviorSubject<ZFTool> = new BehaviorSubject<ZFTool>(ZFTool.SPLASH_LOGIN);
@@ -57,7 +57,7 @@ export class AppStateService {
   // and a much better approach to caching in the services.  But it suffices
   // and is not too data intensive.
   get backgroundDataRefreshInterval(): number {
-    let d = this.getState('backgroundDataRefresh') || 3600000;
+    const d = this.getState('backgroundDataRefresh') || 3600000;
     return d + Math.floor(Math.random() * 50000 + 20000);
   }
 
@@ -87,9 +87,13 @@ export class AppStateService {
     }
   }
 
-  deleteState(name:string) {
-    if (this.persistentState[name]) { delete this.persistentState[name]; }
-    if (this.state[name]) { delete this.state[name]; }
+  deleteState(name: string) {
+    if (this.persistentState[name]) {
+      delete this.persistentState[name];
+    }
+    if (this.state[name]) {
+      delete this.state[name];
+    }
   }
 
   getState(name): any {
@@ -98,7 +102,7 @@ export class AppStateService {
     return null;
   }
 
-  // making room to allow the user to set this value as as an option.
+  // making room to allow the user to set this value as an option.
   set confirmMessageDuration(ms: number) {
     if (ms < 0) {
       this.deleteState('confirmMessageDuration');
@@ -110,6 +114,11 @@ export class AppStateService {
   get confirmMessageDuration(): number {
     const d = this.getState('confirmMessageDuration');
     return d ? d : 2000;
+  }
+
+  get errorMessageDuration(): number {
+    const d = this.getState('errorMessageDuration');
+    return d ? d : 4000;
   }
 
   set errorMessageDuration(ms: number) {
@@ -134,10 +143,5 @@ export class AppStateService {
     if (this.localStorage.get('persistentState')) {
       this.persistentState = this.localStorage.get('persistentState');
     }
-  }
-
-  get errorMessageDuration(): number {
-    const d = this.getState('errorMessageDuration');
-    return d ? d : 4000;
   }
 }

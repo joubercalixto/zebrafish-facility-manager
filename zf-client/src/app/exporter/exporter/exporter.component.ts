@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AppStateService} from '../../app-state.service';
 import {AuthService} from '../../auth/auth.service';
 import {TransgeneService} from '../../transgene-manager/transgene.service';
@@ -88,7 +88,7 @@ export class ExporterComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     this.appState.setActiveTool(ZFTool.EXPORT_TOOL);
 
-    const wb: WorkBook = await this.stockService.getExportWorkbook()
+    const wb: WorkBook = await this.stockService.getExportWorkbook();
     this.fetchingStocks = false;
 
     const transgeneWorksheet: WorkSheet = this.transgeneService.getExportWorksheet();
@@ -100,15 +100,14 @@ export class ExporterComponent implements OnInit {
     this.fetchingMutations = false;
 
     const personWorksheet: WorkSheet = await this.userAdminService.getExportWorkSheet();
-    XLSX.utils.book_append_sheet(wb, personWorksheet, 'People')
+    XLSX.utils.book_append_sheet(wb, personWorksheet, 'People');
     this.fetchingPeople = false;
 
     const tankWorksheet: WorkSheet = await this.tankService.getExportWorksheet();
-    XLSX.utils.book_append_sheet(wb, tankWorksheet, 'Tanks')
+    XLSX.utils.book_append_sheet(wb, tankWorksheet, 'Tanks');
     this.fetchingTanks = false;
 
     const now = Date().toString();
-    XLSX.writeFile(wb, 'Zebrafish Stockbook ' + now + '.xlsx');
+    XLSX.writeFile(wb, 'Zebrafish stock book ' + now + '.xlsx');
   }
-
 }

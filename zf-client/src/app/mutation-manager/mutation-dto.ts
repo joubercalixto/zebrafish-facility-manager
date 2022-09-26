@@ -1,4 +1,4 @@
-import {ZfGenericDto} from "../zf-generic/zfgeneric-dto";
+import {ZfGenericDto} from '../zf-generic/zfgeneric-dto';
 import {ZFIN_URL_PREFIX} from '../common/zfin/zfin-url';
 
 export class MutationDto extends ZfGenericDto {
@@ -28,7 +28,7 @@ export class MutationDto extends ZfGenericDto {
   }
 
   get details(): string[] {
-    let details = [];
+    const details = [];
     if (this.comment) {
       details.push(this.comment);
     }
@@ -41,7 +41,7 @@ export class MutationDto extends ZfGenericDto {
 
   get externalLinkLabel(): string {
     if (this.hasExternalLink) {
-      return "ZFIN";
+      return 'ZFIN';
     }
     return null;
   }

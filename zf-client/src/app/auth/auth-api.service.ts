@@ -123,13 +123,6 @@ export class AuthApiService {
       );
   }
 
-  getByName(name: string): Observable<any> {
-    return this.http.get(this.serverURL + '/user/name/' + name)
-      .pipe(
-        catchError(this.handleError('Get user by name.', null))
-      );
-  }
-
   getUsers(filter: UserFilter): Observable<any> {
     const q = convertObjectToHTTPQueryParams(filter);
     return this.http.get(this.serverURL + '/user' +  q)
