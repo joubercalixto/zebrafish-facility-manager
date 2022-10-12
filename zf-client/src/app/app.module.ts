@@ -27,7 +27,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatTableModule} from '@angular/material/table';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import {TankLabelComponent} from './printing/tank-label/tank-label.component';
+import {PrintableTankLabelComponent} from './printing/printable-tank-label/printable-tank-label.component';
 import {TransgeneManagerModule} from './transgene-manager/transgene-manager.module';
 import {StockManagerModule} from './stock-manager/stock-manager.module';
 import {MutationManagerModule} from './mutation-manager/mutation-manager.module';
@@ -85,7 +85,7 @@ export function authServiceProviderFactory(provider: AppStateService) {
     AppComponent,
     CanDeactivateComponent,
     TopBarComponent,
-    TankLabelComponent,
+    PrintableTankLabelComponent,
     SplashComponent,
     CrossLabelComponent,
     FacilityAuditComponent,
@@ -154,6 +154,7 @@ export function authServiceProviderFactory(provider: AppStateService) {
   ],
   exports: [
     TopBarComponent,
+    PrintableTankLabelComponent,
   ],
   bootstrap: [AppComponent]
 })

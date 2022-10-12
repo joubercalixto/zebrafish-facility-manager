@@ -64,13 +64,13 @@ export class CrossLabelMakerComponent implements OnInit {
     // For making a mock-up of the label, go look up the facility default label size
     // This *does not* get passed to the tank label printing component because over there it will
     // use the label printer's *actual* label size, which, with luck, will match the defaults.
-    this.labelHeight = this.appState.facilityConfig.labelPrinting.heightInInches;
-    this.labelWidth = this.appState.facilityConfig.labelPrinting.widthInInches;
+    this.labelHeight = this.appState.facilityConfig.tankLabelOptions.labelPrintingOptions.heightInInches;
+    this.labelWidth = this.appState.facilityConfig.tankLabelOptions.labelPrintingOptions.widthInInches;
 
     // Go get the default font and font size.  The user is allowed to muck around with this
     // a bit so it *does* get sent along to the tank label printing component as part of the label.
-    this.crossLabel.fontSize = this.appState.facilityConfig.labelPrinting.fontPointSize;
-    this.crossLabel.fontFamily = this.appState.facilityConfig.labelPrinting.fontFamily;
+    this.crossLabel.fontSize = this.appState.facilityConfig.tankLabelOptions.labelPrintingOptions.fontPointSize;
+    this.crossLabel.fontFamily = this.appState.facilityConfig.tankLabelOptions.labelPrintingOptions.fontFamily;
   }
 
   onSelectResearcher(researcherId: string) {

@@ -119,7 +119,7 @@ export class TransgeneEditorComponent implements OnInit {
       // if there is a uniqueness error.
       alleleC.setErrors({uniqueness: true});
       descriptorC.setErrors({uniqueness: true});
-      return {'unique': {value: 'failed'}};
+      return {unique: {value: 'failed'}};
     } else {
       removeErrorFromControl(alleleC, 'uniqueness');
       removeErrorFromControl(descriptorC, 'uniqueness');
@@ -138,7 +138,7 @@ export class TransgeneEditorComponent implements OnInit {
       return null;
     }
     if (this.service.nicknameIsInUse(control.value, this.item.id)) {
-      return {'unique': {value: control.value}};
+      return {unique: {value: control.value}};
     } else {
       return null;
     }
@@ -208,8 +208,8 @@ export class TransgeneEditorComponent implements OnInit {
       return null;
     }
     if (this.editMode === EditMode.CREATE || this.editMode === EditMode.EDIT) {
-      if (control.value && control.value.startsWith(this.appState.facilityConfig.facilityPrefix)) {
-        return {'prefix': {value: control.value}};
+      if (control.value && control.value.startsWith(this.appState.facilityConfig.facilityInfo.prefix)) {
+        return {prefix: {value: control.value}};
       } else {
         return null;
       }
@@ -220,7 +220,7 @@ export class TransgeneEditorComponent implements OnInit {
 
   getAlleleError() {
     if (this.alleleControl.hasError('prefix')) {
-      return `The prefix ${this.appState.facilityConfig.facilityPrefix} is reserved for "owned" alleles`;
+      return `The prefix ${this.appState.facilityConfig.facilityInfo.prefix} is reserved for "owned" alleles`;
     }
   }
 
@@ -273,18 +273,18 @@ export class TransgeneEditorComponent implements OnInit {
           this.zfinTg = zt;
           if (this.getControlValue('allele') !== zt.alleleName) {
             this.canUpdateFromZfin = true;
-            this.zfinAlleleHint = `ZFIN name is ${zt.alleleName}`
+            this.zfinAlleleHint = `ZFIN name is ${zt.alleleName}`;
           }
           if (this.getControlValue('descriptor') !== zt.zfinConstructName) {
             this.canUpdateFromZfin = true;
-            this.zfinConstructNameHint = `ZFIN construct name is ${zt.zfinConstructName}`
+            this.zfinConstructNameHint = `ZFIN construct name is ${zt.zfinConstructName}`;
           }
           if (this.getControlValue('zfinId') !== zt.zfinId) {
             this.canUpdateFromZfin = true;
-            this.zfinIdHint = `ZFIN Id is ${zt.zfinId}`
+            this.zfinIdHint = `ZFIN Id is ${zt.zfinId}`;
           }
         }
-      })
+      });
   }
 
   updateFromZfin() {

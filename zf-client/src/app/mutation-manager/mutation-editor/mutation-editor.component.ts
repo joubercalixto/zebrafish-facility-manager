@@ -167,7 +167,7 @@ export class MutationEditorComponent implements OnInit {
       return null;
     }
     if (this.editMode === EditMode.CREATE || this.editMode === EditMode.EDIT) {
-      if (control.value && control.value.startsWith(this.appState.facilityConfig.facilityPrefix)) {
+      if (control.value && control.value.startsWith(this.appState.facilityConfig.facilityInfo.prefix)) {
         return {prefix: {value: control.value}};
       }
     }
@@ -206,7 +206,7 @@ export class MutationEditorComponent implements OnInit {
       return 'The name ' + this.nameControl.value + ' is already in use.';
     }
     if (this.nameControl.hasError('prefix')) {
-      return `The prefix ${this.appState.facilityConfig.facilityPrefix} is reserved for "owned" mutations`;
+      return `The prefix ${this.appState.facilityConfig.facilityInfo.prefix} is reserved for "owned" mutations`;
     }
   }
 

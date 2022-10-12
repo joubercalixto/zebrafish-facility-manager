@@ -1,0 +1,13 @@
+<div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+  <mat-checkbox [(ngModel)]="tankLabelElement.visibleOnLabel"
+                [disabled]="tankLabelElement.required"
+                color="primary" name="check">
+  </mat-checkbox>
+  <mat-form-field fxFlex>
+    <label>
+      <input [(ngModel)]="tankLabelElement.value" matInput name="input"
+             [disabled]="!tankLabelElement.editable || !tankLabelElement.visibleOnLabel"
+             [placeholder]="tankLabelElement.label" type="text">
+    </label>
+  </mat-form-field>
+</div>

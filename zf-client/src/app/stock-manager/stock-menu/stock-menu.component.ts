@@ -50,8 +50,7 @@ export class StockMenuComponent implements OnInit {
 
   /* print a label for this stock  */
   printLabel() {
-    // this.printService.printDocument('tankLabel');
-    this.router.navigateByUrl(ZFTool.STOCK_MANAGER.route + '/tank-label');
+    this.router.navigateByUrl(ZFTool.STOCK_MANAGER.route + '/tank-label').then();
   }
 
   makeCrossLabel() {
@@ -78,5 +77,3 @@ export class StockMenuComponent implements OnInit {
   }
 
 }
-
-

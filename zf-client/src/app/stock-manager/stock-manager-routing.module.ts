@@ -98,6 +98,10 @@ const stockManagerRoutes: Routes = [
         component: TankLabelMakerComponent,
       },
       {
+        path: 'tank-label' + '/:swimmerIndex',
+        component: TankLabelMakerComponent,
+      },
+      {
         path: 'cross-label',
         component: CrossLabelMakerComponent,
       },

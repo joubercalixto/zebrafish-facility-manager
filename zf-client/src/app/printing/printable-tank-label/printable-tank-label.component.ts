@@ -1,17 +1,19 @@
 import {Component, OnInit} from '@angular/core';
 import {PrintService} from '../print.service';
 import {AppStateService} from '../../app-state.service';
-import {TankLabel} from './tank-label';
+import {PrintableTankLabel} from './printable-tank-label';
+import {plainToClass} from 'class-transformer';
 
 
 @Component({
-  selector: 'app-tank-label',
-  templateUrl: './tank-label.component.html',
-  styleUrls: ['./tank-label.component.scss']
+  selector: 'app-printable-tank-label',
+  templateUrl: './printable-tank-label.component.html',
+  styleUrls: ['./printable-tank-label.component.scss']
 })
-export class TankLabelComponent implements OnInit {
+export class PrintableTankLabelComponent implements OnInit {
+  // tslint is wrong about the next row, it is used by the qr code generator in the html, albeit with eval
   stockUrl: string;
-  label: TankLabel;
+  label: PrintableTankLabel;
 
   constructor(
     public appState: AppStateService,
@@ -23,7 +25,7 @@ export class TankLabelComponent implements OnInit {
     // The assumption is that before this gets invoked, the invoker stuffs the data
     // for the label in the appState, and now we just go fetch it.  It may be a
     // suboptimal design, but it is really easy.
-    this.label = this.appState.getState('tankLabel');
+    this.label = plainToClass(PrintableTankLabel, this.appState.getState('tankLabel'));
     this.printService.onDataReady();
   }
 }

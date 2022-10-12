@@ -1,4 +1,4 @@
-export class LabelPrintingConfig {
+export class LabelPrintingOptions {
   fontPointSize: number = 11;
   fontFamily: string = 'Helvetica';
   heightInInches: number = 1.25;

@@ -39,6 +39,7 @@ import {CrossLabelMakerComponent} from './cross-label-maker/cross-label-maker.co
 import {TankLabelMakerComponent} from './tank-label-maker/tank-label-maker.component';
 import {QRCodeModule} from 'angularx-qrcode';
 import {TankManagerModule} from '../tank-manager/tank-manager.module';
+import {TankLabelElementComponent} from './tank-label-maker/tank-label-element/tank-label-element.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import {TankManagerModule} from '../tank-manager/tank-manager.module';
     DateToAgePipe,
     CrossLabelMakerComponent,
     TankLabelMakerComponent,
+    TankLabelElementComponent,
   ],
   imports: [
     StockManagerRoutingModule,

@@ -2,12 +2,13 @@ import {Component, OnInit} from '@angular/core';
 import {AppStateService} from '../../app-state.service';
 import {StockService} from '../stock.service';
 import {StockFullDto} from '../dto/stock-full-dto';
-import {MutationDto} from '../../mutation-manager/mutation-dto';
-import {TransgeneDto} from '../../transgene-manager/transgene-dto';
-import {Router} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {PrintService} from '../../printing/print.service';
-import {TankLabel} from '../../printing/tank-label/tank-label';
 import {ZFTool} from '../../helpers/zf-tool';
+import {FormControl, FormGroup} from '@angular/forms';
+import {classToPlain} from 'class-transformer';
+import {TankLabel} from './tank-label';
+import {PrintableTankLabel} from '../../printing/printable-tank-label/printable-tank-label';
 
 @Component({
   selector: 'app-tank-label-maker',
@@ -17,65 +18,80 @@ import {ZFTool} from '../../helpers/zf-tool';
 export class TankLabelMakerComponent implements OnInit {
   stock: StockFullDto;
   label: TankLabel;
+  tankLabelFormGroup: FormGroup;
+  selectedSwimmerFC: FormControl;
+  selectedSwimmerIndex: number;
 
   // How about a helping of lame sauce with this menu?
-  fonts = ['Roboto', 'Arial', 'Arial Narrow', 'Arial Black', 'Calibri', 'Helvetica', 'PT Sans']
+  fonts = ['Roboto', 'Arial', 'Arial Narrow', 'Arial Black', 'Calibri', 'Helvetica', 'PT Sans'];
 
   constructor(
     public appState: AppStateService,
     private stockService: StockService,
     private printService: PrintService,
     private router: Router,
+    private route: ActivatedRoute,
   ) {
   }
 
   ngOnInit(): void {
     this.stock = this.stockService.selected;
-    this.label = new TankLabel(this.appState.facilityConfig);
     this.initialize();
+    this.route.params.subscribe(params => {
+      if (undefined !== (params.swimmerIndex)) {
+        this.selectedSwimmerIndex = Number(params.swimmerIndex);
+        this.selectSwimmer();
+      }
+    });
   }
 
   initialize() {
-    // Copy data from the stock into the label
-    this.label.stockUrl = location.origin + '/stock_manager/view/' + this.stockService.selected.id;
-    this.label.name = this.stock.name;
-    this.label.fertilizationDate = this.stock.fertilizationDate;
-    this.label.description = this.stock.description;
-    this.label.mutations = this.stock.mutations.map((m: MutationDto) => m.fullName).join(', ');
-    this.label.transgenes = this.stock.transgenes.map((t: TransgeneDto) => t.fullName).join(', ');
-    if (this.stock.researcherUser) {
-      this.label.researcherName = this.stock.researcherUser.name;
-      this.label.researcherInitials = this.stock.researcherUser.initials;
+    this.label = new TankLabel(
+      this.stockService.selected,
+      this.appState.facilityConfig.tankLabelOptions,
+      !this.appState.facilityConfig.hidePI,
+    );
+
+
+    const group: any = {};
+    for (const key of Object.keys(this.label.labelElements)) {
+      group[key] = new FormControl(this.label.labelElements[key].value);
     }
-    if (this.stock.piUser) {
-      this.label.piName = this.stock.piUser.name;
-      this.label.piInitials = this.stock.piUser.initials;
+    this.tankLabelFormGroup = new FormGroup(group);
+    if (this.stock.swimmers.length > 0) {
+      this.tankLabelFormGroup.registerControl('selectedSwimmerFC', new FormControl(0));
     }
-    this.label.additionalNote = null;
   }
 
+  selectSwimmer() {
+    this.label.selectSwimmer(this.selectedSwimmerIndex);
+    // this.label.selectSwimmer(Number(this.tankLabelFormGroup.get('selectedSwimmerFC').value));
+  }
 
   changeFontSize(amount: number) {
-    this.label.printConfig.fontPointSize = this.label.printConfig.fontPointSize + amount;
+    this.label.tankLabelOptions.labelPrintingOptions.fontPointSize =
+      this.label.tankLabelOptions.labelPrintingOptions.fontPointSize + amount;
   }
 
   done() {
     this.router.navigateByUrl(ZFTool.STOCK_MANAGER.route + '/view').then();
-  };
+  }
 
   revert() {
     this.initialize();
-  };
+  }
 
   print() {
-    // We just stick the tank label in the appState before we go to print it.
-    // The printer just fetches from there.  This is the easiest way to get the
-    // data for the label from here to there.  We could do it through navigation
-    // parameters, but that is just a pain in the ass, and since the app state
-    // is around anyway - this seems like a good idea.
-    this.appState.setState('tankLabel', this.label, false);
+    // We just generate a printable tank label and stick it in the appState before we
+    // go to print it. The printer just fetches from there.
+    // This is the easiest way to get the data for the label from here to there.
+    // We could do it through navigation parameters, but that is just a pain in
+    // the ass, and since the app state is around anyway - this seems like a good idea.
+    const printableLabel = new PrintableTankLabel();
+    printableLabel.buildFromTankLabel(this.label);
+    this.appState.setState('tankLabel', classToPlain(printableLabel), false);
     this.printService.printDocument('tankLabel');
-  };
+  }
 
 }
 

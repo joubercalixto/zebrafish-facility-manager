@@ -7,6 +7,10 @@
       <button mat-icon-button zfmHideUnauthorized="user" color="primary" (click)="editStock()">
         <mat-icon>edit</mat-icon>
       </button>
+      <!--  Print label for this stock-->
+      <button mat-icon-button zfmHideUnauthorized="user" color="primary" (click)="printLabel()">
+        <mat-icon matTooltip="Print a tank label for this stock">print</mat-icon>
+      </button>
     </mat-toolbar>
 
     <div [fxLayout]="(appState.screenSize > ScreenSizes.MEDIUM) ? 'row' : 'column'" fxLayoutGap="10px">
@@ -153,8 +157,11 @@
           </button>
         </div>
         <mat-list *ngIf="service.selected.swimmers && service.selected.swimmers.length > 0" dense>
-          <mat-list-item *ngFor="let t of service.selected.swimmers">
-            {{t.tank.name}}: {{t.number}} fish
+          <mat-list-item *ngFor="let swimmer of service.selected.swimmers; let i = index;">
+            {{swimmer.tank.name}}: {{swimmer.number}} fish
+            <button mat-icon-button zfmHideUnauthorized="user" color="primary" (click)="printLabel(i)">
+              <mat-icon matTooltip="Print a label for this stock in this tank">print</mat-icon>
+            </button>
           </mat-list-item>
         </mat-list>
         <mat-list *ngIf="service.selected.swimmers.length < 1" dense>

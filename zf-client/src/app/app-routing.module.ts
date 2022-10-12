@@ -1,6 +1,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
-import {TankLabelComponent} from './printing/tank-label/tank-label.component';
+import {PrintableTankLabelComponent} from './printing/printable-tank-label/printable-tank-label.component';
 import {SplashComponent} from './splash/splash.component';
 import {CrossLabelComponent} from './printing/cross-label/cross-label.component';
 import {ZFTool} from './helpers/zf-tool';
@@ -22,7 +22,7 @@ const routes: Routes = [
   {
     path: 'print/tankLabel',
     outlet: 'print',
-    component: TankLabelComponent,
+    component: PrintableTankLabelComponent,
   },
   {
     path: 'print/crossLabel',

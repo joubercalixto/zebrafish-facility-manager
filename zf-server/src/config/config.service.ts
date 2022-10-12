@@ -6,20 +6,43 @@ import {LoggerOptions} from 'typeorm/logger/LoggerOptions';
 import {MailerOptions, MailerOptionsFactory} from '@nestjs-modules/mailer';
 import {HandlebarsAdapter} from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import {ClientConfig} from '../common/config/client-config';
+import {FacilityInfo} from '../common/config/facility-info';
+import {TankLabelElementOptions} from '../common/config/tank-label-element-options';
 
+export enum ZfmConfigOptions {
+  FACILITY_NAME = 'FACILITY_NAME',
+  FACILITY_SHORT_NAME = 'FACILITY_SHORT_NAME',
+  FACILITY_PREFIX = 'FACILITY_PREFIX',
+  FACILITY_URL = 'FACILITY_URL',
+  BEST_PRACTICES_SITE = 'BEST_PRACTICES_SITE',
+  HIDE_PRIMARY_INVESTIGATOR = 'HIDE_PRIMARY_INVESTIGATOR',
+  HIDE_IMPORT_TOOL = 'HIDE_IMPORT_TOOL',
+  TANK_NUMBERING_HINT = 'TANK_NUMBERING_HINT',
+  LABEL_FONT_SIZE = 'LABEL_FONT_SIZE',
+  LABEL_FONT_FAMILY = 'LABEL_FONT_FAMILY',
+  LABEL_HEIGHT_IN_INCHES = 'LABEL_HEIGHT_IN_INCHES',
+  LABEL_WIDTH_IN_INCHES = 'LABEL_WIDTH_IN_INCHES',
+  LABEL_SHOW_QR_CODE = 'LABEL_SHOW_QR_CODE',
+  LABEL_SHOW_TANK_INFO = 'LABEL_SHOW_TANK_INFO',
+  GUI_BACKGROUND = 'GUI_BACKGROUND',
+  ZFIN_ALLELE_LOOKUP_URL = 'ZFIN_ALLELE_LOOKUP_URL',
+  ALLOW_STOCK_NUMBER_OVERRIDE = 'ALLOW_STOCK_NUMBER_OVERRIDE',
+  PASSWORD_LENGTH = 'PASSWORD_LENGTH',
+  PASSWORD_MINIMUM_STRENGTH = 'PASSWORD_MINIMUM_STRENGTH',
+  PASSWORD_REQUIRES_UPPERCASE = 'PASSWORD_REQUIRES_UPPERCASE',
+  PASSWORD_REQUIRES_LOWERCASE = 'PASSWORD_REQUIRES_LOWERCASE',
+  PASSWORD_REQUIRES_NUMBERS = 'PASSWORD_REQUIRES_NUMBERS',
+  PASSWORD_REQUIRES_SPECIAL_CHARACTERS = 'PASSWORD_REQUIRES_SPECIAL_CHARACTERS',
+  AUTO_APPEND_Tg_TO_OWNED_ALLELES = 'AUTO_APPEND_Tg_TO_OWNED_ALLELES',
+  TANK_LABEL_LAYOUT = 'TANK_LABEL_LAYOUT',
+}
 export interface EnvConfig {
   [prop: string]: string;
 }
 
-class FacilityDto {
-  name: string;
-  shortName: string;
-  prefix: string;
-  url: string;
-}
-
 export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactory {
   private readonly envConfig: EnvConfig;
+  private readonly _clientConfig: ClientConfig = new ClientConfig();
   readonly facility: string; // which facility are we talking about
 
   constructor() {
@@ -39,6 +62,11 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
     }
     const config = dotenv.parse(fs.readFileSync(filePath));
     this.envConfig = ConfigService.validateInput(config);
+    this.buildClientConfig();
+  }
+
+  get clientConfig(): ClientConfig {
+    return this._clientConfig;
   }
 
   get port(): number {
@@ -61,13 +89,8 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
     return Boolean(this.envConfig.TYPEORM_MIGRATION_RUN);
   }
 
-  get facilityInfo(): FacilityDto {
-    return {
-      name: this.envConfig.FACILITY_NAME,
-      shortName: this.envConfig.FACILITY_SHORT_NAME,
-      prefix: this.envConfig.FACILITY_PREFIX,
-      url: this.envConfig.FACILITY_URL,
-    };
+  get facilityInfo(): FacilityInfo {
+    return this.clientConfig.facilityInfo;
   }
 
   // This is so the system can set up a default admin user
@@ -104,44 +127,63 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
   }
 
   // This is used to build a ClientConfig object to send to the client
-  get clientConfig(): ClientConfig {
-    const c = new ClientConfig();
-    c.facilityName = this.envConfig.FACILITY_NAME;
-    c.facilityAbbrv = this.envConfig.FACILITY_SHORT_NAME;
-    c.facilityPrefix = this.envConfig.FACILITY_PREFIX;
-    c.bestPracticesSite = this.envConfig.BEST_PRACTICES_SITE;
-    c.hidePI = Boolean(this.envConfig.HIDE_PRIMARY_INVESTIGATOR);
-    c.hideImportTool = Boolean(this.envConfig.HIDE_IMPORT_TOOL);
-    c.tankNumberingHint = this.envConfig.TANK_NUMBERING_HINT;
-    c.labelPrinting.fontPointSize = Number(this.envConfig.LABEL_FONT_SIZE);
-    c.labelPrinting.fontFamily = this.envConfig.LABEL_FONT_FAMILY;
-    c.labelPrinting.heightInInches = Number(this.envConfig.LABEL_HEIGHT_IN_INCHES);
-    c.labelPrinting.widthInInches = Number(this.envConfig.LABEL_WIDTH_IN_INCHES);
-    c.tankLabel.showQrCode = Boolean(this.envConfig.LABEL_SHOW_QR_CODE);
-    c.tankLabel.showStockNumber = Boolean(this.envConfig.LABEL_SHOW_STOCK_NUMBER);
-    c.tankLabel.showPiName = Boolean(this.envConfig.LABEL_SHOW_PRIMARY_INVESTIGATOR_NAME);
-    c.tankLabel.showPiInitials = Boolean(this.envConfig.LABEL_SHOW_PRIMARY_INVESTIGATOR_INITIALS);
-    c.tankLabel.showResearcherName = Boolean(this.envConfig.LABEL_SHOW_RESEARCHER_NAME);
-    c.tankLabel.showResearcherInitials = Boolean(this.envConfig.LABEL_SHOW_RESEARCHER_INITIALS);
-    c.tankLabel.showFertilizationDate = Boolean(this.envConfig.LABEL_SHOW_FERTILIZATION_DATE);
-    c.tankLabel.showDescription = Boolean(this.envConfig.LABEL_SHOW_DESCRIPTION);
-    c.tankLabel.showMutations = Boolean(this.envConfig.LABEL_SHOW_MUTATIONS);
-    c.tankLabel.showTransgenes = Boolean(this.envConfig.LABEL_SHOW_TRANSGENES);
-    c.tankLabel.showAdditionalNote = Boolean(this.envConfig.LABEL_SHOW_ADDITIONAL_NOTES);
-    c.backgroundColor = this.envConfig.GUI_BACKGROUND;
-    c.zfinAlleleLookupUrl = this.envConfig.ZFIN_ALLELE_LOOKUP_URL;
-    c.allowStockNumberOverride = Boolean(this.envConfig.ALLOW_STOCK_NUMBER_OVERRIDE);
-    c.passwordLength = Number(this.envConfig.PASSWORD_LENGTH);
-    c.passwordMinimumStrength = Number(this.envConfig.PASSWORD_MINIMUM_STRENGTH);
-    c.passwordRequiresUppercase = Boolean(this.envConfig.PASSWORD_REQUIRES_UPPERCASE);
-    c.passwordRequiresLowercase = Boolean(this.envConfig.PASSWORD_REQUIRES_LOWERCASE);
-    c.passwordRequiresNumbers = Boolean(this.envConfig.PASSWORD_REQUIRES_NUMBERS);
-    c.passwordRequiresSpecialCharacters = Boolean(this.envConfig.PASSWORD_REQUIRES_SPECIAL_CHARACTERS);
-    c.autoAppendTgToOwnedAlleles = Boolean(this.envConfig.AUTO_APPEND_Tg_TO_OWNED_ALLELES);
-    return c;
+  buildClientConfig() {
+    const c = this._clientConfig;
+    c.facilityInfo.name = this.envConfig[ZfmConfigOptions.FACILITY_NAME];
+    c.facilityInfo.shortName = this.envConfig[ZfmConfigOptions.FACILITY_SHORT_NAME];
+    c.facilityInfo.prefix = this.envConfig[ZfmConfigOptions.FACILITY_PREFIX];
+    c.facilityInfo.url = this.envConfig[ZfmConfigOptions.FACILITY_URL];
+    c.bestPracticesSite = this.envConfig[ZfmConfigOptions.BEST_PRACTICES_SITE];
+    c.hidePI = Boolean(this.envConfig[ZfmConfigOptions.HIDE_PRIMARY_INVESTIGATOR]);
+    c.hideImportTool = Boolean(this.envConfig[ZfmConfigOptions.HIDE_IMPORT_TOOL]);
+    c.tankNumberingHint = this.envConfig[ZfmConfigOptions.TANK_NUMBERING_HINT];
+    c.tankLabelOptions.labelPrintingOptions.fontPointSize = Number(this.envConfig[ZfmConfigOptions.LABEL_FONT_SIZE]);
+    c.tankLabelOptions.labelPrintingOptions.fontFamily = this.envConfig[ZfmConfigOptions.LABEL_FONT_FAMILY];
+    c.tankLabelOptions.labelPrintingOptions.heightInInches = Number(this.envConfig[ZfmConfigOptions.LABEL_HEIGHT_IN_INCHES]);
+    c.tankLabelOptions.labelPrintingOptions.widthInInches = Number(this.envConfig[ZfmConfigOptions.LABEL_WIDTH_IN_INCHES]);
+    c.tankLabelOptions.showQrCode = Boolean(this.envConfig[ZfmConfigOptions.LABEL_SHOW_QR_CODE]);
+    c.tankLabelOptions.showTankInfo = Boolean(this.envConfig[ZfmConfigOptions.LABEL_SHOW_TANK_INFO]);
+    c.backgroundColor = this.envConfig[ZfmConfigOptions.GUI_BACKGROUND];
+    c.zfinAlleleLookupUrl = this.envConfig[ZfmConfigOptions.ZFIN_ALLELE_LOOKUP_URL];
+    c.allowStockNumberOverride = Boolean(this.envConfig[ZfmConfigOptions.ALLOW_STOCK_NUMBER_OVERRIDE]);
+    c.passwordLength = Number(this.envConfig[ZfmConfigOptions.PASSWORD_LENGTH]);
+    c.passwordMinimumStrength = Number(this.envConfig[ZfmConfigOptions.PASSWORD_MINIMUM_STRENGTH]);
+    c.passwordRequiresUppercase = Boolean(this.envConfig[ZfmConfigOptions.PASSWORD_REQUIRES_UPPERCASE]);
+    c.passwordRequiresLowercase = Boolean(this.envConfig[ZfmConfigOptions.PASSWORD_REQUIRES_LOWERCASE]);
+    c.passwordRequiresNumbers = Boolean(this.envConfig[ZfmConfigOptions.PASSWORD_REQUIRES_NUMBERS]);
+    c.passwordRequiresSpecialCharacters = Boolean(this.envConfig[ZfmConfigOptions.PASSWORD_REQUIRES_SPECIAL_CHARACTERS]);
+    c.autoAppendTgToOwnedAlleles = Boolean(this.envConfig[ZfmConfigOptions.AUTO_APPEND_Tg_TO_OWNED_ALLELES]);
+    const tankLabelElementOptions: string = String(this.envConfig[ZfmConfigOptions.TANK_LABEL_LAYOUT]);
+    if (tankLabelElementOptions) {
+      this._clientConfig.tankLabelOptions.tankLabelElementOptions = ConfigService.validateTankLabelLayout(tankLabelElementOptions);
+    }
+  }
+
+  // The tank label layout is written as a JSON array of arrays of TankLabelElementOptions.
+  // Each array in the outer array represents a set of elements that get printed in a row on the label.
+  // Every possible TankLabelElementName should be in the tankLayoutOptions. Any that are not
+  // there will not be shown on any label.
+  // This function will cause a failure at startup if the configuration is wrong.
+  private static validateTankLabelLayout(tankLabelLayout: string): TankLabelElementOptions[][] {
+    const labelOptionsSchema: Joi.ArraySchema = Joi.array().items(Joi.array().items(Joi.object({
+      name: Joi.string().required(),
+      visible: Joi.boolean().default(true),
+      editable: Joi.boolean().default(false),
+      required: Joi.boolean().default(false),
+      label: Joi.string()
+    })));
+    const tankLabelElementOptions: TankLabelElementOptions[][] = JSON.parse(tankLabelLayout);
+    const {error, value: validatedTankLabelLayout} = labelOptionsSchema.validate(tankLabelElementOptions);
+    if (error) {
+      throw new Error(`Tank label layout configuration error: ${error.message}`);
+    }
+    // console.log(`validated tank label options: ${JSON.stringify(tankLabelElementOptions, null, 2)}`);
+
+    return tankLabelElementOptions;
   }
 
   /**
+   * The following schema says what the legal contents of the dotenv file are.
    * Ensures all needed variables are set, and returns the validated JavaScript object
    * including the applied default values.
    */
@@ -187,21 +229,17 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
       HIDE_PRIMARY_INVESTIGATOR: Joi.boolean().default(false),
       HIDE_IMPORT_TOOL: Joi.boolean().default(true),
       TANK_NUMBERING_HINT: Joi.string().default('Tank numbering hint not configured'),
+
       LABEL_FONT_SIZE: Joi.number().default(11),
       LABEL_FONT_FAMILY: Joi.string().default('Helvetica'),
       LABEL_HEIGHT_IN_INCHES: Joi.number().default(1.25),
       LABEL_WIDTH_IN_INCHES: Joi.number().default(3.5),
+
       LABEL_SHOW_QR_CODE: Joi.boolean().default(true),
-      LABEL_SHOW_STOCK_NUMBER: Joi.boolean().default(true),
-      LABEL_SHOW_PRIMARY_INVESTIGATOR_NAME: Joi.boolean().default(false),
-      LABEL_SHOW_PRIMARY_INVESTIGATOR_INITIALS: Joi.boolean().default(true),
-      LABEL_SHOW_RESEARCHER_NAME: Joi.boolean().default(true),
-      LABEL_SHOW_RESEARCHER_INITIALS: Joi.boolean().default(false),
-      LABEL_SHOW_FERTILIZATION_DATE: Joi.boolean().default(true),
-      LABEL_SHOW_DESCRIPTION: Joi.boolean().default(true),
-      LABEL_SHOW_MUTATIONS: Joi.boolean().default(true),
-      LABEL_SHOW_TRANSGENES: Joi.boolean().default(true),
-      LABEL_SHOW_ADDITIONAL_NOTES: Joi.boolean().default(true),
+      LABEL_SHOW_TANK_INFO: Joi.boolean().default(false),
+
+      TANK_LABEL_LAYOUT: Joi.string(),
+
       GUI_BACKGROUND: Joi.string().default(null),
       PASSWORD_LENGTH: Joi.number().default(0),
       PASSWORD_MINIMUM_STRENGTH: Joi.number().default(0),
@@ -223,12 +261,9 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
     return validatedEnvConfig;
   }
 
-  // This is used to build Mailer configuration options
-
   // This is used to build ORM configuration options
   createTypeOrmOptions(): Promise<TypeOrmModuleOptions> | TypeOrmModuleOptions {
     const SOURCE_PATH = this.nodeEnv === 'production' ? 'dist' : 'src';
-
     const loggingOption: LoggerOptions = ['error'];
     if (this.typeORMLogQueries) {
       loggingOption.push('query');

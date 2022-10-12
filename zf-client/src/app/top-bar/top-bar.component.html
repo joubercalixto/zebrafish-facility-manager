@@ -5,7 +5,7 @@
     <!-- For anything bigger than a tablet we spread out the main choices -->
     <div *ngIf="appState.screenSize >= ScreenSizes.LARGE">
       <mat-toolbar *ngIf="authService.loggedIn$ | async" fxLayoutGap="10px">
-        <span>Zebrafish Facility Manager for {{appState.facilityConfig.facilityName}}</span>
+        <span>Zebrafish Facility Manager for {{appState.facilityConfig.facilityInfo.name}}</span>
         <span class="fill-remaining-space"></span>
         <button mat-button [disabled]="appState.activeTool === zfTool.STOCK_MANAGER"
                 [routerLink]="zfTool.STOCK_MANAGER.route" color="primary">
@@ -60,7 +60,7 @@
         </mat-menu>
       </mat-toolbar>
       <mat-toolbar *ngIf="!(authService.loggedIn$ | async)">
-        <span>Zebrafish Facility Manager for {{appState.facilityConfig.facilityName}}</span>
+        <span>Zebrafish Facility Manager for {{appState.facilityConfig.facilityInfo.name}}</span>
         <span class="fill-remaining-space"></span>
         <button (click)="login()" color="primary" mat-button>
           <mat-icon>login</mat-icon>
@@ -72,7 +72,7 @@
     <!-- For small screens, we abbreviate what we can and put the main options in a menu -->
     <div *ngIf="appState.screenSize < ScreenSizes.LARGE">
       <mat-toolbar *ngIf="authService.loggedIn$ | async" fxLayoutGap="10px">
-        <span>ZFM for {{appState.facilityConfig.facilityAbbrv}}</span>
+        <span>ZFM for {{appState.facilityConfig.facilityInfo.shortName}}</span>
         <span class="fill-remaining-space"></span>
         <button mat-button [matMenuTriggerFor]="toolMenu" color="primary">
           <mat-icon>more_vert</mat-icon>
@@ -127,7 +127,7 @@
         </mat-menu>
       </mat-toolbar>
       <mat-toolbar *ngIf="!(authService.loggedIn$ | async)">
-        <span>Facility Manager for {{appState.facilityConfig.facilityAbbrv}}</span>
+        <span>Facility Manager for {{appState.facilityConfig.facilityInfo.shortName}}</span>
         <span class="fill-remaining-space"></span>
         <button mat-button (click)="login()" color="primary">
           <mat-icon>login</mat-icon>

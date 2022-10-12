@@ -66,6 +66,21 @@ export class StockViewerComponent implements OnInit {
     }]).then();
   }
 
+  /* print a label for this stock  */
+  printLabel(swimmerIndex?: number) {
+    let url = `${ZFTool.STOCK_MANAGER.route}/tank-label`;
+    // if there are swimmers but the user did not pick one of them explicitly, then default to the first.
+    if (this.service.selected.swimmers.length > 0) {
+      if (!swimmerIndex) {
+        url = `${url}/0`;
+      } else {
+        url = `${url}/${swimmerIndex}`;
+      }
+    }
+    this.router.navigateByUrl(url).then();
+  }
+
+
   editMutations() {
     this.router.navigate([ZFTool.STOCK_MANAGER.route + '/edit/genetics/' + this.service.selected.id]).then();
   }
