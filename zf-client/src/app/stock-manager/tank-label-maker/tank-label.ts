@@ -7,7 +7,6 @@ import {TransgeneDto} from '../../transgene-manager/transgene-dto';
 
 export class TankLabel {
   showQrCode = true;
-  showTankInfo = false;
   stockUrl: string;
   tankLabelOptions: TankLabelOptions;
   labelElements: { [index: string]: TankLabelElementBase<string> } = {};
@@ -25,11 +24,18 @@ export class TankLabel {
     // this particular label.
     this.tankLabelOptions = classToClass(tankLabelOptions);
 
-    // complete the label elements from the stock
+    // create the label elements based on the layout configuration and the stock
     for (const elementOptionsRow of this.tankLabelOptions.tankLabelElementOptions) {
       const row: string[] = [];
       for (const elementOptions of elementOptionsRow) {
         const labelElement = new TankLabelElementBase<string>(elementOptions);
+
+        // Kludge alert some options require that others do or do not show up in the GUI.
+        // Like if a facility does not use PI or Tank numbers on their tank labels.
+        // In these cases, if we come across PI or Tank number elements in the label
+        // layout, we skip those elements. The solution is not good at all, but it works
+        // as long as the configuration does not get too complicated.
+        let skipElement = false;
         switch (elementOptions.name) {
           case TankLabelElementName.STOCK_NUMBER: {
             labelElement.value = `S${this.stock.name}`;
@@ -44,14 +50,20 @@ export class TankLabel {
             break;
           }
           case TankLabelElementName.PI_NAME: {
-            if (this.showPI && this.stock.piUser) {
+            if (this.stock.piUser) {
               labelElement.value = this.stock.piUser.name;
+            }
+            if (!this.showPI) {
+              skipElement = true;
             }
             break;
           }
           case TankLabelElementName.PI_INITIALS: {
-            if (this.showPI && this.stock.piUser) {
+            if (this.stock.piUser) {
               labelElement.value = this.stock.piUser.initials;
+            }
+            if (!this.showPI) {
+              skipElement = true;
             }
             break;
           }
@@ -82,18 +94,24 @@ export class TankLabel {
           case TankLabelElementName.TANK_NUMBER: {
             if (this.tankLabelOptions.showTankInfo && this.stock.swimmers.length > 0) {
               labelElement.value = this.stock.swimmers[0].tank.name;
+            } else {
+              skipElement = true;
             }
             break;
           }
           case TankLabelElementName.NUMBER_OF_FISH: {
             if (this.tankLabelOptions.showTankInfo && this.stock.swimmers.length > 0) {
               labelElement.value = String(this.stock.swimmers[0].number);
+            } else {
+              skipElement = true;
             }
             break;
           }
         }
-        this.labelElements[elementOptions.name] = labelElement;
-        row.push(elementOptions.name);
+        if (!skipElement) {
+          this.labelElements[elementOptions.name] = labelElement;
+          row.push(elementOptions.name);
+        }
       }
       this.labelLayout.push(row);
     }

@@ -182,11 +182,9 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
     return tankLabelElementOptions;
   }
 
-  /**
-   * The following schema says what the legal contents of the dotenv file are.
-   * Ensures all needed variables are set, and returns the validated JavaScript object
-   * including the applied default values.
-   */
+  // The following schema says what the legal contents of the dotenv file are.
+  // Ensures all needed variables are set, and returns the validated JavaScript object
+  // including the applied default values.
   private static validateInput(envConfig: EnvConfig): EnvConfig {
     const envVarsSchema: Joi.ObjectSchema = Joi.object({
       NODE_ENV: Joi.string().default('production'),
