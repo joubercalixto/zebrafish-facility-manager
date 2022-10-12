@@ -27,7 +27,7 @@
     <!-- A mock-up of the label -->
     <div [ngStyle]="{'width.in': label.tankLabelOptions.labelPrintingOptions.widthInInches,
     'height.in': label.tankLabelOptions.labelPrintingOptions.heightInInches}"
-         class="zf-label" fxLayout="row">
+         class="zf-label" [fxLayout]="qrLayout">
       <div *ngIf="label.showQrCode" fxLayout="column" fxLayoutAlign="center">
         <qrcode
           [qrdata]="label.stockUrl"
