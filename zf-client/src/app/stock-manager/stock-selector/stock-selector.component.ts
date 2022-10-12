@@ -1,5 +1,5 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {AbstractControl, FormBuilder, FormControl} from '@angular/forms';
+import {AbstractControl, UntypedFormBuilder, UntypedFormControl} from '@angular/forms';
 import {debounceTime} from 'rxjs/operators';
 import {StockService} from '../stock.service';
 import {StockFilter} from './stock-filter';
@@ -41,8 +41,8 @@ export class StockSelectorComponent implements OnInit {
   // The mutation and transgene parts of the filter form are not simply
   // strings.  They are autocomplete lists of mutations and filters, so
   // we add a couple of form controls for them.
-  mutationFilterFC: FormControl = new FormControl();
-  transgeneFilterFC: FormControl = new FormControl();
+  mutationFilterFC: UntypedFormControl = new UntypedFormControl();
+  transgeneFilterFC: UntypedFormControl = new UntypedFormControl();
 
   // a list of mutations that updates as the user types in the mutation filter area.
   filteredMutationOptions: MutationDto[];
@@ -57,7 +57,7 @@ export class StockSelectorComponent implements OnInit {
     public appState: AppStateService,
     private authApiService: AuthApiService,
     private router: Router,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public service: StockService,
     private mutationService: MutationService,
     private transgeneService: TransgeneService,

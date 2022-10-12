@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder} from '@angular/forms';
+import {UntypedFormBuilder} from '@angular/forms';
 import {MutationService} from '../mutation.service';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {EditMode} from '../../zf-generic/zf-edit-modes';
@@ -58,7 +58,7 @@ export class MutationViewerComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     public service: MutationService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
   ) {
     this.service.enterBrowseMode();
   }

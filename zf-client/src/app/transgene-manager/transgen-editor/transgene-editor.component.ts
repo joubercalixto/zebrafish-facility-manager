@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {classToPlain} from 'class-transformer';
 import {map, startWith} from 'rxjs/operators';
 import {Observable} from 'rxjs';
-import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators} from '@angular/forms';
+import {AbstractControl, UntypedFormBuilder, UntypedFormGroup, ValidationErrors, Validators} from '@angular/forms';
 import {TransgeneService} from '../transgene.service';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {EditMode} from '../../zf-generic/zf-edit-modes';
@@ -58,7 +58,7 @@ export class TransgeneEditorComponent implements OnInit {
     public appState: AppStateService,
     private route: ActivatedRoute,
     private router: Router,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public service: TransgeneService,
     public loader: LoaderService,
     private deactivationDialogService: DialogService,
@@ -101,7 +101,7 @@ export class TransgeneEditorComponent implements OnInit {
 
   // Tell the user it the descriptor/allele pair they have chosen is already in use.
   // This may be butchery, but it seems to work properly.
-  uniquenessValidator(control: FormGroup): ValidationErrors | null {
+  uniquenessValidator(control: UntypedFormGroup): ValidationErrors | null {
     const alleleC = control.get('allele');
     const descriptorC = control.get('descriptor');
 

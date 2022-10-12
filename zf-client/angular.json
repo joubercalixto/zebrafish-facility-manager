@@ -116,6 +116,9 @@
           }
         }
       }
-    }},
-  "defaultProject": "zf-client"
+    }
+  },
+  "cli": {
+    "analytics": "9e32a4cb-21d4-4f9e-97f0-bce20af31209"
+  }
 }

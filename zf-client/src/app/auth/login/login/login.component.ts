@@ -2,7 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {AuthApiService} from '../../auth-api.service';
 import {AuthService} from '../../auth.service';
-import {FormControl} from '@angular/forms';
+import {UntypedFormControl} from '@angular/forms';
 
 @Component({
   selector: 'app-zfm-login',
@@ -37,8 +37,8 @@ export class LoginComponent implements OnInit {
   username: string = null;
   password: string = null;
 
-  usernameFC: FormControl = new FormControl('');
-  passwordFC: FormControl = new FormControl();
+  usernameFC: UntypedFormControl = new UntypedFormControl('');
+  passwordFC: UntypedFormControl = new UntypedFormControl();
 
   constructor(
     public dialogRef: MatDialogRef<LoginComponent>,

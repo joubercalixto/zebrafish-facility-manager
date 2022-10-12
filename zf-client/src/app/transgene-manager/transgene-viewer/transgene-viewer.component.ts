@@ -1,11 +1,11 @@
 import {Component, OnInit} from '@angular/core';
-import {FormBuilder} from '@angular/forms';
+import {UntypedFormBuilder} from '@angular/forms';
 import {TransgeneService} from '../transgene.service';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {EditMode} from '../../zf-generic/zf-edit-modes';
-import {TransgeneDto} from "../transgene-dto";
-import {ZFTypes} from "../../helpers/zf-types";
-import {AppStateService, ZFToolStates} from "../../app-state.service";
+import {TransgeneDto} from '../transgene-dto';
+import {ZFTypes} from '../../helpers/zf-types';
+import {AppStateService, ZFToolStates} from '../../app-state.service';
 import {ZFTool} from '../../helpers/zf-tool';
 
 /**
@@ -45,7 +45,7 @@ export class TransgeneViewerComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     public service: TransgeneService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
   ) {
     this.service.enterBrowseMode();
   }

@@ -5,7 +5,7 @@ import {StockFullDto} from '../dto/stock-full-dto';
 import {ActivatedRoute, Router} from '@angular/router';
 import {PrintService} from '../../printing/print.service';
 import {ZFTool} from '../../helpers/zf-tool';
-import {FormControl, FormGroup} from '@angular/forms';
+import {UntypedFormControl, UntypedFormGroup} from '@angular/forms';
 import {classToPlain} from 'class-transformer';
 import {TankLabel} from './tank-label';
 import {PrintableTankLabel} from '../../printing/printable-tank-label/printable-tank-label';
@@ -18,8 +18,8 @@ import {PrintableTankLabel} from '../../printing/printable-tank-label/printable-
 export class TankLabelMakerComponent implements OnInit {
   stock: StockFullDto;
   label: TankLabel;
-  tankLabelFormGroup: FormGroup;
-  selectedSwimmerFC: FormControl;
+  tankLabelFormGroup: UntypedFormGroup;
+  selectedSwimmerFC: UntypedFormControl;
   selectedSwimmerIndex: number;
 
   // How about a helping of lame sauce with this menu?
@@ -55,11 +55,11 @@ export class TankLabelMakerComponent implements OnInit {
 
     const group: any = {};
     for (const key of Object.keys(this.label.labelElements)) {
-      group[key] = new FormControl(this.label.labelElements[key].value);
+      group[key] = new UntypedFormControl(this.label.labelElements[key].value);
     }
-    this.tankLabelFormGroup = new FormGroup(group);
+    this.tankLabelFormGroup = new UntypedFormGroup(group);
     if (this.stock.swimmers.length > 0) {
-      this.tankLabelFormGroup.registerControl('selectedSwimmerFC', new FormControl(0));
+      this.tankLabelFormGroup.registerControl('selectedSwimmerFC', new UntypedFormControl(0));
     }
   }
 

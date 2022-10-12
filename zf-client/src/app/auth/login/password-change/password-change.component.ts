@@ -1,7 +1,14 @@
 import {Component, OnInit} from '@angular/core';
 import {MatDialogRef} from '@angular/material/dialog';
 import {MatSnackBar} from '@angular/material/snack-bar';
-import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
+import {
+  AbstractControl,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators
+} from '@angular/forms';
 import {UserPasswordChangeDTO} from '../../UserDTO';
 import {AppStateService} from '../../../app-state.service';
 import {AuthApiService} from '../../auth-api.service';
@@ -66,7 +73,7 @@ export class PasswordChangeComponent implements OnInit {
     public dialogRef: MatDialogRef<PasswordChangeComponent>,
     private authApiService: AuthApiService,
     private message: MatSnackBar,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public appState: AppStateService,
     private authService: AuthService,
   ) { }
@@ -88,7 +95,7 @@ export class PasswordChangeComponent implements OnInit {
   }
 }
 
-const repeatPasswordValidator: ValidatorFn = (control: FormGroup): ValidationErrors | null => {
+const repeatPasswordValidator: ValidatorFn = (control: UntypedFormGroup): ValidationErrors | null => {
   const np = control.get('newPassword');
   const rp = control.get('repeatNewPassword');
   if (np && rp && np.value && np.value === rp.value) {

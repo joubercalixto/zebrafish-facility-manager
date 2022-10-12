@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
-import {FormBuilder} from '@angular/forms';
+import {UntypedFormBuilder} from '@angular/forms';
 import {EditMode} from '../../../zf-generic/zf-edit-modes';
 import {UserAdminService} from '../user-admin.service';
 import {UserDTO} from '../../UserDTO';
@@ -37,7 +37,7 @@ export class UserViewerComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     public service: UserAdminService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public authService: AuthService,
   ) {
     this.service.enterBrowseMode();

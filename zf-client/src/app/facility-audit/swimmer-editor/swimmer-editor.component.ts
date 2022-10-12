@@ -1,8 +1,8 @@
-import {Component, Input, OnInit, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {SwimmerFullDto} from '../../common/swimmer-full.dto';
 import {StockService} from '../../stock-manager/stock.service';
 import {StockDto} from '../../stock-manager/dto/stock-dto';
-import {FormBuilder, Validators} from '@angular/forms';
+import {UntypedFormBuilder, Validators} from '@angular/forms';
 
 @Component({
   selector: 'app-swimmer-editor',
@@ -69,7 +69,7 @@ export class SwimmerEditorComponent implements OnInit {
   }
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private stockService: StockService,
   ) { }
 

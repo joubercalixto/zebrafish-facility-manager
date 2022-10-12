@@ -3,7 +3,7 @@ import {ZfSelectionList} from '../../helpers/selection-list';
 import {StockService} from '../stock.service';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {DialogService} from '../../dialog.service';
-import {FormBuilder, FormControl} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormControl} from '@angular/forms';
 import {MutationService} from '../../mutation-manager/mutation.service';
 import {TransgeneService} from '../../transgene-manager/transgene.service';
 import {Observable} from 'rxjs';
@@ -36,8 +36,8 @@ export class StockGeneticsEditorComponent implements OnInit {
   id: number;
 
   // form controls for adding novel mutations and transgenes
-  newMutationFC: FormControl = new FormControl();
-  newTransgeneFC: FormControl = new FormControl();
+  newMutationFC: UntypedFormControl = new UntypedFormControl();
+  newTransgeneFC: UntypedFormControl = new UntypedFormControl();
 
   // lists of mutations and transgenes that support the autocomplete
   // form controls.  They hold lists that grow and shrink as the user
@@ -72,7 +72,7 @@ export class StockGeneticsEditorComponent implements OnInit {
 
   constructor(
     public appState: AppStateService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public service: StockService,
     public mutationService: MutationService,
     public transgeneService: TransgeneService,

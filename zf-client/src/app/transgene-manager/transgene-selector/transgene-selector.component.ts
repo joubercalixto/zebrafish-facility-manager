@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {TransgeneService} from '../transgene.service';
-import {AbstractControl, FormBuilder} from '@angular/forms';
+import {AbstractControl, UntypedFormBuilder} from '@angular/forms';
 import {debounceTime} from 'rxjs/operators';
 import {TransgeneFilter} from '../transgene-filter';
 import {Router} from '@angular/router';
@@ -23,7 +23,7 @@ export class TransgeneSelectorComponent implements OnInit {
   constructor(
     public appState: AppStateService,
     private router: Router,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public service: TransgeneService,
   ) { }
 

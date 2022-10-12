@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {TankDto} from '../common/tank.dto';
 import {TankNeighborsDto} from '../common/tankNeighborsDto';
 import {SwimmerFullDto} from '../common/swimmer-full.dto';
-import {FormBuilder} from '@angular/forms';
+import {UntypedFormBuilder} from '@angular/forms';
 import {StockService} from '../stock-manager/stock.service';
 import {TankService} from '../tank-manager/tank.service';
 import {LoaderService} from '../loader.service';
@@ -75,7 +75,7 @@ export class FacilityAuditComponent implements OnInit {
   jumpTank: TankDto;
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public service: StockService,
     public tankService: TankService,
     public loader: LoaderService,

@@ -4,7 +4,7 @@ import {StockService} from '../stock.service';
 import {StockFullDto} from '../dto/stock-full-dto';
 import {AppStateService} from '../../app-state.service';
 import {Location} from '@angular/common';
-import {FormControl} from '@angular/forms';
+import {UntypedFormControl} from '@angular/forms';
 import {LoaderService} from '../../loader.service';
 import {TankService} from '../../tank-manager/tank.service';
 import {SwimmerDto} from '../../common/swimmer.dto';
@@ -20,8 +20,8 @@ export class TankWalkerComponent implements OnInit {
   inFocusStock: StockFullDto;
   inFocusTank: TankWalkerDto;
 
-  countFC: FormControl = new FormControl();
-  commentFC: FormControl = new FormControl();
+  countFC: UntypedFormControl = new UntypedFormControl();
+  commentFC: UntypedFormControl = new UntypedFormControl();
 
   constructor(
     public service: StockService,

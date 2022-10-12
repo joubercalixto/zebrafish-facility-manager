@@ -2,7 +2,7 @@ import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {MutationService} from '../mutation.service';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
-import {FormBuilder} from '@angular/forms';
+import {UntypedFormBuilder} from '@angular/forms';
 import {debounceTime, map, startWith} from 'rxjs/operators';
 import {MutationFilter} from '../mutation-filter';
 import {MutationDto} from '../mutation-dto';
@@ -34,7 +34,7 @@ export class MutationSelectorComponent implements OnInit {
   constructor(
     public appState: AppStateService,
     private router: Router,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public service: MutationService,
   ) { }
 

@@ -3,7 +3,7 @@ import {LoaderService} from '../../../loader.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {UserDTO} from '../../UserDTO';
 import {Router} from '@angular/router';
-import {FormBuilder} from '@angular/forms';
+import {UntypedFormBuilder} from '@angular/forms';
 import {UserAdminService} from '../user-admin.service';
 import {debounceTime} from 'rxjs/operators';
 import {ScreenSizes} from '../../../helpers/screen-sizes';
@@ -78,7 +78,7 @@ export class UserSelectorComponent implements OnInit {
     private snackBar: MatSnackBar,
     private router: Router,
     public service: UserAdminService,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
   ) { }
 
   ngOnInit(): void {

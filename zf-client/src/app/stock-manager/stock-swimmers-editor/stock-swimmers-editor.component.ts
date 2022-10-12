@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {TankService} from '../../tank-manager/tank.service';
 import {StockService} from '../stock.service';
-import {FormBuilder, Validators} from '@angular/forms';
+import {UntypedFormBuilder, Validators} from '@angular/forms';
 import {SwimmerDto} from '../../common/swimmer.dto';
 import {SwimmerFullDto} from '../../common/swimmer-full.dto';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
@@ -56,7 +56,7 @@ export class StockSwimmersEditorComponent implements OnInit {
   cohabitants: SwimmerFullDto[];
 
   constructor(
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     private route: ActivatedRoute,
     private router: Router,
     public appState: AppStateService,

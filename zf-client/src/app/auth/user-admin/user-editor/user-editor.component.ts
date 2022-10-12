@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {EditMode} from '../../../zf-generic/zf-edit-modes';
 import {UserDTO} from '../../UserDTO';
-import {AbstractControl, AsyncValidatorFn, FormBuilder, ValidationErrors, Validators} from '@angular/forms';
+import {AbstractControl, AsyncValidatorFn, UntypedFormBuilder, ValidationErrors, Validators} from '@angular/forms';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {DialogService} from '../../../dialog.service';
 import {UserAdminService} from '../user-admin.service';
@@ -52,7 +52,7 @@ export class UserEditorComponent implements OnInit {
     public appState: AppStateService,
     private route: ActivatedRoute,
     private router: Router,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public service: UserAdminService,
     private deactivationDialogService: DialogService,
     private authService: AuthService,

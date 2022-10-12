@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {FormGroup} from '@angular/forms';
+import {UntypedFormGroup} from '@angular/forms';
 import {TankLabelElementBase} from './tank-label-element-base';
 
 @Component({
@@ -9,7 +9,7 @@ import {TankLabelElementBase} from './tank-label-element-base';
 })
 export class TankLabelElementComponent {
   @Input() tankLabelElement!: TankLabelElementBase<string>;
-  @Input() form!: FormGroup;
+  @Input() form!: UntypedFormGroup;
 
   get isValid() {
     return this.form.controls[this.tankLabelElement.key].valid;

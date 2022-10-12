@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {MutationDto} from '../mutation-dto';
 import {Observable} from 'rxjs';
-import {AbstractControl, FormBuilder, ValidationErrors, Validators} from '@angular/forms';
+import {AbstractControl, UntypedFormBuilder, ValidationErrors, Validators} from '@angular/forms';
 import {MutationService} from '../mutation.service';
 import {ActivatedRoute, ParamMap, Router} from '@angular/router';
 import {EditMode} from '../../zf-generic/zf-edit-modes';
@@ -69,7 +69,7 @@ export class MutationEditorComponent implements OnInit {
     public appState: AppStateService,
     private route: ActivatedRoute,
     private router: Router,
-    private fb: FormBuilder,
+    private fb: UntypedFormBuilder,
     public service: MutationService,
     public loader: LoaderService,
     private deactivationDialogService: DialogService,
