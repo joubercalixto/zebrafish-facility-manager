@@ -1,13 +1,10 @@
 <div class="zf-label" [fxLayout]="qrLayout">
-  <!-- The next line prevents the label from being cut off on the left.
-     This just screams that I have no idea what I am doing. -->
-  <div fxFlex="2%"></div>
-
-  <div *ngIf="label.showQrCode && label.stockUrl" fxLayout="column" fxLayoutAlign="center">
+  <div *ngIf="label.showQrCode && label.stockUrl" fxLayout="column" fxLayoutAlign="center center">
     <qrcode
       [qrdata]="label.stockUrl"
       elementType="url" errorCorrectionLevel="M"
       scale="2"
+      margin="6"
       width="10">
     </qrcode>
   </div>
