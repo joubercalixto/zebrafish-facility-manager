@@ -187,7 +187,7 @@ export class StockService extends ZFGenericService<
         'Into Nursery': s.countEnteringNursery,
         'Out of Nursery': s.countLeavingNursery,
         Researcher: (s.researcherUser) ? s.researcherUser.username : null,
-        'PI:': (s.piUser) ? s.piUser.username : null,
+        PI: (s.piUser) ? s.piUser.username : null,
         Comment: s.comment,
       });
       s.swimmers.map((swimmer) => {
@@ -196,6 +196,7 @@ export class StockService extends ZFGenericService<
           Tank: swimmer.tank.name,
           Count: swimmer.number,
           Comment: swimmer.comment,
+          PI: (s.piUser) ? s.piUser.username : null,
         });
       });
     });
