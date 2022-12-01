@@ -44,7 +44,7 @@ export class MutationService extends GenericService {
     };
   }
 
-  //====================== Create =====================
+  // ====================== Create =====================
   // creating NON "owned" mutations
   async validateAndCreate(dto: any): Promise<Mutation> {
     convertEmptyStringToNull(dto);
@@ -73,7 +73,7 @@ export class MutationService extends GenericService {
   }
 
   // for bulk loading, when we create a mutant we can look to ZFIN for help in filling in
-  // some of the fields and we may be getting some "owned" mutations with serial numbers
+  // some fields. We may be getting some "owned" mutations with serial numbers
   // There are two flavours here create and update.
   async import(dto: any): Promise<Mutation> {
     convertEmptyStringToNull(dto);
@@ -83,6 +83,7 @@ export class MutationService extends GenericService {
       this.logAndThrowException('1979574: cannot import a Mutation without a name.')
     }
 
+    await this.mustNotExist(dto.name);
 
     let candidate: Mutation;
     candidate = await this.repo.findOne({where: {name: dto.name}});
@@ -129,7 +130,7 @@ export class MutationService extends GenericService {
       // you cannot rename an owned mutation
       this.ignoreAttribute(dto, 'name');
     } else {
-      // you cannot rename an unowned mutation so it looks like it is owned
+      // you cannot rename an unowned mutation, so it looks like it is owned
       if (dto.name) {
         this.checkNameValidity(dto.name);
       }
@@ -150,7 +151,7 @@ export class MutationService extends GenericService {
 
     // When you use remove, TypeORM returns the object you deleted with the
     // id set to undefined.  Which makes some sense.
-    // However the client wants to see the id of the deleted object, so we stuff
+    // However, the client wants to see the id of the deleted object, so we stuff
     // it back in.
     const deleted = await this.repo.remove(candidate);
     deleted.id = id;
@@ -160,17 +161,17 @@ export class MutationService extends GenericService {
   async mustExist(id: number): Promise<Mutation> {
     const candidate: Mutation = await this.repo.findOne(id);
     if (!candidate) {
-      this.logAndThrowException(`7684423 Mutation id: ${id} does not exist.`);
+      this.logAndThrowException(`7684423: Mutation id: ${id} does not exist.`);
     }
     return candidate;
   }
 
-  async mustNotExist(name: string): Promise<Boolean> {
+  async mustNotExist(name: string): Promise<boolean> {
     const m: Mutation[] = await this.repo.find({
       where: {name}
     });
     if (m.length > 0) {
-      this.logAndThrowException(`9893064  mutation ${name} already exists.`);
+      this.logAndThrowException(`9893064:  Mutation ${name} already exists.`);
     } else {
       return true;
     }
@@ -185,7 +186,7 @@ export class MutationService extends GenericService {
     const nameInUse = await this.nameInUse(m.name);
     if (nameInUse) errors.push(nameInUse);
 
-    // For imports we allow serial numbers
+    // For imports, we allow serial numbers
     if (m.serialNumber) {
       let snInUse = await this.repo.serialNumberInUse(m.serialNumber);
       if (snInUse) errors.push(snInUse);
@@ -199,7 +200,7 @@ export class MutationService extends GenericService {
     }
 
     if (errors.length > 0) {
-      this.logAndThrowException(errors.join("; "));
+      this.logAndThrowException(errors.join('; '));
     }
     return true;
   }
@@ -249,15 +250,16 @@ export class MutationService extends GenericService {
     return this.repo.getAutoCompleteOptions();
   }
 
-  // Kludge alert. When the client asks for a mutation by Id, I do an bit of
+  // Kludge alert. When the client asks for a mutation by id, I do a bit of
   // groundwork for the client to figure out if that mutation is deletable or not.
   // This makes it easy for the client to enable or disable a deletion operation
   // in the GUI without having to make a second call to figure out if the mutation
   // is deletable.  The cost is that I have a field called isDeletable stuffed
-  // in to the mutation which a) is not populated correctly for any other request
-  // and b) is calculated by the repo and not by the mutation itself (because
-  // the mutation class does not have access to the repo to make the required query)
-  // So it is all very ugly.
+  // in to the mutation which
+  // a) is not populated correctly for any other request and
+  // b) is calculated by the repo and not by the mutation itself (because
+  // the mutation class does not have access to the repo to make the required query).
+  // So, it is all very ugly.
   async findById(id: number): Promise<Mutation> {
     const m: Mutation = await this.repo.findById(id);
     if (m) m.isDeletable = await this.repo.isDeletable(id);

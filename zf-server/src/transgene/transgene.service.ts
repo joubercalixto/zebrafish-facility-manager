@@ -72,17 +72,18 @@ export class TransgeneService extends GenericService {
     return await this.repo.save(candidate);
   }
 
-  // for bulk loading, when we create a transgene we can look to ZFIN for help in filling in
-  // some of the fields and we may be getting some "owned" mutations with serial numbers
+  // for bulk loading, when we create a transgene we can look to ZFIN for help with filling in
+  // some fields. We may be getting some "owned" mutations with serial numbers
   // There are two flavours here create and update.
   async import(dto: any): Promise<Transgene> {
     convertEmptyStringToNull(dto);
     this.ignoreAttribute(dto, 'id');
 
-    if (!dto.allele) {
-      this.logAndThrowException('7748900: cannot import a transgene without an allele.')
+    if (!dto.allele || !dto.descriptor) {
+      this.logAndThrowException('7748900: cannot import a transgene without an allele and descriptor');
     }
 
+    await this.mustNotExist(dto.allele, dto.descriptor);
     let candidate: Transgene;
     candidate = await this.repo.findOne({where: {allele: dto.allele}});
     if (!candidate) {
@@ -121,7 +122,7 @@ export class TransgeneService extends GenericService {
       // you cannot rename an owned transgene
       this.ignoreAttribute(dto, 'allele');
     } else {
-      // you cannot rename an unowned transgene so it looks like it is owned
+      // you cannot rename an unowned transgene, so it looks like it is owned
       if (dto.allele) {
         this.checkAlleleValidity(dto.allele);
       }
@@ -141,7 +142,7 @@ export class TransgeneService extends GenericService {
 
     // When you use remove, TypeORM returns the object you deleted with the
     // id set to undefined.  Which makes some sense.
-    // However the client wants to see the id of the deleted object, so we stuff
+    // However, the client wants to see the id of the deleted object, so we stuff
     // it back in.
     const deleted = await this.repo.remove(candidate);
     deleted.id = id;
@@ -156,12 +157,12 @@ export class TransgeneService extends GenericService {
     return candidate;
   }
 
-  async mustNotExist(allele: string, descriptor: string): Promise<Boolean> {
+  async mustNotExist(allele: string, descriptor: string): Promise<boolean> {
     const t: Transgene[] = await this.repo.find({
       where: {allele, descriptor}
     });
     if (t.length > 0) {
-      this.logAndThrowException('9893064 attempt to create a transgene with a name that already exists.');
+      this.logAndThrowException(`9893064 Transgene ${descriptor}^${allele} already exists.`);
     }
     return true;
   }
@@ -207,14 +208,16 @@ export class TransgeneService extends GenericService {
     return this.repo.getAutoCompleteOptions();
   }
 
-  // Kludge alert. When the client asks for a transgene by Id, I do an bit of
+  // Kludge alert. When the client asks for a transgene by id, I do a bit of
   // groundwork for the client to figure out if that transgene is deletable or not.
   // This makes it easy for the client to enable or disable a deletion operation
   // in the GUI without having to make a second call to figure out if the transgene
   // is deletable.  The cost is that I have a field called isDeletable stuffed
-  // in to the transgene which a) is not populated correctly for any other request
-  // and b) is calculated by the repo and not by the transgene itself (because
-  // the transgene class does not have access to the repo to make the required query)
+  // in to the transgene which
+  // a) is not populated correctly for any other request and
+  // b) is calculated by the repo and not by the transgene
+  // itself (because the transgene class does not have access to the repo
+  // to make the required query).
   // So it is all very ugly.
   async findById(id: number): Promise<Transgene> {
     const m: Transgene = await this.repo.findById(id);
