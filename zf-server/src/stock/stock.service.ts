@@ -545,7 +545,7 @@ export class StockService extends GenericService {
         name: s.name,
         description: s.description,
         researcher: s.researcher,
-        comment: (s.comment) ? s.comment.substr(0, 45) : '',
+        comment: (s.comment) ? s.comment.slice(0, 45) : '',
         fertilizationDate: s.fertilizationDate,
         alleleSummary: stockWithGenetics.alleleSummary,
       });
@@ -729,9 +729,9 @@ export class StockService extends GenericService {
   // You cannot delete a stock if
   // - it is alive in a tank
   // - it has descendants
-  // - it is a base stock and it has subStocks
+  // - it is a base stock, and it has subStocks
   // Belt and suspenders.  We use this function to
-  // a) send a deletable flag to the GUI so it can disable deletes appropriately
+  // a) send a deletable flag to the GUI, so it can disable deletes appropriately
   // b) check before performing a delete request
   // Icky - it assumes two other ancillary fields have been computed.
   isDeletable(stock: Stock): boolean {
@@ -784,7 +784,7 @@ export class StockService extends GenericService {
     // once upon a time when stock researchers and PIs were just strings, we
     // used to fetch all the strings for researchers and PI strings
     // that were extant in the database.
-    // Nowadays this researchers and pis are references to users.
+    // Nowadays, the researchers and pis are references to users, so we don't do it anymore.
     return {};
   }
 

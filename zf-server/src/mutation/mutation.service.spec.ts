@@ -110,7 +110,7 @@ describe('MutationService testing', () => {
   describe('5133501 CRUD for minimal Mutation', () => {
 
     it('5735594 create (and get and delete) minimal mutation', async () => {
-      const randomString1: string = String(Math.random()).substr(0, 19);
+      const randomString1: string = String(Math.random()).slice(0, 19);
       const m = {
         name: randomString1,
         comment: '5735594 for mutation creation test',
@@ -215,7 +215,7 @@ describe('MutationService testing', () => {
      * correct, we do not check the structure of the returned lists.
      */
     // Be careful if you change any of these as it will probably throw off the filter tests
-    const randomString = String(Math.random()).substr(0, 10);
+    const randomString = String(Math.random()).slice(0, 10);
     const mutationsForFilterTests: any[] = [
       {
         name: 'm abcde',
@@ -394,7 +394,7 @@ describe('MutationService testing', () => {
     it('8907136 find by Id, find by name',
       async () => {
         const m = {
-          name: String(Math.random()).substr(0, 10),
+          name: String(Math.random()).slice(0, 10),
           comment: '8907136 find by Id, find by name',
         };
         const mutation: Mutation = await mutationService.validateAndCreate(m);
@@ -409,11 +409,11 @@ describe('MutationService testing', () => {
       async () => {
         const initialOptions: { [index: string]: string[] } = await mutationService.getAutoCompleteOptions();
         const m = {
-          name: String(Math.random()).substr(0, 10),
-          gene: String(Math.random()).substr(0, 10),
-          researcher: String(Math.random()).substr(0, 10),
-          mutationType: String(Math.random()).substr(0, 10),
-          screenType: String(Math.random()).substr(0, 10),
+          name: String(Math.random()).slice(0, 10),
+          gene: String(Math.random()).slice(0, 10),
+          researcher: String(Math.random()).slice(0, 10),
+          mutationType: String(Math.random()).slice(0, 10),
+          screenType: String(Math.random()).slice(0, 10),
           comment: '1802501 minimal test of getAutoCompleteOptions',
         };
         const mutation: Mutation = await mutationService.validateAndCreate(m);

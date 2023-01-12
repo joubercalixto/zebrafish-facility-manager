@@ -77,7 +77,7 @@ describe('TransgeneService testing', () => {
       const ownerPrefix = configService.facilityInfo.prefix;
       const nextSerialNumber = await service.getNextSerialNumber();
       const m = {
-        descriptor: String(Math.random()).substr(3, 10),
+        descriptor: String(Math.random()).slice(3, 7),
         comment: '9707387 create next "owned" transgene',
       };
       const transgene: Transgene = await service.validateAndCreateOwned(m);
@@ -92,7 +92,7 @@ describe('TransgeneService testing', () => {
       const m = {
         allele: 'irrelevant',
         serialNumber: 'just does not matter',
-        descriptor: String(Math.random()).substr(3, 10),
+        descriptor: String(Math.random()).slice(3, 7),
         comment:
           '4555147 serial number and name ignored when creating an "owned" transgene',
       };
@@ -106,7 +106,7 @@ describe('TransgeneService testing', () => {
       const ownerPrefix = configService.facilityInfo.prefix;
       const m = {
         allele: ownerPrefix + 'anyoldthing',
-        descriptor: String(Math.random()).substr(3, 10),
+        descriptor: String(Math.random()).slice(3, 7),
         comment: '9982105 bad transgene name',
       };
       await expect(service.validateAndCreate(m)).rejects.toThrow();
@@ -118,7 +118,7 @@ describe('TransgeneService testing', () => {
       const randomString1: string = String(Math.random());
       const m = {
         allele: randomString1,
-        descriptor: String(Math.random()).substr(3, 10),
+        descriptor: String(Math.random()).slice(3, 7),
         comment: '3392332 for transgene creation test',
       };
       const transgene: Transgene = await service.validateAndCreate(m);
@@ -132,7 +132,7 @@ describe('TransgeneService testing', () => {
 
     it('9248416 cannot create a transgene without an allele', async () => {
       const m = {
-        descriptor: String(Math.random()).substr(3, 10),
+        descriptor: String(Math.random()).slice(3, 7),
         comment: '9248416 cannot create a transgene without an allele',
       };
       await expect(service.validateAndCreate(m)).rejects.toThrow();
@@ -141,7 +141,7 @@ describe('TransgeneService testing', () => {
     it('6509856 cannot create a transgene with an existing name', async () => {
       const m = {
         allele: String(Math.random()),
-        descriptor: String(Math.random()).substr(3, 10),
+        descriptor: String(Math.random()).slice(3, 7),
         comment: '6509856 cannot create a transgene with an existing name',
       };
       const transgene: Transgene = await service.validateAndCreate(m);
@@ -153,7 +153,7 @@ describe('TransgeneService testing', () => {
       const m = {
         id: 288976,
         allele: String(Math.random()),
-        descriptor: String(Math.random()).substr(3, 10),
+        descriptor: String(Math.random()).slice(3, 7),
         comment: '6295267 id ignored when creating transgene',
       };
       const transgene: Transgene = await service.validateAndCreate(m);
@@ -165,7 +165,7 @@ describe('TransgeneService testing', () => {
       const m = {
         serialNumber: 4566211,
         allele: String(Math.random()),
-        descriptor: String(Math.random()).substr(3, 10),
+        descriptor: String(Math.random()).slice(3, 7),
         comment: '1495784 serial number ignored when creating transgene',
       };
       const transgene: Transgene = await service.validateAndCreate(m);
@@ -178,7 +178,7 @@ describe('TransgeneService testing', () => {
       const randomString2: string = String(Math.random());
       const m = {
         allele: randomString1,
-        descriptor: String(Math.random()).substr(3, 10),
+        descriptor: String(Math.random()).slice(3, 7),
         comment: '9282344 for transgene update test (before)',
         plasmid: randomString1,
       };
@@ -230,11 +230,11 @@ describe('TransgeneService testing', () => {
      * correct, we do not check the structure of the returned lists.
      */
     // Be careful if you change any of these as it will probably throw off the filter tests
-    const rs1 = String(Math.random()).substr(3, 10);
-    const rs2 = String(Math.random()).substr(3, 10);
-    const rs3 = String(Math.random()).substr(3, 10);
-    const rs4 = String(Math.random()).substr(3, 10);
-    const rs5 = String(Math.random()).substr(3, 10);
+    const rs1 = String(Math.random()).slice(3, 7);
+    const rs2 = String(Math.random()).slice(3, 7);
+    const rs3 = String(Math.random()).slice(3, 7);
+    const rs4 = String(Math.random()).slice(3, 7);
+    const rs5 = String(Math.random()).slice(3, 7);
     const transgenesForFilterTests: any[] = [
       {
         allele: 'a' + rs1,
@@ -315,8 +315,8 @@ describe('TransgeneService testing', () => {
   describe('9708658 Other misc transgene tests', () => {
     it('5404743 find by Id, find by name', async () => {
       const m = {
-        allele: String(Math.random()).substr(0, 10),
-        descriptor: String(Math.random()).substr(0, 10),
+        allele: String(Math.random()).slice(0, 10),
+        descriptor: String(Math.random()).slice(0, 10),
         comment: '5404743 find by Id, find by name',
       };
       const transgene: Transgene = await service.validateAndCreate(m);
@@ -332,9 +332,9 @@ describe('TransgeneService testing', () => {
     it('9594858 minimal test of getAutoCompleteOptions', async () => {
       const initialOptions: AutoCompleteOptions = await service.getAutoCompleteOptions();
       const m = {
-        allele: String(Math.random()).substr(0, 10),
-        descriptor: String(Math.random()).substr(0, 10),
-        source: String(Math.random()).substr(0, 10),
+        allele: String(Math.random()).slice(0, 10),
+        descriptor: String(Math.random()).slice(0, 10),
+        source: String(Math.random()).slice(0, 10),
         comment: '9594858 minimal test of getAutoCompleteOptions',
       };
       const transgene: Transgene = await service.validateAndCreate(m);

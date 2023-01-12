@@ -147,9 +147,9 @@ describe('Stock Service testing', () => {
       it('4082281 create (and get and delete) all atomic fields', async () => {
         const s = {
           description: 'des' + String(Math.random()),
-          externalMatId: 'x' + String(Math.random()).substr(0, 10),
+          externalMatId: 'x' + String(Math.random()).slice(0, 10),
           externalMatDescription: 'y' + String(Math.random()),
-          externalPatId: 'z' + String(Math.random()).substr(0, 10),
+          externalPatId: 'z' + String(Math.random()).slice(0, 10),
           externalPatDescription: 'a' + String(Math.random()),
           comment: '4082281 create (and get and delete) full stock',
           fertilizationDate: '2020-07-31',
@@ -297,9 +297,9 @@ describe('Stock Service testing', () => {
         const s = {
           id: initialStock.id,
           description: String(Math.random()),
-          externalMatId: String(Math.random()).substr(0, 10),
+          externalMatId: String(Math.random()).slice(0, 10),
           externalMatDescription: String(Math.random()),
-          externalPatId: String(Math.random()).substr(0, 10),
+          externalPatId: String(Math.random()).slice(0, 10),
           externalPatDescription: String(Math.random()),
           comment: '5730633 after',
           fertilizationDate: '2020-07-31',
