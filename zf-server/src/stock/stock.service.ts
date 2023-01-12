@@ -644,7 +644,7 @@ export class StockService extends GenericService {
 
     // filter on a specific researcher
     if (filter.researcherId) {
-      q = q.andWhere('stock.researcherId = :id', {id: filter.researcherId});
+      q = q.andWhere('stock.researcherId = :rid', {rid: filter.researcherId});
     }
 
     // filter on a specific pi
