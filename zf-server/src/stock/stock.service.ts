@@ -26,12 +26,12 @@ import {AutoCompleteOptions} from '../helpers/autoCompleteOptions';
 @Injectable()
 export class StockService extends GenericService {
   constructor(
-      @Inject('winston') private readonly logger: Logger,
-      private readonly configService: ConfigService,
-      @InjectRepository(StockRepository)
-      private readonly repo: StockRepository,
-      private readonly userService: UserService,
-      private readonly mutationService: MutationService,
+    @Inject('winston') private readonly logger: Logger,
+    private readonly configService: ConfigService,
+    @InjectRepository(StockRepository)
+    private readonly repo: StockRepository,
+    private readonly userService: UserService,
+    private readonly mutationService: MutationService,
     private readonly transgeneService: TransgeneService,
   ) {
     super(logger);
@@ -54,14 +54,19 @@ export class StockService extends GenericService {
   }
 
   async getFullById(id: number): Promise<Stock> {
-    const stock: Stock = await this.repo.findOne(id, {
-      relations: [
-        'transgenes', 'mutations', 'swimmers', 'swimmers.tank',
-        'matStock', 'matStock.mutations', 'matStock.transgenes',
-        'patStock', 'patStock.mutations', 'patStock.transgenes',
-        'piUser', 'researcherUser',
-      ]
-    });
+    const stock: Stock = await this.repo.findOne(
+      {
+        where: {id},
+        relations: {
+          transgenes: true,
+          mutations: true,
+          swimmers: {tank: true},
+          matStock: {mutations: true, transgenes: true},
+          patStock: {mutations: true, transgenes: true},
+          piUser: true,
+          researcherUser: true,
+        }
+      });
     if (stock) {
       await this.computeAncillaryFields(stock);
     }
@@ -69,22 +74,27 @@ export class StockService extends GenericService {
   }
 
   async getMediumById(id: number): Promise<Stock> {
-    return await this.repo.findOne(id, {
-      relations: [
-        'transgenes', 'mutations',
-        'matStock',
-        'patStock',
-        'piUser',
-        'researcherUser'
-      ]
-    });
+    return await this.repo.findOne(
+      {
+        where: {id},
+        relations: {
+          transgenes: true,
+          mutations: true,
+          matStock: true,
+          patStock: true,
+          piUser: true,
+          researcherUser: true,
+        }
+      });
   }
 
   async getStockWithGenetics(id: number): Promise<Stock> {
-    return await this.repo.findOne(id, {
-      relations: [
-        'transgenes', 'mutations',
-      ]
+    return await this.repo.findOne({
+      where: {id},
+      relations: {
+        transgenes: true,
+        mutations: true,
+      }
     });
   }
 
@@ -115,7 +125,7 @@ export class StockService extends GenericService {
   }
 
   async mustExist(stockId: number): Promise<Stock> {
-    const stock: Stock = await this.repo.findOne(stockId);
+    const stock: Stock = await this.repo.findOne({where: {id: stockId}});
     if (stock) {
       return stock;
     } else {
@@ -342,8 +352,11 @@ export class StockService extends GenericService {
     // If creating a sub-stock, the subStock number is the next available
     // subStock for the given stock number.
     if (isSubStock) {
-      const baseStock: Stock = await this.repo.findOne({number: candidate.number, subNumber: 0},
-        {relations: ['mutations', 'transgenes']});
+      const baseStock: Stock = await this.repo.findOne(
+        {
+          where: {number: candidate.number, subNumber: 0},
+          relations: {mutations: true, transgenes: true},
+        });
       if (!baseStock) {
         this.logAndThrowException(`Trying to create subStock, but stock ${candidate.number} does not exist.`);
       }
@@ -488,15 +501,15 @@ export class StockService extends GenericService {
         'swimmers.tankId', 'swimmers.number', 'swimmers.comment',
         'tank.name'
       ])
-        .leftJoin('s.matStock', 'mom')
-        .leftJoin('s.patStock', 'dad')
-        .leftJoin('s.mutations', 'm')
-        .leftJoin('s.transgenes', 't')
-        .leftJoin('s.swimmers', 'swimmers')
-        .leftJoin('swimmers.tank', 'tank')
-        .leftJoin('s.researcherUser', 'researcher')
-        .leftJoin('s.piUser', 'pi')
-        .getMany();
+      .leftJoin('s.matStock', 'mom')
+      .leftJoin('s.patStock', 'dad')
+      .leftJoin('s.mutations', 'm')
+      .leftJoin('s.transgenes', 't')
+      .leftJoin('s.swimmers', 'swimmers')
+      .leftJoin('swimmers.tank', 'tank')
+      .leftJoin('s.researcherUser', 'researcher')
+      .leftJoin('s.piUser', 'pi')
+      .getMany();
   }
 
   // Find a set of stocks which match the filter criteria.
@@ -510,10 +523,10 @@ export class StockService extends GenericService {
 
     // For this query we only look at a few fields
     let q: SelectQueryBuilder<Stock> = this.repo.createQueryBuilder('stock')
-        .leftJoin('stock.researcherUser', 'ru')
-        .select('stock.id, stock.name, stock.description, stock.comment, stock.fertilizationDate')
-        .addSelect('ru.name', 'researcher')
-        .groupBy('stock.id');
+      .leftJoin('stock.researcherUser', 'ru')
+      .select('stock.id, stock.name, stock.description, stock.comment, stock.fertilizationDate')
+      .addSelect('ru.name', 'researcher')
+      .groupBy('stock.id');
 
     // We have to join a bunch of relationships based on what we are filtering for.
     // So, for example, if the filter does not include mutations, we do not need to join that table.
@@ -533,8 +546,8 @@ export class StockService extends GenericService {
     q = this.buildWhereConditions(q, filter);
 
     const stocks: any[] = await q
-        .limit(100)
-        .getRawMany();
+      .limit(100)
+      .getRawMany();
 
     // Please look the other way now for a minute
     const stockMinis: StockMiniDto[] = [];
@@ -566,16 +579,16 @@ export class StockService extends GenericService {
     // Sort the result in tank order to facilitate someone being able to walk
     // around the facility on the trail of a particular set of stocks.
     let q: SelectQueryBuilder<Stock> = this.repo.createQueryBuilder('stock')
-        .select('stock.id as stockId, stock.name as stockName, ' +
-            'tank.id as tankId, tank.name as tankName, swimmers.num, swimmers.comment')
-        .orderBy('tank.id')
-        .addOrderBy('stock.id')
-        .groupBy('stock.id');
+      .select('stock.id as stockId, stock.name as stockName, ' +
+        'tank.id as tankId, tank.name as tankName, swimmers.num, swimmers.comment')
+      .orderBy('tank.id')
+      .addOrderBy('stock.id')
+      .groupBy('stock.id');
 
     // we always join stocks to their swimmers and swimmers to their tanks because
     // the tank walker only makes sense for stocks that are in tanks.
     q = q.leftJoin('stock.swimmers', 'swimmers')
-        .leftJoin('swimmers.tank', 'tank')
+      .leftJoin('swimmers.tank', 'tank')
 
     // join mutation or transgenes of relationships based if filtering on those
     if (filter.mutationId || filter.mutation) {
@@ -601,31 +614,31 @@ export class StockService extends GenericService {
     // regardless of the filter criteria, we need to join all related objects to
     // every stock in order to get all the information required for the report.
     let q: SelectQueryBuilder<Stock> = this.repo.createQueryBuilder('stock')
-        .leftJoin('stock.matStock', 'mom')
-        .leftJoin('stock.patStock', 'dad')
-        .leftJoin('stock.mutations', 'mutation')
-        .leftJoin('stock.transgenes', 'transgene')
-        .leftJoin('stock.swimmers', 'swimmers')
-        .leftJoin('swimmers.tank', 'tank')
-        .leftJoin('stock.researcherUser', 'researcher')
-        .leftJoin('stock.piUser', 'pi')
-        .select('stock.name', 'Stock')
-        .addSelect('stock.description', 'Description')
-        .addSelect('researcher.name', 'Researcher')
-        .addSelect('pi.name', 'PI')
-        .addSelect('DATE_FORMAT(stock.fertilizationDate, "%Y-%m-%d")', 'DOB')
-        .addSelect('mom.name', 'Mother')
-        .addSelect('dad.name', 'Father')
-        .addSelect('GROUP_CONCAT(DISTINCT mutation.name SEPARATOR "; ") Mutations')
-        .addSelect('GROUP_CONCAT(DISTINCT transgene.descriptor SEPARATOR "; ") Transgenes')
-        .addSelect('GROUP_CONCAT(DISTINCT tank.name SEPARATOR "; ") Tanks')
-        .where('1')
-        .groupBy('stock.id');
+      .leftJoin('stock.matStock', 'mom')
+      .leftJoin('stock.patStock', 'dad')
+      .leftJoin('stock.mutations', 'mutation')
+      .leftJoin('stock.transgenes', 'transgene')
+      .leftJoin('stock.swimmers', 'swimmers')
+      .leftJoin('swimmers.tank', 'tank')
+      .leftJoin('stock.researcherUser', 'researcher')
+      .leftJoin('stock.piUser', 'pi')
+      .select('stock.name', 'Stock')
+      .addSelect('stock.description', 'Description')
+      .addSelect('researcher.name', 'Researcher')
+      .addSelect('pi.name', 'PI')
+      .addSelect('DATE_FORMAT(stock.fertilizationDate, "%Y-%m-%d")', 'DOB')
+      .addSelect('mom.name', 'Mother')
+      .addSelect('dad.name', 'Father')
+      .addSelect('GROUP_CONCAT(DISTINCT mutation.name SEPARATOR "; ") Mutations')
+      .addSelect('GROUP_CONCAT(DISTINCT transgene.descriptor SEPARATOR "; ") Transgenes')
+      .addSelect('GROUP_CONCAT(DISTINCT tank.name SEPARATOR "; ") Tanks')
+      .where('1')
+      .groupBy('stock.id');
 
     // building the where conditions for the filter is exactly the same as elsewhere
     q = this.buildWhereConditions(q, filter);
     const items = await q
-        .getRawMany();
+      .getRawMany();
 
     return items.map(item => {
       return new StockReportDTO(item);
@@ -662,12 +675,12 @@ export class StockService extends GenericService {
       if (this.configService.allowRegexStockSearch) {
         q = q.andWhere(new Brackets(qb => {
           qb.where('stock.comment REGEXP :t OR stock.description REGEXP :t',
-              {t: filter.text});
+            {t: filter.text});
         }));
       } else {
         q = q.andWhere(new Brackets(qb => {
           qb.where('stock.comment LIKE :t OR stock.description LIKE :t',
-              {t: '%' + filter.text + '%'});
+            {t: '%' + filter.text + '%'});
         }));
       }
     }
@@ -689,8 +702,8 @@ export class StockService extends GenericService {
     } else if (filter.mutation) {
       q = q.andWhere(new Brackets(qb => {
         qb.where('mutation.name LIKE :mt OR mutation.gene LIKE :mt ' +
-            'OR mutation.nickname LIKE :mt OR mutation.alternateGeneName LIKE :mt',
-            {mt: '%' + filter.mutation + '%'});
+          'OR mutation.nickname LIKE :mt OR mutation.alternateGeneName LIKE :mt',
+          {mt: '%' + filter.mutation + '%'});
       }));
     }
 
@@ -699,7 +712,7 @@ export class StockService extends GenericService {
     } else if (filter.transgene) {
       q = q.andWhere(new Brackets(qb => {
         qb.where('transgene.descriptor LIKE :tg OR transgene.allele LIKE :tg OR transgene.nickname LIKE :tg',
-            {tg: '%' + filter.transgene + '%'});
+          {tg: '%' + filter.transgene + '%'});
       }));
     }
 
@@ -761,8 +774,8 @@ export class StockService extends GenericService {
   // What is the next available number for the stock?
   async getNextStockNumber(): Promise<number> {
     const latest = await this.repo.createQueryBuilder('m')
-        .select('MAX(m.number)', 'max')
-        .getRawOne();
+      .select('MAX(m.number)', 'max')
+      .getRawOne();
     return Number(latest.max) + 1;
   }
 
@@ -773,9 +786,9 @@ export class StockService extends GenericService {
   // What is the next available sub stock number for a given stock number?
   async getNextSubStockNumber(stockNumber): Promise<number> {
     const latest = await this.repo.createQueryBuilder('s')
-        .select('MAX(s.subNumber)', 'max')
-        .where('s.number = :sn', {sn: stockNumber})
-        .getRawOne();
+      .select('MAX(s.subNumber)', 'max')
+      .where('s.number = :sn', {sn: stockNumber})
+      .getRawOne();
     return Number(latest.max) + 1;
   }
 
@@ -794,19 +807,19 @@ export class StockService extends GenericService {
   async getOffspring(id: number): Promise<Stock[]> {
     if (id === null) return [];
     return await this.repo.find({
-          relations: ['transgenes', 'mutations'],
-          where: [
-            {matIdInternal: id},
-            {patIdInternal: id}
-          ]
-        }
+        relations: ['transgenes', 'mutations'],
+        where: [
+          {matIdInternal: id},
+          {patIdInternal: id}
+        ]
+      }
     );
   }
 
   async countOffspring(id: number): Promise<number> {
     return await this.repo.createQueryBuilder('s')
-        .where('s.matIdInternal = :id OR s.patIdInternal = :id', {id})
-        .getCount();
+      .where('s.matIdInternal = :id OR s.patIdInternal = :id', {id})
+      .getCount();
   }
 
 }

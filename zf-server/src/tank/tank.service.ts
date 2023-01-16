@@ -1,7 +1,7 @@
-import { Inject, Injectable} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Tank } from './tank.entity';
+import {Inject, Injectable} from '@nestjs/common';
+import {InjectRepository} from '@nestjs/typeorm';
+import {Repository} from 'typeorm';
+import {Tank} from './tank.entity';
 import {TankDto} from '../common/tank.dto';
 import {convertEmptyStringToNull} from '../helpers/convertEmptyStringsToNull';
 import {plainToClass} from 'class-transformer';
@@ -60,8 +60,8 @@ export class TankService extends GenericService{
 
   // Find the tanks before and after a given place in the sort ordering
   // By default this ignores multi-tank tanks like the nursery.
-  // Why?  a) Because they are not really tanks.
-  // And b) the client is that Facility Audit and you don't
+  // Why?  First, because they are not really tanks.
+  // And second, the client is that Facility Audit and you don't
   // audit multi-tank tanks like the nursery on your phone.
   async getNeighbors(sortOrder: string = null): Promise<TankNeighborsDto> {
     const neighbors = new TankNeighborsDto();
@@ -110,7 +110,7 @@ export class TankService extends GenericService{
   }
 
   async mustExist(id: number): Promise<Tank> {
-    const candidate: Tank = await this.repo.findOne(id);
+    const candidate: Tank = await this.repo.findOne({where: {id}});
     if (!candidate) {
       this.logAndThrowException(`98327751 Tank id: ${id} does not exist.`);
     }

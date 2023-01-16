@@ -1,6 +1,5 @@
 import {Body, ClassSerializerInterceptor, Controller, Get, Post, UseGuards, UseInterceptors} from '@nestjs/common';
 import {MutationType} from './mutation-type.entity';
-import {MutationTypeRepository} from './mutation-type.repository';
 import {JwtAuthGuard} from '../guards/jwt-auth.guard';
 import {Role} from '../guards/role.decorator';
 import {USER_ROLE} from '../common/auth/zf-roles';
@@ -12,14 +11,13 @@ import {MutationTypeService} from './mutationType.service';
 @Controller('mutation-type')
 export class MutationTypeController {
   constructor(
-    private readonly repo: MutationTypeRepository,
     private readonly service: MutationTypeService,
   ) {
   }
 
   @Get()
   async findAll(): Promise<MutationType[]> {
-    return await this.repo.findAll();
+    return await this.service.findAll();
   }
 
   @Role(USER_ROLE)

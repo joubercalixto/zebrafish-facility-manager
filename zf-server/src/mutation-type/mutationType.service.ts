@@ -1,23 +1,27 @@
 import {Inject, Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {MutationTypeRepository} from './mutation-type.repository';
 import {MutationType} from './mutation-type.entity';
 import {GenericService} from '../Generics/generic-service';
 import {Logger} from 'winston';
+import {Repository} from 'typeorm';
 
 @Injectable()
 export class MutationTypeService extends GenericService {
   constructor(
     @Inject('winston') private readonly logger: Logger,
-    @InjectRepository(MutationTypeRepository) private readonly repo: MutationTypeRepository,
+    @InjectRepository(MutationType) private readonly repo: Repository<MutationType>,
   ) {
     super(logger);
+  }
+
+  async findAll(): Promise<MutationType[]> {
+    return this.repo.find({order: {name: 'ASC'}});
   }
 
   async import(dto: any): Promise<MutationType> {
 
     if (!dto.name) {
-      this.logAndThrowException('57661978: cannot load a Mutation Type without a name.')
+      this.logAndThrowException('57661978: cannot load a Mutation Type without a name.');
     }
 
     let candidate: MutationType;

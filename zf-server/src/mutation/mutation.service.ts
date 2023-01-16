@@ -159,7 +159,7 @@ export class MutationService extends GenericService {
   }
 
   async mustExist(id: number): Promise<Mutation> {
-    const candidate: Mutation = await this.repo.findOne(id);
+    const candidate: Mutation = await this.repo.findOne({where: {id}});
     if (!candidate) {
       this.logAndThrowException(`7684423: Mutation id: ${id} does not exist.`);
     }

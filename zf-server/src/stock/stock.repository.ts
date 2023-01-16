@@ -1,10 +1,15 @@
-import {EntityRepository, Repository} from 'typeorm';
+import {Repository} from 'typeorm';
 import {Stock} from './stock.entity';
+import {InjectRepository} from '@nestjs/typeorm';
+import {Injectable} from '@nestjs/common';
 
-@EntityRepository(Stock)
+@Injectable()
 export class StockRepository extends Repository<Stock> {
-  constructor() {
-    super();
+  constructor(
+    @InjectRepository(Stock)
+      repo: Repository<Stock>
+  ) {
+    super(repo.target, repo.manager, repo.queryRunner);
   }
 }
 

@@ -6,20 +6,20 @@ import {ResetPasswordDTO, UserDTO, UserPasswordChangeDTO} from '../common/user/U
 import {Logger} from 'winston';
 import {ADMIN_ROLE} from '../common/auth/zf-roles';
 import {JwtService} from '@nestjs/jwt';
-import {UserRepository} from './user.repository';
 import {ZFMailerService} from '../mailer/mailer-service';
 import {ConfigService} from '../config/config.service';
 import {convertEmptyStringToNull} from '../helpers/convertEmptyStringsToNull';
 import {UserFilter} from './user-filter';
-import {Brackets, SelectQueryBuilder} from 'typeorm';
+import {Brackets, Repository, SelectQueryBuilder} from 'typeorm';
 import {StockRepository} from '../stock/stock.repository';
 import {GenericService} from '../Generics/generic-service';
+import {Stock} from '../stock/stock.entity';
 
 @Injectable()
 export class UserService extends GenericService {
   constructor(
-    @InjectRepository(UserRepository) private readonly repo: UserRepository,
-    @InjectRepository(StockRepository) private readonly stockRepo: StockRepository,
+    @InjectRepository(User) private readonly repo: Repository<User>,
+    @InjectRepository(StockRepository) private readonly stockRepo: Repository<Stock>,
     @Inject('winston') private readonly logger: Logger,
     private jwtService: JwtService,
     private mailerService: ZFMailerService,
@@ -48,7 +48,7 @@ export class UserService extends GenericService {
     }
   }
 
-  //====================== Operations =====================
+  // ====================== Operations =====================
   async login(user: User): Promise<string> {
     const token = this.buildToken(user);
     user.isLoggedIn = true;
@@ -82,16 +82,16 @@ export class UserService extends GenericService {
   }
 
   async findByUserName(username: string): Promise<User | undefined> {
-    return await this.repo.findOne({where: {username: username}});
+    return await this.repo.findOne({where: {username}});
   }
 
-  //====================== Searches =====================
+  // ====================== Searches =====================
   async findAll(): Promise<User[]> {
     return this.repo.find({order: {'email': 'ASC'}});
   }
 
   async findOne(id: string): Promise<User> {
-    const u = await this.repo.findOne(id);
+    const u = await this.repo.findOne({where: {id}});
     u.isDeletable = await this.isDeletable(u);
     return u;
   }
@@ -106,7 +106,7 @@ export class UserService extends GenericService {
   }
 
   async findActiveUser(id: string): Promise<User> {
-    return this.repo.findOne({where: {id: id, isActive: true}});
+    return this.repo.findOne({where: {id, isActive: true}});
   }
 
   async findFiltered(filter: UserFilter): Promise<User[]> {
@@ -172,7 +172,7 @@ export class UserService extends GenericService {
     return await q.getMany();
   }
 
-  //================== Atomic Validation Checks ==================
+  // ================== Atomic Validation Checks ==================
   // A user cannot be deleted if active or if any stocks refer to it.
   async isDeletable(user: User): Promise<boolean> {
     if (user.isActive) {
@@ -183,38 +183,37 @@ export class UserService extends GenericService {
       .where('researcherId = :rid', {rid: user.id})
       .orWhere('piId = :pid', {pid: user.id})
       .getRawOne();
-
     return (!res);
   }
 
   async doesUsernameExist(username: string): Promise<boolean> {
-    const u: User = await this.repo.findOne({where: {username: username}});
+    const u: User = await this.repo.findOne({where: {username}});
     return !!(u);
   }
 
   async doesNameExist(name: string): Promise<boolean> {
-    const u: User = await this.repo.findOne({where: {name: name}});
+    const u: User = await this.repo.findOne({where: {name}});
     return !!(u);
   }
 
   async doesInitialsExist(initials: string): Promise<boolean> {
-    const u: User = await this.repo.findOne({where: {initials: initials}});
+    const u: User = await this.repo.findOne({where: {initials}});
     return !!(u);
   }
 
   async doesEmailExist(email: string): Promise<boolean> {
-    const u: User = await this.repo.findOne({where: {email: email}});
+    const u: User = await this.repo.findOne({where: {email}});
     return !!(u);
   }
 
-  //========================== Creation ==================
+  // ========================== Creation ==================
   async create(dto: UserDTO): Promise<User> {
     convertEmptyStringToNull(dto);
     const candidate: User = plainToClass(User, dto);
     delete candidate.id;
     await this.validateForCreate(candidate);
     const newPassword = candidate.setRandomPassword();
-    console.log('Setting random password for ' + candidate.username + ': ' + newPassword);
+    this.logger.info('Setting random password for ' + candidate.username + ': ' + newPassword);
     this.mailerService.newUser(candidate, newPassword);
     return this.repo.save(candidate);
   }
@@ -225,7 +224,7 @@ export class UserService extends GenericService {
     const candidate: User = plainToClass(User, dto);
     await this.validateForCreate(candidate);
     const newPassword = candidate.setRandomPassword();
-    console.log('Setting random password for ' + candidate.username + ': ' + newPassword);
+    this.logger.info('Setting random password for ' + candidate.username + ': ' + newPassword);
     return this.repo.save(candidate);
   }
 
@@ -267,14 +266,14 @@ export class UserService extends GenericService {
     return true;
   }
 
-  //========================== Update ==================
+  // ========================== Update ==================
   async resetPassword(dto: ResetPasswordDTO): Promise<User> {
     const u: User = await this.findByUsernameOrEmail(dto.usernameOrEmail);
     if (!u) {
       throw new UnauthorizedException('No such user.');
     }
     const rawPwd = u.setRandomPassword();
-    console.log(`Password for ${u.username} set to ${rawPwd}.`);
+    this.logger.info(`Password for ${u.username} set to ${rawPwd}.`);
     this.mailerService.passwordReset(u, rawPwd);
     return this.repo.save(u);
   }
@@ -285,7 +284,7 @@ export class UserService extends GenericService {
     if (!dto.id) {
       this.logAndThrowException('Received a user update without a user id!');
     }
-    const u: User = await this.repo.findOneOrFail(dto.id);
+    const u: User = await this.repo.findOneOrFail({where: {id: dto.id}});
     // we do not update passwords this way...
     Object.assign(u, dto);
     return this.repo.save(u);
@@ -293,14 +292,14 @@ export class UserService extends GenericService {
 
   async activate(dto: UserDTO): Promise<User> {
     this.mustHaveAttribute(dto, 'id');
-    const u: User = await this.repo.findOneOrFail(dto.id);
+    const u: User = await this.repo.findOneOrFail({where: {id: dto.id}});
     u.isActive = true;
     return this.repo.save(u);
   }
 
   async deactivate(dto: UserDTO): Promise<User> {
     this.mustHaveAttribute(dto, 'id');
-    const u: User = await this.repo.findOneOrFail(dto.id);
+    const u: User = await this.repo.findOneOrFail({where: {id: dto.id}});
     u.isActive = false;
     u.isLoggedIn = false;
     return this.repo.save(u);
@@ -308,7 +307,7 @@ export class UserService extends GenericService {
 
   async forceLogout(dto: UserDTO): Promise<User> {
     this.mustHaveAttribute(dto, 'id');
-    const u: User = await this.repo.findOneOrFail(dto.id);
+    const u: User = await this.repo.findOneOrFail({where: {id: dto.id}});
     u.isLoggedIn = false;
     return this.repo.save(u);
   }
@@ -323,7 +322,7 @@ export class UserService extends GenericService {
     return this.buildToken(u);
   }
 
-  //========================== Delete ==================
+  // ========================== Delete ==================
   async delete(id: string): Promise<any> {
     const u: User = await this.findOne(id);
 

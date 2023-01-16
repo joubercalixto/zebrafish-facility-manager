@@ -150,7 +150,7 @@ export class TransgeneService extends GenericService {
   }
 
   async mustExist(id: number): Promise<Transgene> {
-    const candidate: Transgene = await this.repo.findOne(id);
+    const candidate: Transgene = await this.repo.findOne({where: {id}});
     if (!candidate) {
       this.logAndThrowException('7684423 update a non-existent transgene.');
     }

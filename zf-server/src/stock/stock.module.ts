@@ -1,4 +1,4 @@
-import {Module} from '@nestjs/common';
+import {forwardRef, Module} from '@nestjs/common';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {StockService} from './stock.service';
 import {StockController} from './stock.controller';
@@ -12,18 +12,24 @@ import {Stock2tankModule} from '../stock2tank/stock2tank.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Stock, StockRepository]),
+    TypeOrmModule.forFeature([Stock]),
     UserModule,
     TransgeneModule,
     MutationModule,
     TankModule,
     Stock2tankModule,
+    forwardRef(() => UserModule),
   ],
   providers: [
     StockService,
+    StockRepository,
   ],
   controllers: [
     StockController,
   ],
+  exports: [
+    TypeOrmModule,
+    StockRepository,
+  ]
 })
 export class StockModule {}

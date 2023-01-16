@@ -1,5 +1,4 @@
 import {Body, ClassSerializerInterceptor, Controller, Get, Post, UseGuards, UseInterceptors} from '@nestjs/common';
-import {ScreenTypeRepository} from './screen-type.repository';
 import {ScreenType} from './screen-type.entity';
 import {JwtAuthGuard} from '../guards/jwt-auth.guard';
 import {Role} from '../guards/role.decorator';
@@ -12,14 +11,13 @@ import {ScreenTypeService} from './screenType.service';
 @Controller('screen-type')
 export class ScreenTypeController {
   constructor(
-    private readonly repo: ScreenTypeRepository,
     private readonly service: ScreenTypeService,
   ) {
   }
 
   @Get()
   async findFiltered(): Promise<ScreenType[]> {
-    return await this.repo.findAll();
+    return await this.service.findAll();
   }
 
   @Role(USER_ROLE)

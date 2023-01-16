@@ -1,13 +1,17 @@
-import {EntityRepository, Repository} from 'typeorm';
+import {Repository} from 'typeorm';
 import {classToPlain, plainToClassFromExist} from 'class-transformer';
 import {Stock2tank} from './stock-to-tank.entity';
-import {BadRequestException} from '@nestjs/common';
+import {BadRequestException, Injectable} from '@nestjs/common';
+import {InjectRepository} from '@nestjs/typeorm';
 
-@EntityRepository(Stock2tank)
+@Injectable()
 export class Stock2tankRepository extends Repository<Stock2tank> {
 
-  constructor() {
-    super();
+  constructor(
+    @InjectRepository(Stock2tank)
+      repo: Repository<Stock2tank>
+  ) {
+    super(repo.target, repo.manager, repo.queryRunner);
   }
 
   async findAll(): Promise<any> {
@@ -30,7 +34,7 @@ export class Stock2tankRepository extends Repository<Stock2tank> {
   }
 
   async findOrFail(stockId: number, tankId: number): Promise<Stock2tank> {
-    const o: Stock2tank = await this.findOne( {stockId, tankId});
+    const o: Stock2tank = await this.findOne({where: {stockId, tankId}});
     if (o) {
       return o;
     } else {

@@ -1,12 +1,17 @@
-import {EntityRepository, Repository} from 'typeorm';
+import {Repository} from 'typeorm';
 import {Transgene} from './transgene.entity';
 import {TransgeneFilter} from './transgene.filter';
 import {AutoCompleteOptions} from '../helpers/autoCompleteOptions';
+import {Injectable} from '@nestjs/common';
+import {InjectRepository} from '@nestjs/typeorm';
 
-@EntityRepository(Transgene)
+@Injectable()
 export class TransgeneRepository extends Repository<Transgene> {
-  constructor() {
-    super();
+  constructor(
+    @InjectRepository(Transgene)
+      repo: Repository<Transgene>
+  ) {
+    super(repo.target, repo.manager, repo.queryRunner);
   }
 
   // TODO upgrade MariaDB to 10.5+, then convert to full-text searches. Just to learn.
@@ -51,7 +56,7 @@ export class TransgeneRepository extends Repository<Transgene> {
   // the transgene class does not have access to the repo to make the required query)
   // So it is all very ugly.
   async findById(id: number): Promise<Transgene> {
-    const m: Transgene = await this.findOne(id);
+    const m: Transgene = await this.findOne({where: {id}});
     if (m) {
       m.isDeletable = await this.isDeletable(m.id);
     }

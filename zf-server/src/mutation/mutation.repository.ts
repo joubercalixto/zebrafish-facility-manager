@@ -1,18 +1,17 @@
-import {Brackets, EntityRepository, Repository} from 'typeorm';
+import {Brackets, Repository} from 'typeorm';
 import {Mutation} from './mutation.entity';
 import {MutationFilter} from './mutation.filter';
 import {AutoCompleteOptions} from '../helpers/autoCompleteOptions';
+import {InjectRepository} from '@nestjs/typeorm';
+import {Injectable} from '@nestjs/common';
 
-@EntityRepository(Mutation)
+@Injectable()
 export class MutationRepository extends Repository<Mutation> {
-  constructor() {
-    super();
-  }
-
-  async findAll() {
-    return await this.createQueryBuilder('m')
-      .orderBy('m.name')
-      .getMany();
+  constructor(
+    @InjectRepository(Mutation)
+      repo: Repository<Mutation>
+  ) {
+    super(repo.target, repo.manager, repo.queryRunner);
   }
 
   async findFiltered(filter: MutationFilter): Promise<any> {
@@ -92,7 +91,7 @@ export class MutationRepository extends Repository<Mutation> {
   }
 
   async findById(id: number): Promise<Mutation> {
-    const m: Mutation = await this.findOne(id);
+    const m: Mutation = await this.findOne({where: {id}});
     if (m) {
       m.isDeletable = await this.isDeletable(m.id);
     }

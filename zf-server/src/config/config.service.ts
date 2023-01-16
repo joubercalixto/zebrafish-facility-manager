@@ -300,7 +300,6 @@ export class ConfigService implements MailerOptionsFactory, TypeOrmOptionsFactor
         'migrationsRun': this.typeORMMigrationRun,
         logging: loggingOption,
       };
-
   }
 
   // For more information and options read https://nodemailer.com

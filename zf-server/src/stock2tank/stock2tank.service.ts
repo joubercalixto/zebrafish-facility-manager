@@ -47,7 +47,7 @@ export class Stock2tankService {
   async removeSwimmerByIds(stockId: number, tankId: number): Promise<any> {
     // When you use remove, it seems that TypeORM returns the object you deleted with the
     // id set to undefined.  Which makes some sense.
-    // However the client wants to see the id of the deleted object, so we stuff
+    // However, the client wants to see the id of the deleted object, so we stuff
     // it back in.
     const deleted = await this.repo.remove( await this.repo.findOrFail(stockId, tankId));
     deleted.stockId = stockId;
