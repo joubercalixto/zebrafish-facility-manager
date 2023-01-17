@@ -1,5 +1,4 @@
 import {NgModule} from '@angular/core';
-import {FlexLayoutModule} from '@angular/flex-layout';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatButtonModule} from '@angular/material/button';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -19,11 +18,11 @@ import {TransgeneSelectorComponent} from './transgene-selector/transgene-selecto
 import {TransgeneViewerComponent} from './transgene-viewer/transgene-viewer.component';
 import {TransgeneManagerRoutingModule} from './transgene-manager-routing.module';
 import {TransgeneMenuComponent} from './transgene-menu/transgene-menu.component';
-import {AuthModule} from "../auth/auth.module";
-import {MatSidenavModule} from "@angular/material/sidenav";
+import {AuthModule} from '../auth/auth.module';
+import {MatSidenavModule} from '@angular/material/sidenav';
 import {TransgeneMiniViewerComponent} from './transgene-mini-viewer/transgene-mini-viewer.component';
-import {TransgeneTinyViewerComponent} from "./transgene-mini-viewer/transgene-tiny-viewer.component";
-import {ZfGenericModule} from "../zf-generic/zf-generic.module";
+import {TransgeneTinyViewerComponent} from './transgene-mini-viewer/transgene-tiny-viewer.component';
+import {ZfGenericModule} from '../zf-generic/zf-generic.module';
 
 @NgModule({
   declarations: [
@@ -38,7 +37,6 @@ import {ZfGenericModule} from "../zf-generic/zf-generic.module";
   imports: [
     TransgeneManagerRoutingModule,
     CommonModule,
-    FlexLayoutModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatFormFieldModule,

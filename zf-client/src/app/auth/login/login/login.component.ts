@@ -11,7 +11,7 @@ import {UntypedFormControl} from '@angular/forms';
       <div mat-dialog-title>Login</div>
       <form>
         <div mat-dialog-content>
-          <div fxLayout="column">
+          <div class="lo-column">
             <mat-form-field>
               <input matInput name="username" type="text" placeholder="Username"
                      [formControl]="usernameFC">
@@ -22,7 +22,7 @@ import {UntypedFormControl} from '@angular/forms';
             </mat-form-field>
           </div>
         </div>
-        <div mat-dialog-actions fxLayout="row">
+        <div mat-dialog-actions class="lo-row">
           <div class="fill-remaining-space"></div>
           <button mat-button type="submit" (click)="onSubmit()" color="primary">Submit</button>
         </div>

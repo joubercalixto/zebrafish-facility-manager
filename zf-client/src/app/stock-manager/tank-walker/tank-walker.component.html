@@ -4,20 +4,21 @@
   <button mat-button color="primary" (click)="done()">Done</button>
 </mat-toolbar>
 
-<div fxLayout="column" *ngIf="tankList && tankList.length > 0">
+<div class="lo-column" *ngIf="tankList && tankList.length > 0">
   <mat-card>
-    <mat-card-content fxLayout="column">
-      <div fxLayout="row" fxLayoutGap="20px">
-        <div fxLayout="column" fxLayoutAlign="center">
+    <mat-card-content class="lo-column">
+      <div class="lo-row lo-gap20">
+        <div class="lo-column lo-justify-center">
           <button mat-mini-fab (click)="goToIndex(inFocusIndex - 1)" [disabled]="inFocusIndex < 1"
-                  color="primary" >
+                  color="primary">
             <mat-icon>navigate_before</mat-icon>
           </button>
-          <div class="mini-text">{{inFocusIndex >0 ? tankList[inFocusIndex - 1].tankName : "-"}}</div>
+          <div class="mini-text">{{inFocusIndex > 0 ? tankList[inFocusIndex - 1].tankName : "-"}}</div>
         </div>
 
-        <div fxFlex fxLayout="column">
-          <div class="zf-sub-title">Tank {{tankList[inFocusIndex].tankName + ' (' + (inFocusIndex + 1) + ' of ' + tankList.length + ')'}} </div>
+        <div class="lo-column lo-full">
+          <div class="zf-sub-title">
+            Tank {{tankList[inFocusIndex].tankName + ' (' + (inFocusIndex + 1) + ' of ' + tankList.length + ')'}} </div>
           <mat-form-field>
             <label>
               <input matInput type="text" placeholder="Count" [formControl]="countFC">
@@ -32,7 +33,7 @@
           </mat-form-field>
         </div>
 
-        <div fxLayout="column" fxLayoutAlign="center">
+        <div class="lo-column lo-justify-center">
           <button (click)="goToIndex(inFocusIndex + 1)" [disabled]="inFocusIndex >= tankList.length - 1" mat-mini-fab
                   color="primary">
             <mat-icon>navigate_next</mat-icon>
@@ -46,7 +47,7 @@
 
   <mat-divider style="padding-bottom: 10px"></mat-divider>
 
-  <div *ngIf="inFocusStock" fxLayout="column">
+  <div *ngIf="inFocusStock" class="lo-column">
     <!-- Main stock information-->
     <span class="zf-sub-title">Stock: {{inFocusStock.fullName}}</span>
     <mat-form-field>

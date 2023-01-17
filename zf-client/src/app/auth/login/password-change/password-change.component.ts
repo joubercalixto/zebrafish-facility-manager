@@ -20,7 +20,7 @@ import {AuthService} from '../../auth.service';
     <section class="mat-typography">
       <div mat-dialog-title>Password Change</div>
       <form [formGroup]="mfForm" (ngSubmit)="onSubmit()">
-        <div fxLayout="column" mat-dialog-content>
+        <div class="lo-column" mat-dialog-content>
           <mat-form-field>
             <input type="password" matInput placeholder="Current Password" formControlName="currentPassword">
           </mat-form-field>
@@ -40,7 +40,7 @@ import {AuthService} from '../../auth.service';
             <mat-error *ngIf="mfForm.errors?.mismatch">Mismatch</mat-error>
           </mat-form-field>
         </div>
-        <div mat-dialog-actions fxLayout="row">
+        <div mat-dialog-actions class="lo-row">
           <div class="fill-remaining-space"></div>
           <button [disabled]="mfForm.invalid" mat-button (click)="onSubmit()" color="primary">Submit</button>
         </div>

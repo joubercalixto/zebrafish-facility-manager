@@ -1,5 +1,5 @@
-<div fxLayout="column" *ngIf="service.selected">
-  <div fxLayout="column">
+<div class="lo-column" *ngIf="service.selected">
+  <div class="lo-column">
 
     <mat-toolbar class="zf-mini-toolbar">
       <span class="zf-title">Mutation Details</span>
@@ -8,10 +8,10 @@
       </button>
     </mat-toolbar>
 
-    <form [formGroup]="mfForm" [fxLayout]="(appState.screenSize > ScreenSizes.MEDIUM) ? 'row' : 'column'"
-          fxLayoutGap="10px">
+    <form [formGroup]="mfForm" [ngClass]="(appState.screenSize > ScreenSizes.MEDIUM) ? 'lo-row' : 'lo-column'"
+          class="lo-gap10">
 
-      <div fxLayout="column" fxFlex="40%">
+      <div class="lo-column lo-full">
         <mat-form-field *ngIf="service.selected.name">
           <input required matInput placeholder="Allele" formControlName="name">
         </mat-form-field>
@@ -55,11 +55,7 @@
         <mat-form-field *ngIf="service.selected.vialsFrozen">
           <input matInput type="text" placeholder="Number of vials frozen" formControlName="vialsFrozen">
         </mat-form-field>
-      </div>
 
-      <mat-divider vertical="true" fxHide.lt-md></mat-divider>
-
-      <div fxLayout="column"  fxFlex fxLayoutGap="20px">
         <mat-form-field *ngIf="service.selected.comment">
             <textarea matInput placeholder="Comment" formControlName="comment"
                       cdkTextareaAutosize="true" cdkAutosizeMaxRows="7"></textarea>

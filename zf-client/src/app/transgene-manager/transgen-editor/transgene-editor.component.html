@@ -1,4 +1,4 @@
-<div fxLayout="column" *ngIf="item">
+<div class="lo-column" *ngIf="item">
 
   <mat-toolbar class="zf-mini-toolbar">
     <span class="zf-title">Transgene Editor</span>
@@ -6,7 +6,7 @@
 
   <form [formGroup]="mfForm">
 
-    <div fxLayout="column">
+    <div class="lo-column">
       <mat-form-field>
         <input required matInput type="text" placeholder="Genomic feature name"
                formControlName="allele"
@@ -73,7 +73,7 @@
 
     </div>
   </form>
-  <div fxLayout="row" fxLayoutGap="10px">
+  <div class="lo-row lo-gap10">
     <div class="fill-remaining-space"></div>
     <button mat-button color="primary" [disabled]='!canUpdateFromZfin' (click)="updateFromZfin()">
       Update from ZFIN

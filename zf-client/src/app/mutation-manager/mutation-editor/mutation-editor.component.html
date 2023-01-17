@@ -1,13 +1,13 @@
-<div fxLayout="column" *ngIf="item">
+<div class="lo-column" *ngIf="item">
 
   <mat-toolbar class="zf-mini-toolbar">
     <span class="zf-title">Mutation Editor</span>
   </mat-toolbar>
 
   <form [formGroup]="mfForm">
-    <div [fxLayout]="(appState.screenSize > ScreenSizes.SMALL) ? 'row' : 'column'" fxLayoutGap="20px">
+    <div [ngClass]="(appState.screenSize > ScreenSizes.SMALL) ? 'lo-row' : 'lo-column'" class="lo-gap20">
 
-      <div fxLayout="column" fxFlex="30%">
+      <div class="lo-column lo-30">
         <mat-form-field>
           <label>
             <input formControlName="name" matInput maxlength="25" placeholder="Allele" required
@@ -101,7 +101,7 @@
         </mat-form-field>
       </div>
 
-      <div fxLayout="column" fxLayoutGap="20px" fxFlex>
+      <div class="lo-column lo-gap20 lo-full">
         <mat-form-field>
           <label>
             <textarea cdkAutosizeMaxRows="7" cdkTextareaAutosize="true" formControlName="comment"
@@ -129,14 +129,14 @@
           </label>
         </mat-form-field>
         <div class="fill-remaining-space"></div>
-        <div fxLayout="row" fxLayoutGap="20px">
+        <div class="lo-row lo-gap20">
           <div class="fill-remaining-space"></div>
         </div>
 
       </div>
     </div>
   </form>
-  <div fxLayout="row" fxLayoutGap="10px">
+  <div class="lo-row lo-gap10">
     <div class="fill-remaining-space"></div>
     <button mat-button color="primary" [disabled]='!canUpdateFromZfin' (click)="updateFromZfin()">
       Update from ZFIN

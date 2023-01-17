@@ -1,7 +1,7 @@
-<div fxFlex class="zf-full-width" *ngIf="service.selected">
+<div class="zf-full-width" *ngIf="service.selected">
   <div class="zf-title">Edit User {{getFC('username').value}}</div>
-  <form [formGroup]="mfForm" fxLayout="column" fxLayoutGap="20px">
-    <div fxFlex="20px"></div>
+  <form [formGroup]="mfForm" class="lo-column lo-gap20">
+    <div class="lo-10px"></div>
 
     <mat-form-field>
       <label>
@@ -46,7 +46,7 @@
         Researcher
       </mat-checkbox>
 
-    <div fxLayout="row" fxLayoutGap="10px">
+    <div class="lo-row lo-gap10">
       <div class="fill-remaining-space"></div>
       <button mat-button (click)="cancel()" color="primary">Cancel</button>
       <button mat-button (click)="revert()" color="primary"

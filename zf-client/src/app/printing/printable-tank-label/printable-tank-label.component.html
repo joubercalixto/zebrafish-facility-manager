@@ -1,5 +1,5 @@
-<div class="zf-label" [fxLayout]="qrLayout">
-  <div *ngIf="label.showQrCode && label.stockUrl" fxLayout="column" fxLayoutAlign="center center">
+<div class="zf-label" [ngClass]="qrLayout">
+  <div *ngIf="label.showQrCode && label.stockUrl" class="lo-column lo-justify-center lo-align-center">
     <qrcode
       [qrdata]="label.stockUrl"
       elementType="url" errorCorrectionLevel="M"
@@ -9,8 +9,8 @@
     </qrcode>
   </div>
   <div [ngStyle]="{ 'font-size.pt': label.printConfig.fontPointSize, 'font-family': label.printConfig.fontFamily}"
-       fxFlex fxLayout="column">
-    <div *ngFor="let elementRow of label.tankLabelElements" fxLayout="row" fxLayoutAlign="space-between">
+       class="lo-column lo-full">
+    <div *ngFor="let elementRow of label.tankLabelElements" class="lo-row lo-justify-space-between">
       <div *ngFor="let element of elementRow">{{element}}</div>
     </div>
   </div>

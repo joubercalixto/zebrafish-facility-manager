@@ -1,12 +1,12 @@
-<div fxLayout="column" fxLayoutAlign="center" *ngIf="stock" >
+<div class="lo-column lo-justify-center" *ngIf="stock">
   <mat-toolbar class="zf-mini-toolbar">
     <span class="zf-title">{{'Mutation & Transgene Editor for Stock ' + stock.name}}</span>
   </mat-toolbar>
   <h3>{{stock.description}}</h3>
-  <div [fxLayout]="(appState.screenSize > ScreenSizes.SMALL) ? 'row' : 'column'" fxLayoutGap="50px">
+  <div [ngClass]="(appState.screenSize > ScreenSizes.SMALL) ? 'lo-row' : 'lo-column'" class="lo-gap50">
 
     <!--Mutations-->
-    <div fxFlex="45%" fxGrow="0" fxLayout="column">
+    <div class="lo-column lo-45">
 
       <!--The stock's parent's mutations -->
       <div class="zf-sub-title">Mutations From Parents</div>
@@ -61,11 +61,11 @@
       </mat-autocomplete>
     </div>
 
-    <mat-divider fxHide.lt-sm vertical="true"></mat-divider>
+    <mat-divider *ngIf="appState.screenSize < ScreenSizes.SMALL" vertical="true"></mat-divider>
 
     <!--Transgenes-->
 
-    <div fxFlex="45%" fxGrow="0" fxLayout="column">
+    <div class="lo-column lo-45">
 
       <!--The stock's parent's transgenes -->
       <div class="zf-sub-title">Transgenes From Parents</div>
@@ -121,7 +121,7 @@
     </div>
   </div>
 
-  <div fxLayout="row">
+  <div class="lo-row">
     <div class="fill-remaining-space"></div>
     <button (click)="cancel()" color="primary" mat-button>Cancel</button>
     <button (click)="revert()" [disabled]="!ownListChanged" color="primary" mat-button>Revert</button>

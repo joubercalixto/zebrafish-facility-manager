@@ -1,9 +1,9 @@
-<div fxLayout="column" fxLayoutGap="10px">
+<div class="lo-column lo-gap10">
   <!-- This is a mock-up of the label -->
-  <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10">
+  <div class="lo-row lo-justify-center lo-align-center lo-gap10">
 
     <!-- Font Selector Menu -->
-    <div fxLayout="column" fxLayoutAlign="center center">
+    <div class="lo-column lo-justify-center lo-align-center">
       <mat-form-field>
         <mat-select [(ngModel)]="label.tankLabelOptions.labelPrintingOptions.fontFamily" name="fontFamily">
           <mat-option *ngFor="let option of fonts" [value]="option">
@@ -14,7 +14,7 @@
     </div>
 
     <!-- Font size selector lets the user adjust font to fit more junk on the label -->
-    <div fxLayout="column" fxLayoutAlign="center center">
+    <div class="lo-column lo-justify-center lo-align-center">
       <button (click)="changeFontSize(1)" aria-label="Increase font size" color="primary" mat-icon-button>
         <mat-icon>arrow_drop_up</mat-icon>
       </button>
@@ -27,8 +27,8 @@
     <!-- A mock-up of the label -->
     <div [ngStyle]="{'width.in': label.tankLabelOptions.labelPrintingOptions.widthInInches,
     'height.in': label.tankLabelOptions.labelPrintingOptions.heightInInches}"
-         class="zf-label" [fxLayout]="qrLayout">
-      <div *ngIf="label.showQrCode" fxLayout="column" fxLayoutAlign="center">
+         class="zf-label" [ngClass]="qrLayout">
+      <div *ngIf="label.showQrCode" class="lo-column lo-justify-center">
         <qrcode
           [qrdata]="label.stockUrl"
           elementType="url" errorCorrectionLevel="M"
@@ -38,8 +38,8 @@
       </div>
       <div [ngStyle]="{ 'font-size.pt': label.tankLabelOptions.labelPrintingOptions.fontPointSize,
        'font-family': label.tankLabelOptions.labelPrintingOptions.fontFamily}"
-           fxFlex fxLayout="column">
-        <div *ngFor="let elementLayoutRow of label.labelLayout" fxLayout="row" fxLayoutAlign="space-between">
+           class="lo-column lo-full">
+        <div *ngFor="let elementLayoutRow of label.labelLayout" class="lo-row lo-justify-space-between">
           <div *ngFor="let elementName of elementLayoutRow">
             <ng-container
               *ngIf="label.labelElements[elementName].visibleOnLabel">{{label.labelElements[elementName].value}}
@@ -49,7 +49,7 @@
       </div>
     </div>
   </div>
-  <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center">
+  <div class="lo-row lo-justify-center lo-gap20">
     <button (click)="done()" color="primary" mat-button>
       <mat-icon>done</mat-icon>
       Return to stock viewer
@@ -67,7 +67,7 @@
   <mat-divider></mat-divider>
 
   <!--  Label customization area -->
-  <div fxLayout="row" fxLayoutAlign="center center" class="zf-sub-title"
+  <div class="lo-row lo-justify-center lo-align-center zf-sub-title"
        matTooltip="Changes here will not affect the data in the database">
     Customize this label
   </div>
@@ -75,8 +75,8 @@
                 color="primary">Show QR code on label
   </mat-checkbox>
   <form [formGroup]="tankLabelFormGroup">
-    <div *ngFor="let row of label.labelLayout" fxLayout="row" fxLayoutAlign="space-between">
-      <div *ngFor="let elementName of row" fxFlex>
+    <div *ngFor="let row of label.labelLayout" class="lo-row lo-justify-space-between">
+      <div *ngFor="let elementName of row" class="lo-full">
         <app-tank-label-element [form]="tankLabelFormGroup"
                                 [tankLabelElement]="label.labelElements[elementName]"></app-tank-label-element>
       </div>

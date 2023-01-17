@@ -1,5 +1,5 @@
-<div fxLayout="column" *ngIf="service.selected">
-  <div fxLayout="column">
+<div class="lo-column" *ngIf="service.selected">
+  <div class="lo-column">
 
     <!--------------- Title and menu --------------------->
     <mat-toolbar class="zf-mini-toolbar">
@@ -13,8 +13,8 @@
       </button>
     </mat-toolbar>
 
-    <div [fxLayout]="(appState.screenSize > ScreenSizes.MEDIUM) ? 'row' : 'column'" fxLayoutGap="10px">
-      <div fxLayout="column" fxFlex="45">
+    <div [ngClass]="(appState.screenSize > ScreenSizes.MEDIUM) ? 'lo-row' : 'lo-column'" class="lo-gap10">
+      <div class="lo-column lo-45">
         <!-- Main stock information-->
         <mat-form-field *ngIf="service.selected.description">
           <label>
@@ -52,12 +52,12 @@
                    matInput placeholder="Researcher">
           </label>
         </mat-form-field>
-        <div fxLayout="row" fxLayoutGap="10px">
-          <mat-form-field *ngIf="service.selected.countEnteringNursery" fxFlex="45%">
+        <div class="lo-row lo-gap10">
+          <mat-form-field *ngIf="service.selected.countEnteringNursery" class="lo-45">
             <input [value]="service.selected.countEnteringNursery" disabled
                    matInput placeholder="Count entering nursery" type="number">
           </mat-form-field>
-          <mat-form-field *ngIf="service.selected.countLeavingNursery" fxFlex="45%">
+          <mat-form-field *ngIf="service.selected.countLeavingNursery" class="lo-45">
             <label>
               <input [value]="service.selected.countLeavingNursery" disabled
                      matInput placeholder="Count leaving nursery">
@@ -123,12 +123,12 @@
           emptyMessage="None">
         </app-zf-selector-list>
       </div>
-      <mat-divider vertical="true" fxHide.lt-sm></mat-divider>
+      <mat-divider *ngIf="appState.screenSize < ScreenSizes.SMALL" vertical="true"></mat-divider>
 
-      <div fxFlex=45 fxLayout="column" fxLayoutGap="10px">
+      <div class="lo-column lo-45 lo-gap10">
 
         <!-- Information about mutations -->
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+        <div class="lo-row lo-justify-start lo-align-center lo-gap5">
           <span class="zf-sub-title">Mutations</span>
           <button mat-icon-button zfmHideUnauthorized="user" color="primary" (click)="editMutations()">
             <mat-icon>edit</mat-icon>
@@ -138,7 +138,7 @@
 
         <!-- Information about transgenes -->
 
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+        <div class="lo-row lo-justify-start lo-align-center lo-gap5">
           <span class="zf-sub-title">Transgenes</span>
           <button mat-icon-button zfmHideUnauthorized="user" color="primary" (click)="editTransgenes()">
             <mat-icon>edit</mat-icon>
@@ -150,7 +150,7 @@
         <mat-divider></mat-divider>
 
         <!-- Information about swimmers -->
-        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+        <div class="lo-row lo-justify-start lo-align-center lo-gap5">
           <span class="zf-sub-title">Swimmers</span>
           <button mat-icon-button zfmHideUnauthorized="user" color="primary" (click)="editSwimmers()">
             <mat-icon>edit</mat-icon>

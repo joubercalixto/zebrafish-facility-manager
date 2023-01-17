@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {ZFGenericService} from "../zfgeneric-service";
-import {ZfGenericDto} from "../zfgeneric-dto";
+import {ZFGenericService} from '../zfgeneric-service';
+import {ZfGenericDto} from '../zfgeneric-dto';
 
 // Presents a list of Zf objects in a selectable list.
 // The list items show a bit of detail about the object.

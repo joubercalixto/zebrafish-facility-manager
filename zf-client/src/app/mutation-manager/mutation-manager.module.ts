@@ -5,7 +5,6 @@ import {MutationSelectorComponent} from './mutation-selector/mutation-selector.c
 import {MutationEditorComponent} from './mutation-editor/mutation-editor.component';
 import {MutationViewerComponent} from './mutation-viewer/mutation-viewer.component';
 import {MutationMenuComponent} from './mutation-menu/mutation-menu.component';
-import {FlexLayoutModule} from '@angular/flex-layout';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatButtonModule} from '@angular/material/button';
 import {MatDatepickerModule} from '@angular/material/datepicker';
@@ -41,7 +40,6 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
   imports: [
     MutationManagerRoutingModule,
     CommonModule,
-    FlexLayoutModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatDatepickerModule,

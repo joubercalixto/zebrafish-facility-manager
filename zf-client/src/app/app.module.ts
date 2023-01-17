@@ -8,7 +8,6 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {LocationStrategy, PathLocationStrategy} from '@angular/common';
 import {TopBarComponent} from './top-bar/top-bar.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {FlexLayoutModule} from '@angular/flex-layout';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCardModule} from '@angular/material/card';
@@ -104,7 +103,6 @@ export function authServiceProviderFactory(provider: AppStateService) {
     ExporterModule,
     BrowserAnimationsModule,
     BrowserModule,
-    FlexLayoutModule,
     FormsModule,
     HttpClientModule,
     MatAutocompleteModule,

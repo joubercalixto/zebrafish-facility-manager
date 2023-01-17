@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import {LoaderService} from "../loader.service";
-import {AppStateService} from "../app-state.service";
-import {ActivatedRoute, Router} from "@angular/router";
+import {Component, OnInit} from '@angular/core';
+import {AppStateService} from '../app-state.service';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-splash',
-  template:`
+  template: `
     <div class="big-background"></div>
   `,
   styleUrls: ['./splash.component.scss']

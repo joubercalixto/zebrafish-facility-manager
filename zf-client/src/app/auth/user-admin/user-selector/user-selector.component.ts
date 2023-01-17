@@ -14,11 +14,11 @@ import {ZFTool} from '../../../helpers/zf-tool';
 @Component({
   selector: 'app-user-selector',
   template: `
-    <div fxLayout="column" fxLayoutGap="20px">
+    <div class="lo-column lo-gap20">
       <!-- The Filter Part -->
       <span class="zf-sub-title">User Filter</span>
       <form [formGroup]="mfForm">
-        <div fxLayout="column">
+        <div class="lo-column">
           <mat-form-field>
             <label>
               <input formControlName="text" matInput type="text" placeholder="Search text fields">

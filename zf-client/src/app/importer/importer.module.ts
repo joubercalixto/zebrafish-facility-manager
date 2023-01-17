@@ -9,7 +9,6 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatIconModule} from '@angular/material/icon';
 import {MutationManagerModule} from '../mutation-manager/mutation-manager.module';
 import {MatButtonModule} from '@angular/material/button';
-import {FlexModule} from '@angular/flex-layout';
 import {AuthModule} from '../auth/auth.module';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {FormsModule} from '@angular/forms';
@@ -31,7 +30,6 @@ import {MatCardModule} from '@angular/material/card';
     MutationManagerModule,
     MatButtonModule,
     FormsModule,
-    FlexModule,
     AuthModule,
     MatCheckboxModule,
     MatCardModule,

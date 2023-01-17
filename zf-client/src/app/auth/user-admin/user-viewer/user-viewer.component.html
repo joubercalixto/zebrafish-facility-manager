@@ -1,11 +1,11 @@
-<div fxLayout="column" *ngIf="service.selected">
-  <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="start center" >
+<div class="lo-column" *ngIf="service.selected">
+  <div class="lo-row lo-gap5 lo-justify-start lo-align-center">
     <span class="zf-title">User Details</span>
     <button mat-icon-button color="primary" (click)="edit()">
       <mat-icon>edit</mat-icon>
     </button>
   </div>
-  <form fxLayout="column" [formGroup]="mfForm">
+  <form class="lo-column" [formGroup]="mfForm">
     <mat-form-field>
       <label>
         <input formControlName="username" matInput placeholder="Username" type="text">
@@ -49,7 +49,7 @@
     <mat-checkbox formControlName="isActive" color="primary">Activated</mat-checkbox>
     <mat-checkbox color="primary" formControlName="isLoggedIn">Currently Logged In</mat-checkbox>
     <mat-checkbox formControlName="passwordChangeRequired" color="primary">Requires password change</mat-checkbox>
-    <div fxLayout="row" fxLayoutAlign="end">
+    <div class="lo-row lo-justify-end">
       <button (click)="service.activate(user)" [disabled]="user.isActive" color="primary"
               mat-button>Activate
       </button>

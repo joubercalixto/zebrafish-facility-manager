@@ -1,11 +1,11 @@
-<div fxLayout="column" class="zf-selector">
+<div class="lo-column zf-selector">
 
   <!-- The Filter Part -->
 
   <form [formGroup]="mfForm">
 
-    <div fxLayout="row" fxLayoutAlign="space-between center">
-      <mat-checkbox  formControlName="liveStocksOnly" color="primary">
+    <div class="lo-row lo-justify-space-between lo-align-center">
+      <mat-checkbox formControlName="liveStocksOnly" color="primary">
         Live Stocks Only
       </mat-checkbox>
       <button (click)="onClearFilters()" color="primary" mat-button type=button>
@@ -13,8 +13,8 @@
       </button>
     </div>
 
-    <div fxLayout="row">
-      <div fxLayout="column" fxFlex="50%">
+    <div class="lo-row">
+      <div class="lo-column lo-50">
         <!-- First group of filter fields -->
         <mat-form-field>
           <label>
@@ -47,7 +47,7 @@
       </div>
 
       <!-- Second group of filter fields -->
-      <div fxLayout="column" fxFlex="50%">
+      <div class="lo-column lo-50">
 
         <mat-form-field>
           <label>

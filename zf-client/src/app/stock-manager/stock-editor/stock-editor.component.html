@@ -1,5 +1,5 @@
-<div fxLayout="column" *ngIf="stock" fxLayoutGap="10px">
-  <div fxLayout="column">
+<div class="lo-column lo-gap10" *ngIf="stock">
+  <div class="lo-column">
 
     <!--------------- Title and menu --------------------->
     <mat-toolbar class="zf-mini-toolbar">{{title}}</mat-toolbar>
@@ -7,10 +7,10 @@
     <form #stockEditForm="ngForm">
       <!-- Editor form has two sets of fields. Put them side by side on larger screens and in a -->
       <!-- column on smaller ones. -->
-      <div [fxLayout]="(appState.screenSize > ScreenSizes.SMALL) ? 'row' : 'column'" fxLayoutGap="20px">
+      <div [ngClass]="(appState.screenSize > ScreenSizes.SMALL) ? 'lo-row' : 'lo-column'" class="lo-gap20">
 
         <!-- First group of fields pertain to the stock itself -->
-        <div fxFlex="50" fxLayout="column">
+        <div class="lo-column lo-50">
           <mat-form-field>
             <label>
               <input [(ngModel)]="stock.name"
@@ -73,9 +73,9 @@
           </mat-form-field>
         </div>
 
-        <mat-divider vertical fxHide.lt-sm></mat-divider>
+        <mat-divider *ngIf="appState.screenSize < ScreenSizes.MEDIUM" vertical></mat-divider>
         <!-- The second group identifies the stock's parents -->
-        <div class="zf-full-width" fxLayout="column">
+        <div class="zf-full-width lo-column">
           <!--  Mother --------------------------------------->
           <span class="zf-sub-title">Mom</span>
           <mat-radio-group [(ngModel)]="momInternal" color="primary" name="mom"
@@ -83,7 +83,7 @@
             <mat-radio-button class="zf-radio-button" [value]=true>Internal</mat-radio-button>
             <mat-radio-button class="zf-radio-button" [value]=false>External</mat-radio-button>
           </mat-radio-group>
-          <div *ngIf="momInternal" fxLayout="column">
+          <div *ngIf="momInternal" class="lo-column">
             <mat-form-field>
               <label>
                 <input #matStockNameF="ngModel" (keyup)="onSetMatStock()"
@@ -106,7 +106,7 @@
               </label>
             </mat-form-field>
           </div>
-          <div *ngIf="!momInternal" fxLayout="column">
+          <div *ngIf="!momInternal" class="lo-column">
             <mat-form-field>
               <label>
                 <input [(ngModel)]="stock.externalMatId" [disabled]="!stock.parentsEditable" matInput maxlength="20"
@@ -131,7 +131,7 @@
             <mat-radio-button class="zf-radio-button" [value]=true>Internal</mat-radio-button>
             <mat-radio-button class="zf-radio-button" [value]=false>External</mat-radio-button>
           </mat-radio-group>
-          <div *ngIf="dadInternal" fxLayout="column">
+          <div *ngIf="dadInternal" class="lo-column">
             <mat-form-field>
               <label>
                 <input #patStockNameF="ngModel" (keyup)="onSetPatStock()"
@@ -154,7 +154,7 @@
               </label>
             </mat-form-field>
           </div>
-          <div *ngIf="!dadInternal" fxLayout="column">
+          <div *ngIf="!dadInternal" class="lo-column">
             <mat-form-field>
               <label>
                 <input [(ngModel)]="stock.externalPatId" [disabled]="!stock.parentsEditable" matInput maxlength="20"
@@ -174,7 +174,7 @@
         </div>
       </div>
       <div class="fill-remaining-space"></div>
-      <div fxLayout="row" fxLayoutGap="20px">
+      <div class="lo-row lo-gap20">
         <div class="fill-remaining-space"></div>
         <button mat-button color="primary" (click)="cancel()">Cancel</button>
         <button mat-button color="primary" [disabled]="isUnchanged()" (click)="revert()">Revert</button>

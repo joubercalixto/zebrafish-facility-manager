@@ -1,24 +1,26 @@
-<div fxLayout="row" fxLayoutAlign="center" *ngIf="authService.loggedIn$ | async">
+<div class="lo-row lo-align-center" *ngIf="authService.loggedIn$ | async">
   <div class="zf-full-width">
-    <mat-toolbar  color="primary">
+    <mat-toolbar color="primary">
       Facility Audit
     </mat-toolbar>
 
     <mat-card>
-      <div fxLayout="column" fxLayoutGap="20px">
+      <div class="lo-column lo-gap20">
         <!-- Forward/Backward Navigator -->
-        <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center center" style="background: inherit">
+        <div class="lo-row lo-gap20 lo-justify-start lo-align-center" style="background: inherit">
           <button mat-mini-fab (click)="previousTank()" [disabled]="!neighbors || !neighbors.previous"
-                  color="primary" >
+                  color="primary">
             <mat-icon>navigate_before</mat-icon>
           </button>
 
-          <div *ngIf="currentTank" fxFlex class="zf-title" >
-            Tank {{currentTank.name}}{{(currentSwimmers.length <2) ? ' (Empty)' : ''}}
+          <div *ngIf="currentTank" class="zf-title">
+            Tank {{currentTank.name}}{{(currentSwimmers.length < 2) ? ' (Empty)' : ''}}
           </div>
 
+          <div class="fill-remaining-space"></div>
+
           <button mat-mini-fab (click)="nextTank()" [disabled]="!neighbors || !neighbors.next"
-                  color="primary" >
+                  color="primary">
             <mat-icon>navigate_next</mat-icon>
           </button>
         </div>
@@ -32,14 +34,14 @@
         <div>
           <mat-divider></mat-divider>
         </div>
-        <form [formGroup]="tankJumpForm" fxLayout="row" fxLayoutGap="10px">
-          <button mat-icon-button [disabled]="!jumpTank" color="primary">
-          <mat-icon (click)="jumpToTank()">fast_forward</mat-icon>
-        </button>
-        <mat-form-field fxFlex>
-          <input matInput type="text" placeholder="Jump to tank" formControlName="tankName">
-          <mat-hint>{{tankHint}}</mat-hint>
-        </mat-form-field>
+        <form [formGroup]="tankJumpForm" class="lo-row lo-gap20">
+          <mat-form-field class="lo-full">
+            <input matInput type="text" placeholder="Jump to tank" formControlName="tankName">
+            <mat-hint>{{tankHint}}</mat-hint>
+          </mat-form-field>
+          <button mat-button [disabled]="!jumpTank" color="primary">
+            <mat-icon (click)="jumpToTank()">fast_forward</mat-icon>
+          </button>
         </form>
       </div>
     </mat-card>

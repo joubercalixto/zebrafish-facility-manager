@@ -14,7 +14,7 @@ export class PrintableTankLabelComponent implements OnInit {
   // tslint is wrong about the next row, it is used by the qr code generator in the html, albeit with eval
   stockUrl: string;
   label: PrintableTankLabel;
-  qrLayout = 'row';
+  qrLayout = 'lo-row';
 
   constructor(
     public appState: AppStateService,
@@ -28,7 +28,7 @@ export class PrintableTankLabelComponent implements OnInit {
     // suboptimal design, but it is really easy.
     this.label = plainToClass(PrintableTankLabel, this.appState.getState('tankLabel'));
     if (this.label.printConfig.widthInInches < this.label.printConfig.heightInInches) {
-      this.qrLayout = 'column';
+      this.qrLayout = 'lo-column';
     }
     this.printService.onDataReady();
   }

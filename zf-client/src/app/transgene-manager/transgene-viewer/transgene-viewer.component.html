@@ -1,25 +1,25 @@
-<div fxFlex *ngIf="service.selected">
-  <div fxLayout="column">
+<div class="lo-full" *ngIf="service.selected">
+  <div class="lo-column">
 
-  <mat-toolbar class="zf-mini-toolbar">
-    <span class="zf-title">Transgene Details</span>
-    <button mat-icon-button zfmHideUnauthorized="user" color="primary" (click)="edit()">
-      <mat-icon>edit</mat-icon>
-    </button>
-  </mat-toolbar>
+    <mat-toolbar class="zf-mini-toolbar">
+      <span class="zf-title">Transgene Details</span>
+      <button mat-icon-button zfmHideUnauthorized="user" color="primary" (click)="edit()">
+        <mat-icon>edit</mat-icon>
+      </button>
+    </mat-toolbar>
 
 
-  <form fxLayout="column" [formGroup]="mfForm">
-    <mat-form-field *ngIf="service.selected.allele">
-      <input matInput type="text"  placeholder="Genomic feature name" formControlName="allele">
-    </mat-form-field>
+    <form class="lo-column" [formGroup]="mfForm">
+      <mat-form-field *ngIf="service.selected.allele">
+        <input matInput type="text" placeholder="Genomic feature name" formControlName="allele">
+      </mat-form-field>
 
-    <mat-form-field *ngIf="service.selected.descriptor">
-      <input matInput type="text" placeholder="Construct" formControlName="descriptor">
-    </mat-form-field>
+      <mat-form-field *ngIf="service.selected.descriptor">
+        <input matInput type="text" placeholder="Construct" formControlName="descriptor">
+      </mat-form-field>
 
-    <mat-form-field *ngIf="service.selected.nickname">
-      <input matInput type="text" placeholder="NickName" formControlName="nickname">
+      <mat-form-field *ngIf="service.selected.nickname">
+        <input matInput type="text" placeholder="NickName" formControlName="nickname">
     </mat-form-field>
 
     <mat-form-field *ngIf="service.selected.plasmid">

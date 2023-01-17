@@ -24,67 +24,67 @@ class ImportSwitch {
 @Component({
   selector: 'app-importer',
   template: `
-    <div fxLayout="row" fxLayoutAlign="center" *ngIf="authService.loggedIn$ | async">
+    <div class="lo-column lo-align-center" *ngIf="authService.loggedIn$ | async">
       <div class="zf-full-width">
         <mat-toolbar color="primary">
           Importer - Never use on a live system
           <span class="fill-remaining-space"></span>
         </mat-toolbar>
+        <mat-card>
+          <mat-card-title>Select File</mat-card-title>
+          <button [disabled]="!canSelectFile" mat-button color="primary" (click)="openFileChooser()">
+            <label>Select upload file...</label>
+          </button>
+          <input id="fileToImport" type="file" hidden (change)="fileSelected($event)">
+        </mat-card>
+
+        <mat-card>
+          <mat-card-title>Which sheets we upload?</mat-card-title>
+          <mat-card-subtitle>Sheet names must exactly match text below</mat-card-subtitle>
+          <div class="lo-column">
+            <div *ngFor="let importSwitch of importSwitches">
+              <mat-checkbox [(ngModel)]="importSwitch.isSelected"
+                            color="primary">
+                {{importSwitch.name}}
+                <span *ngIf="importSwitch.description"> ({{importSwitch.description}})</span>
+              </mat-checkbox>
+            </div>
+          </div>
+        </mat-card>
+
+        <mat-card *ngIf="selectedFile">
+          <mat-card-title>Do That Import Thing...</mat-card-title>
+          <div *ngIf="selectedFile">
+            <button mat-button color="primary" (click)="importWorkbook()">
+              Upload {{selectedFile.name}}
+            </button>
+          </div>
+        </mat-card>
+
+        <mat-card *ngIf="total > 0 || notes.length > 0 || problems.length > 0">
+          <mat-card-title>Progress...</mat-card-title>
+          <div *ngIf="(total - done) > 0" class="lo-row lo-justify-space-between lo-align-center">
+            <div>Done: {{done}}</div>
+            <div>Loading {{currentlyImporting}}</div>
+            <div>Total: {{total}}</div>
+          </div>
+          <mat-progress-bar *ngIf="total - done > 0" [value]="progress" mode="determinate"></mat-progress-bar>
+          <div *ngIf="problems.length > 0">
+            <H2>Problems:</H2>
+            <ul>
+              <li *ngFor="let problem of problems">{{problem}}</li>
+            </ul>
+          </div>
+
+          <div *ngIf="notes.length > 0">
+            <H2>Notes:</H2>
+            <ul>
+              <li *ngFor="let note of notes">{{note}}</li>
+            </ul>
+          </div>
+        </mat-card>
       </div>
     </div>
-    <mat-card>
-      <mat-card-title>Select File</mat-card-title>
-      <button [disabled]="!canSelectFile" mat-button color="primary" (click)="openFileChooser()">
-        <label>Select upload file...</label>
-      </button>
-      <input id="fileToImport" type="file" hidden (change)="fileSelected($event)">
-    </mat-card>
-
-    <mat-card>
-      <mat-card-title>Which sheets we upload?</mat-card-title>
-      <mat-card-subtitle>Sheet names must exactly match text below</mat-card-subtitle>
-      <div fxLayout="column">
-        <div *ngFor="let importSwitch of importSwitches">
-          <mat-checkbox [(ngModel)]="importSwitch.isSelected"
-                        color="primary">
-            {{importSwitch.name}}
-            <span *ngIf="importSwitch.description"> ({{importSwitch.description}})</span>
-          </mat-checkbox>
-        </div>
-      </div>
-    </mat-card>
-
-    <mat-card *ngIf="selectedFile">
-      <mat-card-title>Do That Import Thing...</mat-card-title>
-      <div *ngIf="selectedFile">
-        <button mat-button color="primary" (click)="importWorkbook()">
-          Upload {{selectedFile.name}}
-        </button>
-      </div>
-    </mat-card>
-
-    <mat-card *ngIf="total > 0 || notes.length > 0 || problems.length > 0">
-      <mat-card-title>Progress...</mat-card-title>
-      <div *ngIf="(total - done) > 0" fxLayout="row" fxLayoutAlign="space-between center">
-        <div>Done: {{done}}</div>
-        <div>Loading {{currentlyImporting}}</div>
-        <div>Total: {{total}}</div>
-      </div>
-      <mat-progress-bar *ngIf="total - done > 0" [value]="progress" mode="determinate"></mat-progress-bar>
-      <div *ngIf="problems.length > 0">
-        <H2>Problems:</H2>
-        <ul>
-          <li *ngFor="let problem of problems">{{problem}}</li>
-        </ul>
-      </div>
-
-      <div *ngIf="notes.length > 0">
-        <H2>Notes:</H2>
-        <ul>
-          <li *ngFor="let note of notes">{{note}}</li>
-        </ul>
-      </div>
-    </mat-card>
   `,
 
   styleUrls: ['./importer.component.scss']

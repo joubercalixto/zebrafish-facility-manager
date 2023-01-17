@@ -21,7 +21,7 @@ export class TankLabelMakerComponent implements OnInit {
   tankLabelFormGroup: UntypedFormGroup;
   selectedSwimmerFC: UntypedFormControl;
   selectedSwimmerIndex: number;
-  qrLayout = 'row';
+  qrLayout = 'lo-row';
 
   // How about a helping of lame sauce with this menu?
   fonts = ['Roboto', 'Arial', 'Arial Narrow', 'Arial Black', 'Calibri', 'Helvetica', 'PT Sans'];
@@ -55,7 +55,7 @@ export class TankLabelMakerComponent implements OnInit {
 
     if (this.label.tankLabelOptions.labelPrintingOptions.widthInInches <
       this.label.tankLabelOptions.labelPrintingOptions.heightInInches) {
-      this.qrLayout = 'column';
+      this.qrLayout = 'lo-column';
     }
     const group: any = {};
     for (const key of Object.keys(this.label.labelElements)) {

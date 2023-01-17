@@ -1,8 +1,8 @@
-<div fxLayout="row" fxLayoutAlign="center" *ngIf="authService.loggedIn$ | async">
+<div class="lo-column lo-align-center" *ngIf="authService.loggedIn$ | async">
   <div class="zf-full-width">
 
     <!-- The toolbar specific to Mutation manager -->
-    <mat-toolbar  color="primary">
+    <mat-toolbar color="primary">
       <!-- The button to toggle the sidenav is disabled while an item is being edited -->
       <button mat-icon-button (click)="selector.toggle()" *ngIf="!(appState.selectorFixed)"
               [disabled]="service.inEditMode">

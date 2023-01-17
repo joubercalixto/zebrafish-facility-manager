@@ -13,14 +13,14 @@ import {TankService} from '../../tank-manager/tank.service';
 @Component({
   selector: 'app-exporter',
   template: `
-    <div fxLayout="row" fxLayoutAlign="center" *ngIf="authService.loggedIn$ | async">
+    <div class="lo-row lo-align-center" *ngIf="authService.loggedIn$ | async">
       <div class="zf-full-width">
         <mat-toolbar color="primary">
           Stockbook Exporter
         </mat-toolbar>
       </div>
     </div>
-    <div fxLayout="row" fxLayoutAlign="center">
+    <div class="lo-row lo-align-center">
       <mat-card style="max-width: 800px">
         <mat-card-content>
           <H2 *ngIf="fetchingStocks">

@@ -1,9 +1,9 @@
-<div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+<div class="lo-row lo-justify-start lo-align-center lo-gap10">
   <mat-checkbox [(ngModel)]="tankLabelElement.visibleOnLabel"
                 [disabled]="tankLabelElement.required"
                 color="primary" name="check">
   </mat-checkbox>
-  <mat-form-field fxFlex>
+  <mat-form-field class="lo-full">
     <label>
       <input [(ngModel)]="tankLabelElement.value" matInput name="input"
              [disabled]="!tankLabelElement.editable || !tankLabelElement.visibleOnLabel"

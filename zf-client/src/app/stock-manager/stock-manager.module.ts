@@ -1,5 +1,4 @@
 import {NgModule} from '@angular/core';
-import {FlexLayoutModule} from '@angular/flex-layout';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatButtonModule} from '@angular/material/button';
 import {MatCheckboxModule} from '@angular/material/checkbox';
@@ -62,7 +61,6 @@ import {TankLabelElementComponent} from './tank-label-maker/tank-label-element/t
   imports: [
     StockManagerRoutingModule,
     CommonModule,
-    FlexLayoutModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,

@@ -6,6 +6,100 @@
 
 @include mat.all-component-themes($zf-app-theme);
 
+.lo-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.lo-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.lo-full {
+  flex: 1;
+}
+
+.lo-justify-start {
+  justify-content: start;
+}
+
+.lo-justify-center {
+  justify-content: center;
+}
+
+.lo-justify-end {
+  justify-content: end;
+}
+
+.lo-justify-space-between {
+  justify-content: space-between;
+}
+
+.lo-align-center {
+  align-items: center;
+}
+
+.lo-gap20 {
+  gap: 20px;
+}
+
+.lo-gap10 {
+  gap: 10px;
+}
+
+.lo-gap5 {
+  gap: 5px;
+}
+
+.lo-10px {
+  flex-basis: 10px;
+}
+
+.lo-20px {
+  flex-basis: 20px;
+}
+
+.lo-25px {
+  flex-basis: 25px;
+}
+
+.lo-60px {
+  flex-basis: 60px;
+}
+
+.lo-80px {
+  flex-basis: 80px;
+}
+
+.lo-2 {
+  flex-basis: 2%;
+}
+
+.lo-4 {
+  flex-basis: 4%;
+}
+
+.lo-14 {
+  flex-basis: 14%;
+}
+
+.lo-30 {
+  flex-basis: 30%;
+}
+
+.lo-40 {
+  flex-basis: 40%;
+}
+
+.lo-45 {
+  flex-basis: 45%;
+}
+
+.lo-50 {
+  flex-basis: 50%;
+}
+
 // push everything after this in flexLayout to the end of the layout
 // So, use this in a toolbar to push the login button to the right.
 .fill-remaining-space {
@@ -69,7 +163,7 @@
 
 .zf-full-width {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
 }
 
 .zf-selection-list {
@@ -151,18 +245,9 @@
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: contain;
-  min-height: 840px;
+  min-height: 1400px;
 }
 
-.toolbar-bg {
-  background-image: url('assets/images/light_toolbar_bg.jpg');
-  background-color: #FFFFFF;
-  background-position: center center;
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: contain;
-  min-height: 64px;
-}
 
 app-mutation-mini-viewer {
   width: 100%;

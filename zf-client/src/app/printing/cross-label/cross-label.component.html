@@ -1,31 +1,35 @@
-<div class="zf-label" fxFlex fxLayout="row">
+<div class="zf-label lo-row lo-full">
   <!-- The next line prevents the label from being cut off on the left.
      This just screams that I have no idea what I am doing. -->
-  <div fxFlex="2%"></div>
+  <div class="lo-2"></div>
 
-  <div [ngStyle]="{ 'font-size.pt': crossLabel.fontSize, 'font-family': crossLabel.fontFamily }" fxFlex
-       fxLayout="column">
+  <div [ngStyle]="{ 'font-size.pt': crossLabel.fontSize, 'font-family': crossLabel.fontFamily }"
+       class="lo-column lo-full">
 
     <!-- Researcher and Date-->
-    <div fxLayout="row" fxLayoutAlign="space-between">
+    <div class="lo-row lo-justify-space-between">
       <div>{{crossLabel.researcherName}}</div>
       <div>{{crossLabel.dateString}}</div>
     </div>
 
     <!-- Mom -->
-    <div fxLayout="row" fxLayoutAlign="start" fxLayoutGap="10px">
-      <div fxFlex="4%"><mat-icon>female</mat-icon></div>
-      <div fxFlex="14%">{{crossLabel.momName}}</div>
-      <div fxFlex>{{crossLabel.momAlleleSummary}}</div>
-      <div *ngIf="crossLabel.momTank" fxFlex="15%">T:{{crossLabel.momTank}}</div>
+    <div class="lo-row lo-align-center lo-gap10">
+      <div class="lo-4">
+        <mat-icon>female</mat-icon>
+      </div>
+      <div class="lo-14">{{crossLabel.momName}}</div>
+      <div class="lo-full">{{crossLabel.momAlleleSummary}}</div>
+      <div *ngIf="crossLabel.momTank" class="lo-14">T:{{crossLabel.momTank}}</div>
     </div>
 
     <!-- Dad -->
-    <div fxLayout="row" fxLayoutAlign="start" fxLayoutGap="10px">
-      <div fxFlex="4%"><mat-icon>male</mat-icon></div>
-      <div fxFlex="14%">{{crossLabel.dadName}}</div>
-      <div fxFlex>{{crossLabel.dadAlleleSummary}}</div>
-      <div *ngIf="crossLabel.dadTank" fxFlex="15%">T:{{crossLabel.dadTank}}</div>
+    <div class="lo-row lo-align-center lo-gap10">
+      <div class="lo-4">
+        <mat-icon>male</mat-icon>
+      </div>
+      <div class="lo-14">{{crossLabel.dadName}}</div>
+      <div class="lo-full">{{crossLabel.dadAlleleSummary}}</div>
+      <div *ngIf="crossLabel.dadTank" class="lo-4">T:{{crossLabel.dadTank}}</div>
     </div>
 
     <!-- Extra notes -->

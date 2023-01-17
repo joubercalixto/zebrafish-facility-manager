@@ -1,10 +1,10 @@
 <!--Main Toolbar-->
-<div class="app-top-bar toolbar-bg" fxLayout="row" fxLayoutAlign="center">
+<div class="app-top-bar lo-column lo-align-center">
   <div class="zf-full-width">
 
     <!-- For anything bigger than a tablet we spread out the main choices -->
     <div *ngIf="appState.screenSize >= ScreenSizes.LARGE">
-      <mat-toolbar *ngIf="authService.loggedIn$ | async" fxLayoutGap="10px">
+      <mat-toolbar *ngIf="authService.loggedIn$ | async" class="lo-gap10">
         <span>Zebrafish Facility Manager for {{appState.facilityConfig.facilityInfo.name}}</span>
         <span class="fill-remaining-space"></span>
         <button mat-button [disabled]="appState.activeTool === zfTool.STOCK_MANAGER"
@@ -71,7 +71,7 @@
 
     <!-- For small screens, we abbreviate what we can and put the main options in a menu -->
     <div *ngIf="appState.screenSize < ScreenSizes.LARGE">
-      <mat-toolbar *ngIf="authService.loggedIn$ | async" fxLayoutGap="10px">
+      <mat-toolbar *ngIf="authService.loggedIn$ | async">
         <span>ZFM for {{appState.facilityConfig.facilityInfo.shortName}}</span>
         <span class="fill-remaining-space"></span>
         <button mat-button [matMenuTriggerFor]="toolMenu" color="primary">

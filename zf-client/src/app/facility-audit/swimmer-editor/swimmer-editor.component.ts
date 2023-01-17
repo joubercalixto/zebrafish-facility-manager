@@ -7,7 +7,7 @@ import {UntypedFormBuilder, Validators} from '@angular/forms';
 @Component({
   selector: 'app-swimmer-editor',
   template: `
-    <form [formGroup]="swimmerForm" fxLayout="row" fxLayoutGap="10px" style="width: 100%">
+    <form [formGroup]="swimmerForm" class="lo-row lo-gap10" style="width: 100%">
       <button mat-icon-button *ngIf="!isNew && !stockNameChanged && !swimmerCountChanged" color="primary">
         <mat-icon (click)="onDelete()">delete</mat-icon>
       </button>
@@ -18,11 +18,11 @@ import {UntypedFormBuilder, Validators} from '@angular/forms';
       <button mat-icon-button *ngIf="isNew" [disabled]="!stockExists" color="primary">
         <mat-icon (click)="onChange()">add</mat-icon>
       </button>
-      <mat-form-field fxFlex>
+      <mat-form-field class="lo-full">
         <input matInput type="text" placeholder="Stock Number" formControlName="stockName">
         <mat-hint>{{stockHint}}</mat-hint>
       </mat-form-field>
-      <mat-form-field fxFlex="25%">
+      <mat-form-field class="lo-25px">
         <input matInput type="number"
                placeholder="Count" required min="1" formControlName="swimmerCount">
       </mat-form-field>
