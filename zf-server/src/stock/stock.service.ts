@@ -558,7 +558,7 @@ export class StockService extends GenericService {
         name: s.name,
         description: s.description,
         researcher: s.researcher,
-        comment: (s.comment) ? s.comment.slice(0, 45) : '',
+        comment: s.comment,
         fertilizationDate: s.fertilizationDate,
         alleleSummary: stockWithGenetics.alleleSummary,
       });

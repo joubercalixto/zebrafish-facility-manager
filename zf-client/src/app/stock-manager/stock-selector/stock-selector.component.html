@@ -14,7 +14,7 @@
     </div>
 
     <div class="lo-row">
-      <div class="lo-column lo-50">
+      <div class="lo-column" style="width: 48%">
         <!-- First group of filter fields -->
         <mat-form-field>
           <label>
@@ -47,7 +47,7 @@
       </div>
 
       <!-- Second group of filter fields -->
-      <div class="lo-column lo-50">
+      <div class="lo-column" style="width: 48%">
 
         <mat-form-field>
           <label>
@@ -121,7 +121,7 @@
   <mat-divider></mat-divider>
 
   <!-- The Filtered List part -->
-  <div class="zf-sub-title">Filtered List</div>
+  <div class="zf-sub-title">Filtered List (by age)</div>
   <app-zf-selector-list
     (itemSelected)="onSelect($event)"
     [list]="service.filteredList"

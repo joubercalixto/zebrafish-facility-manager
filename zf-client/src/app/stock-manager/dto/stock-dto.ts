@@ -39,8 +39,8 @@ export class StockDto extends ZfGenericDto {
   }
 
   get details(): string[] {
-    let details = [];
-    details.push(this.alleleSummary)
+    const details = [];
+    details.push(this.alleleSummary);
     if (this.comment) {
       details.push(this.comment);
     }

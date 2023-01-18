@@ -21,9 +21,8 @@
       <button (click)="onClearFilters()" color="primary" mat-button type="button">Clear Filters</button>
     </div>
 
-    <div [ngClass]="(appState.screenSize > ScreenSizes.MEDIUM) ? 'lo-row' : 'lo-column'">
-
-      <div class="lo-column lo-50">
+    <div class="lo-row">
+      <div class="lo-column">
 
         <!--  First group of filter fields-->
         <mat-form-field>
@@ -61,7 +60,7 @@
 
 
       <!-- Second group of filter fields -->
-      <div class="lo-column lo-50">
+      <div class="lo-column">
         <mat-form-field>
           <label>
             <input [matAutocomplete]="autoGene" formControlName="gene" matInput placeholder="Gene" type="text">

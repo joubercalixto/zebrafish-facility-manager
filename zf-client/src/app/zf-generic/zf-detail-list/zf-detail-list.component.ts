@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {ZfGenericDto} from "../zfgeneric-dto";
+import {ZfGenericDto} from '../zfgeneric-dto';
 
 // Presents a list of Zf objects in a static (non-selectable) list.
 // The list items show some detail about the object.

@@ -3,10 +3,11 @@
     <span class="zf-title">{{'Mutation & Transgene Editor for Stock ' + stock.name}}</span>
   </mat-toolbar>
   <h3>{{stock.description}}</h3>
-  <div [ngClass]="(appState.screenSize > ScreenSizes.SMALL) ? 'lo-row' : 'lo-column'" class="lo-gap50">
+  <div [ngClass]="(appState.screenSize > ScreenSizes.SMALL) ? 'lo-row' : 'lo-column'" class="lo-gap20">
 
     <!--Mutations-->
-    <div class="lo-column lo-45">
+    <div [ngClass]="(appState.screenSize > ScreenSizes.MEDIUM) ? 'zf-viewer-2col' : 'zf-viewer-1col'"
+         class="lo-column lo-gap10">
 
       <!--The stock's parent's mutations -->
       <div class="zf-sub-title">Mutations From Parents</div>
@@ -61,11 +62,12 @@
       </mat-autocomplete>
     </div>
 
-    <mat-divider *ngIf="appState.screenSize < ScreenSizes.SMALL" vertical="true"></mat-divider>
+    <mat-divider *ngIf="appState.screenSize > ScreenSizes.SMALL" vertical="true"></mat-divider>
 
     <!--Transgenes-->
 
-    <div class="lo-column lo-45">
+    <div [ngClass]="(appState.screenSize > ScreenSizes.MEDIUM) ? 'zf-viewer-2col' : 'zf-viewer-1col'"
+         class="lo-column lo-gap10">
 
       <!--The stock's parent's transgenes -->
       <div class="zf-sub-title">Transgenes From Parents</div>

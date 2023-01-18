@@ -10,7 +10,8 @@
       <div [ngClass]="(appState.screenSize > ScreenSizes.SMALL) ? 'lo-row' : 'lo-column'" class="lo-gap20">
 
         <!-- First group of fields pertain to the stock itself -->
-        <div class="lo-column lo-50">
+        <div [ngClass]="(appState.screenSize > ScreenSizes.MEDIUM) ? 'zf-viewer-2col' : 'zf-viewer-1col'"
+             class="lo-column lo-gap10">
           <mat-form-field>
             <label>
               <input [(ngModel)]="stock.name"
@@ -73,9 +74,10 @@
           </mat-form-field>
         </div>
 
-        <mat-divider *ngIf="appState.screenSize < ScreenSizes.MEDIUM" vertical></mat-divider>
+        <mat-divider *ngIf="appState.screenSize > ScreenSizes.SMALL" vertical></mat-divider>
         <!-- The second group identifies the stock's parents -->
-        <div class="zf-full-width lo-column">
+        <div [ngClass]="(appState.screenSize > ScreenSizes.MEDIUM) ? 'zf-viewer-2col' : 'zf-viewer-1col'"
+             class="lo-column lo-gap10">
           <!--  Mother --------------------------------------->
           <span class="zf-sub-title">Mom</span>
           <mat-radio-group [(ngModel)]="momInternal" color="primary" name="mom"

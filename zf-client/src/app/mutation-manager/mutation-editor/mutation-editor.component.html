@@ -7,7 +7,8 @@
   <form [formGroup]="mfForm">
     <div [ngClass]="(appState.screenSize > ScreenSizes.SMALL) ? 'lo-row' : 'lo-column'" class="lo-gap20">
 
-      <div class="lo-column lo-30">
+      <div [ngClass]="(appState.screenSize > ScreenSizes.MEDIUM) ? 'zf-viewer-2col' : 'zf-viewer-1col'"
+           class="lo-column lo-gap10">
         <mat-form-field>
           <label>
             <input formControlName="name" matInput maxlength="25" placeholder="Allele" required
@@ -100,8 +101,10 @@
           </label>
         </mat-form-field>
       </div>
+      <mat-divider *ngIf="appState.screenSize > ScreenSizes.SMALL" vertical="true"></mat-divider>
 
-      <div class="lo-column lo-gap20 lo-full">
+      <div [ngClass]="(appState.screenSize > ScreenSizes.MEDIUM) ? 'zf-viewer-2col' : 'zf-viewer-1col'"
+           class="lo-column lo-gap10">
         <mat-form-field>
           <label>
             <textarea cdkAutosizeMaxRows="7" cdkTextareaAutosize="true" formControlName="comment"

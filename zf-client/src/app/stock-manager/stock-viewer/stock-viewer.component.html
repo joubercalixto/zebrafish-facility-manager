@@ -14,7 +14,8 @@
     </mat-toolbar>
 
     <div [ngClass]="(appState.screenSize > ScreenSizes.MEDIUM) ? 'lo-row' : 'lo-column'" class="lo-gap10">
-      <div class="lo-column lo-45">
+      <div [ngClass]="(appState.screenSize > ScreenSizes.MEDIUM) ? 'zf-viewer-2col' : 'zf-viewer-1col'"
+           class="lo-column lo-gap10">
         <!-- Main stock information-->
         <mat-form-field *ngIf="service.selected.description">
           <label>
@@ -123,10 +124,10 @@
           emptyMessage="None">
         </app-zf-selector-list>
       </div>
-      <mat-divider *ngIf="appState.screenSize < ScreenSizes.SMALL" vertical="true"></mat-divider>
+      <mat-divider *ngIf="appState.screenSize > ScreenSizes.SMALL" vertical="true"></mat-divider>
 
-      <div class="lo-column lo-45 lo-gap10">
-
+      <div [ngClass]="(appState.screenSize > ScreenSizes.MEDIUM) ? 'zf-viewer-2col' : 'zf-viewer-1col'"
+           class="lo-column lo-gap10">
         <!-- Information about mutations -->
         <div class="lo-row lo-justify-start lo-align-center lo-gap5">
           <span class="zf-sub-title">Mutations</span>

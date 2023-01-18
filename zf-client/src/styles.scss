@@ -6,6 +6,14 @@
 
 @include mat.all-component-themes($zf-app-theme);
 
+.zf-viewer-1col {
+  width: 100%;
+}
+
+.zf-viewer-2col {
+  width: 45%;
+}
+
 .lo-row {
   display: flex;
   flex-direction: row;
@@ -86,18 +94,6 @@
 
 .lo-30 {
   flex-basis: 30%;
-}
-
-.lo-40 {
-  flex-basis: 40%;
-}
-
-.lo-45 {
-  flex-basis: 45%;
-}
-
-.lo-50 {
-  flex-basis: 50%;
 }
 
 // push everything after this in flexLayout to the end of the layout
@@ -186,7 +182,6 @@
 .zf-selector {
   padding-top: 15px;
   padding-left: 15px;
-  width: 100%;
 }
 
 .zf-selection-item {
@@ -203,6 +198,7 @@
 .zf-mini-row {
   font-size: 10px;
   margin-left: 10px;
+  width: 95%;
 }
 
 .zf-mini-title {
