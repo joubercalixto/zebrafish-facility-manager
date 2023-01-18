@@ -1,9 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {MatDialog} from "@angular/material/dialog";
-import {LoginComponent} from "./login.component";
-import {PasswordResetComponent} from "../password-reset/password-reset.component";
-import {ZFTool} from "../../../helpers/zf-tool";
-import {ActivatedRoute, ParamMap} from "@angular/router";
+import {MatLegacyDialog as MatDialog} from '@angular/material/legacy-dialog';
+import {LoginComponent} from './login.component';
+import {PasswordResetComponent} from '../password-reset/password-reset.component';
+import {ActivatedRoute} from '@angular/router';
 
 /**
  * This container does two things:

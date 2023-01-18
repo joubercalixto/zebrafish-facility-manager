@@ -1,8 +1,8 @@
-import {ActivatedRouteSnapshot, CanActivate, Router} from "@angular/router";
-import {AppStateService} from "../../app-state.service";
-import {MatSnackBar} from "@angular/material/snack-bar";
-import {Injectable} from "@angular/core";
-import {AuthService} from "../auth.service";
+import {ActivatedRouteSnapshot, CanActivate, Router} from '@angular/router';
+import {AppStateService} from '../../app-state.service';
+import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
+import {Injectable} from '@angular/core';
+import {AuthService} from '../auth.service';
 
 @Injectable()
 export class RoleGuardService implements CanActivate {

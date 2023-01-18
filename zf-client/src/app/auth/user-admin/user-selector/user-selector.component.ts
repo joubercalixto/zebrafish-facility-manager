@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {LoaderService} from '../../../loader.service';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
 import {UserDTO} from '../../UserDTO';
 import {Router} from '@angular/router';
 import {UntypedFormBuilder} from '@angular/forms';

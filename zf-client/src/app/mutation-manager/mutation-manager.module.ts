@@ -5,27 +5,27 @@ import {MutationSelectorComponent} from './mutation-selector/mutation-selector.c
 import {MutationEditorComponent} from './mutation-editor/mutation-editor.component';
 import {MutationViewerComponent} from './mutation-viewer/mutation-viewer.component';
 import {MutationMenuComponent} from './mutation-menu/mutation-menu.component';
-import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import {MatButtonModule} from '@angular/material/button';
+import {MatLegacyAutocompleteModule as MatAutocompleteModule} from '@angular/material/legacy-autocomplete';
+import {MatLegacyButtonModule as MatButtonModule} from '@angular/material/legacy-button';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatLegacyFormFieldModule as MatFormFieldModule} from '@angular/material/legacy-form-field';
 import {MatIconModule} from '@angular/material/icon';
-import {MatInputModule} from '@angular/material/input';
-import {MatListModule} from '@angular/material/list';
+import {MatLegacyInputModule as MatInputModule} from '@angular/material/legacy-input';
+import {MatLegacyListModule as MatListModule} from '@angular/material/legacy-list';
 import {MatNativeDateModule} from '@angular/material/core';
-import {MatSelectModule} from '@angular/material/select';
+import {MatLegacySelectModule as MatSelectModule} from '@angular/material/legacy-select';
 import {MatToolbarModule} from '@angular/material/toolbar';
-import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatLegacyTooltipModule as MatTooltipModule} from '@angular/material/legacy-tooltip';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {MatMenuModule} from '@angular/material/menu';
+import {MatLegacyMenuModule as MatMenuModule} from '@angular/material/legacy-menu';
 import {CommonModule} from '@angular/common';
 import {AuthModule} from '../auth/auth.module';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatLegacyCheckboxModule as MatCheckboxModule} from '@angular/material/legacy-checkbox';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MutationMiniViewerComponent} from './mutation-mini-viewer/mutation-mini-viewer.component';
 import {MutationTinyViewerComponent} from './mutation-mini-viewer/mutation-tiny-viewer.component';
 import {ZfGenericModule} from '../zf-generic/zf-generic.module';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatLegacyProgressBarModule as MatProgressBarModule} from '@angular/material/legacy-progress-bar';
 
 @NgModule({
   declarations: [

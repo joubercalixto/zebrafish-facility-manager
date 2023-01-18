@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
 import {BehaviorSubject, interval, Observable} from 'rxjs';
 import {LoaderService} from '../loader.service';
 import {FieldOptions} from '../helpers/field-options';

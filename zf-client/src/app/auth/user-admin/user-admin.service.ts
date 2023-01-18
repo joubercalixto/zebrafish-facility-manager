@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {UserDTO} from '../UserDTO';
 import {BehaviorSubject, lastValueFrom, Observable} from 'rxjs';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
 import {AppStateService, ZFToolStates} from '../../app-state.service';
 import {AuthApiService} from '../auth-api.service';
 import {Router} from '@angular/router';

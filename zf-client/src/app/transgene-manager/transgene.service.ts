@@ -6,7 +6,7 @@ import {ZFGenericService} from '../zf-generic/zfgeneric-service';
 import * as XLSX from 'xlsx';
 import {WorkSheet} from 'xlsx';
 import {AppStateService, ZFToolStates} from '../app-state.service';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
 import {plainToClass} from 'class-transformer';
 import {ZFTypes} from '../helpers/zf-types';
 import {Router} from '@angular/router';

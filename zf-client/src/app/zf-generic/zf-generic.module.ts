@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ZfSelectorListComponent} from './zf-selector-list/zf-selector-list.component';
-import {MatListModule} from "@angular/material/list";
+import {MatLegacyListModule as MatListModule} from '@angular/material/legacy-list';
 import {ZfDetailListComponent} from './zf-detail-list/zf-detail-list.component';
 
 

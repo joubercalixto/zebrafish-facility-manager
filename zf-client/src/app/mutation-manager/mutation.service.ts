@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {LoaderService} from '../loader.service';
 import {MutationFilter} from './mutation-filter';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
 import {FieldOptions} from '../helpers/field-options';
 import {ZFGenericService} from '../zf-generic/zfgeneric-service';
 import * as XLSX from 'xlsx';

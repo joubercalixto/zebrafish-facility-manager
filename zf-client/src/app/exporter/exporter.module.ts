@@ -5,7 +5,7 @@ import {ExporterComponent} from './exporter/exporter.component';
 import {AuthModule} from '../auth/auth.module';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
-import {MatCardModule} from '@angular/material/card';
+import {MatLegacyCardModule as MatCardModule} from '@angular/material/legacy-card';
 
 
 @NgModule({

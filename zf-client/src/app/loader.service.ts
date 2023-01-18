@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
-import {MatSnackBar} from '@angular/material/snack-bar';
+import {MatLegacySnackBar as MatSnackBar} from '@angular/material/legacy-snack-bar';
 import {catchError} from 'rxjs/operators';
-import {environment} from '../environments/environment'
+import {environment} from '../environments/environment';
 import {AppStateService} from './app-state.service';
 import {ZFTypes} from './helpers/zf-types';
 import {Router} from '@angular/router';
