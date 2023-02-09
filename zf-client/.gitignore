@@ -40,6 +40,7 @@ Thumbs.db
 
 # only commit example configurations
 /src/facility-config/*.json
+/scr/app/common/config/facility-info.ts
 !/src/facility-config/example.json
 !/src/facility-config/development.json
 

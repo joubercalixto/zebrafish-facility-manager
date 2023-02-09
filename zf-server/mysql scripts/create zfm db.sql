@@ -1,5 +1,5 @@
-SET @username := 'zf_uva';
-SET @password := 'zf_uva';
+SET @username := 'zf_byu';
+SET @password := 'zf_byu';
 SET @host := 'localhost';
 
 SET @query1 = CONCAT(
@@ -48,9 +48,21 @@ PREPARE stmt FROM @query1;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
 
+SET @query1 = CONCAT(
+        'CREATE USER `',
+        @username,
+        '`@`',
+        '%',
+        '` IDENTIFIED BY "',
+        @password, '" '
+    );
+PREPARE stmt FROM @query1;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
 
 # If you cant gran all privileges like if you are on an amazon rds
 GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, INDEX, DROP,
     CREATE TEMPORARY TABLES, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE,
     EXECUTE, CREATE VIEW, EVENT, TRIGGER
-    ON zf_stl_test.* TO `zf_stl_test`@`%`;
+    ON zf_byu.* TO `zf_byu`@`%`;
